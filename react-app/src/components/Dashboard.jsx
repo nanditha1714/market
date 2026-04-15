@@ -3,7 +3,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import ChartCard from './ChartCard';
 import { CHART_COLORS } from '../constants';
-import { uploadScreenshot, saveRecord } from '../api';
+import { uploadScreenshot, saveRecord } from '../services/api';
 
 const co = (i) => CHART_COLORS[i % CHART_COLORS.length];
 

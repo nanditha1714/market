@@ -77,13 +77,13 @@ const s = {
   }
 };
 
-const Input = ({ label, prefix, error, ...props }) => {
+const Input = ({ label, prefix, error, full, ...props }) => {
   const [focused, setFocused] = useState(false);
   const isTextarea = props.rows !== undefined;
   const Component = isTextarea ? 'textarea' : 'input';
   
   return (
-    <div style={{ ...s.field, ...(props.full ? { gridColumn: '1 / -1' } : {}) }}>
+    <div style={{ ...s.field, ...(full ? { gridColumn: '1 / -1' } : {}) }}>
       <label style={s.label}>{label} *</label>
       <div style={{
         ...s.inputWrap, 

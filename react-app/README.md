@@ -30,7 +30,7 @@ npm install
 
 ### 2. Configure .env
 ```
-REACT_APP_GEMINI_API_KEY=your_gemini_api_key_here
+
 REACT_APP_SUPABASE_URL=https://your-project-id.supabase.co
 REACT_APP_SUPABASE_ANON_KEY=your_supabase_anon_key_here
 ```
