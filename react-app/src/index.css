@@ -10,7 +10,7 @@ html, body, #root {
   width: 100%;
   height: 100%;
   font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
-  background: #ffffff;
+  background: #e4edf5;
   color: #0f172a;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -19,11 +19,11 @@ html, body, #root {
 
 :root {
   /* Ultra-Professional Enterprise Palette */
-  --bg-main: #f8fafc;
+  --bg-main: #e4edf5;
   --bg-card: #ffffff;
   
-  --text-main: #0f172a;
-  --text-muted: #64748b;
+  --text-main: #000000;
+  --text-muted: #1a1a1a;
   
   /* Muted Corporate Blue */
   --primary: #1d4ed8;

@@ -39,11 +39,11 @@ export default function SurveyPage({ onComplete }) {
   const isLast = cur === QUESTIONS.length - 1;
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#2c5282', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10vh 20px', overflowY: 'auto' }}>
+    <div style={{ position: 'fixed', inset: 0, background: '#e4edf5', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10vh 20px', overflowY: 'auto' }}>
       
-      <div style={{ borderRadius: '16px', width: '100%', maxWidth: '800px', margin: 'auto', background: '#f8fafc', border: '1px solid #e2e8f0', boxShadow: '0 10px 25px rgba(0,0,0,0.15)' }}>
+      <div style={{ width: '100%', maxWidth: '800px', margin: 'auto' }}>
         {/* Header */}
-        <div style={{ padding: '32px 48px 24px', borderBottom: '1px solid #e2e8f0', textAlign: 'center' }}>
+        <div style={{ padding: '32px 20px 24px', borderBottom: '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
           <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#1e3a8a', letterSpacing: '-0.01em', marginBottom: '8px' }}>Market Research</h1>
           <p style={{ fontSize: '15px', color: '#64748b' }}>Please complete parameter {cur + 1} of {QUESTIONS.length} to finalize baseline context.</p>
           
@@ -57,7 +57,7 @@ export default function SurveyPage({ onComplete }) {
         </div>
 
         {/* Body with Fade transition */}
-        <div style={{ padding: '32px 48px 40px', opacity: fade === 'in' ? 1 : 0, transition: 'opacity 0.15s ease-out' }}>
+        <div style={{ padding: '32px 20px 40px', opacity: fade === 'in' ? 1 : 0, transition: 'opacity 0.15s ease-out' }}>
           <div style={{ fontSize: '13px', fontWeight: 700, color: '#1e3a8a', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
             Section: {q.id}
           </div>

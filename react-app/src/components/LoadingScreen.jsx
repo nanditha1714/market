@@ -3,7 +3,7 @@ import React from 'react';
 export default function LoadingScreen() {
   return (
     <div style={{
-      position:'fixed', inset:0, background:'linear-gradient(135deg,#0f1c3f,#1a2b5e)',
+      position:'fixed', inset:0, background:'#e4edf5',
       display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'18px'
     }}>
       <div style={{

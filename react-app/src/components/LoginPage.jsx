@@ -3,16 +3,13 @@ import React, { useState } from 'react';
 const s = {
   wrap: { 
     position: 'fixed', inset: 0, 
-    background: '#2c5282', /* Exact match for the dark corporate blue background */
+    background: '#e4edf5', 
     display: 'flex', alignItems: 'center', justifyContent: 'center', 
     padding: '40px 20px', overflowY: 'auto'
   },
   card: {
-    width: '100%', maxWidth: '800px', /* Generous width matching the "this big" request */
-    background: '#f8fafc', /* Very light off-white background from the image */
-    borderRadius: '16px',
-    padding: '48px 60px',
-    boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+    width: '100%', maxWidth: '800px',
+    padding: '48px 20px',
     margin: 'auto'
   },
   head: {
@@ -152,6 +149,7 @@ export default function LoginPage({ onLogin }) {
       <div className="animate-fade-in" style={s.card}>
         
         <div style={s.head}>
+          <img src="/logo.png" alt="Infopace Logo" style={{ height: '64px', marginBottom: '20px', objectFit: 'contain' }} />
           <h1 style={s.h1}>Market Research Assistant</h1>
           <p style={s.p}>Enter your details to generate your dashboard.</p>
         </div>
