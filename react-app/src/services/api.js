@@ -1,6 +1,6 @@
 import { FALLBACK_DATA } from '../constants';
 
-const API_BASE = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '';
+const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
 const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
 const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
