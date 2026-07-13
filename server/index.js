@@ -57,7 +57,7 @@ RULES:
 - 'insights': 1 concise sentence summary.
 - DO NOT use raw double quotes (") inside detailedReport text, insights, or challenges. If you need to quote, use single quotes (') instead.
 - DO NOT use raw carriage returns or line breaks inside the JSON string values. You MUST escape all newlines as \\\\n.
-- 'detailedReport': MUST provide an extensive, high-quality, professional strategic analysis. For EACH section, return a single string containing EXACTLY three distinct parts separated by the escaped sequence \\\\n\\\\n. Each part must start with "### [Subheading Title]" followed by a dense analysis paragraph (at least 150 words per paragraph). The total word count per section must be at least 450-500 words to fully fill an A4 PDF sheet:
+- 'detailedReport': MUST provide an extensive, high-quality, professional strategic analysis. For EACH section, return a single string containing EXACTLY three distinct parts separated by the escaped sequence \\\\n\\\\n. Each part must start with "### [Subheading Title]" followed by a dense analysis paragraph (between 100 and 120 words per paragraph). The total word count per section must be between 300 and 360 words to fit and fill the A4 PDF sheets cleanly without exceeding token limits or triggering proxy timeouts:
   - 'executiveSummary': 3 parts with subheadings analyzing the market environment, core opportunity, and competitive positioning.
   - 'marketGrowth': 3 parts with subheadings explaining growth trends (CAGR), demand drivers, and technological shifts.
   - 'segmentation': 3 parts with subheadings analyzing demographic profiles, purchasing behaviors, and product fit.
@@ -101,7 +101,16 @@ app.post('/api/generate', apiLimiter, async (req, res) => {
     }
     
     raw = raw.replace(/```json|```/g, '').trim();
-    const data = JSON.parse(raw);
+    let data;
+    try {
+      data = JSON.parse(raw);
+    } catch (parseErr) {
+      console.error('JSON Parse Error details:', parseErr.message);
+      console.error('Raw response length:', raw.length);
+      console.error('Raw response ending (last 300 chars):', raw.slice(-300));
+      console.error('Raw response snippet around error (position 13900-14300):', raw.slice(13500, 14500));
+      throw parseErr;
+    }
     res.json(data);
   } catch (err) {
     console.error('Gemini proxy error:', err);
