@@ -43,21 +43,43 @@ export default function Dashboard({ data, user, answers, onReset }) {
   };
 
   const renderReportParagraphs = useCallback((text) => {
-    return (text || '').split('\n\n').map((block, idx) => {
-      if (block.trim().startsWith('###')) {
-        const headerText = block.replace('###', '').trim();
-        return (
-          <div key={idx} style={{ fontSize: '11px', fontWeight: 800, color: '#1e3a8a', marginTop: '12px', marginBottom: '3px', textTransform: 'uppercase', letterSpacing: '0.01em', fontFamily: '"Inter", -apple-system, sans-serif' }}>
+    const lines = (text || '').split(/\r?\n/);
+    const elements = [];
+    let currentParagraph = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i].trim();
+      if (!line) continue;
+
+      if (line.startsWith('###')) {
+        if (currentParagraph.length > 0) {
+          elements.push(
+            <div key={`p-${i}`} style={{ ...repStyles.bodyText, marginBottom: '8px' }}>
+              {currentParagraph.join(' ')}
+            </div>
+          );
+          currentParagraph = [];
+        }
+        const headerText = line.replace('###', '').trim();
+        elements.push(
+          <div key={`h-${i}`} style={{ fontSize: '11px', fontWeight: 800, color: '#1e3a8a', marginTop: '10px', marginBottom: '3px', textTransform: 'uppercase', letterSpacing: '0.01em', fontFamily: '"Inter", -apple-system, sans-serif' }}>
             {headerText}
           </div>
         );
+      } else {
+        currentParagraph.push(line);
       }
-      return (
-        <div key={idx} style={{ ...repStyles.bodyText, marginBottom: '6px' }}>
-          {block}
+    }
+
+    if (currentParagraph.length > 0) {
+      elements.push(
+        <div key="p-last" style={{ ...repStyles.bodyText, marginBottom: '8px' }}>
+          {currentParagraph.join(' ')}
         </div>
       );
-    });
+    }
+
+    return elements;
   }, []);
 
   // ── Chart configs ──────────────────────────────────────────────────────────
