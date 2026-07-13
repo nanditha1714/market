@@ -4,10 +4,23 @@ const API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'dev
 const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
 const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
+// ── Resilient HTTP fetch retry helper ────────────────────────────────────────
+async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fetch(url, options);
+    } catch (err) {
+      if (i === retries - 1) throw err;
+      console.warn(`Fetch connection failed, retrying in ${delay}ms (attempt ${i + 1}/${retries})...`, err);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+}
+
 // ── Call Backend Proxy instead of raw Gemini ─────────────────────────────────
 export async function callGemini(answers) {
   try {
-    const res = await fetch(`${API_BASE}/api/generate`, {
+    const res = await fetchWithRetry(`${API_BASE}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(answers)
@@ -26,7 +39,7 @@ export async function uploadScreenshot(blob, fileName) {
   if (!SUPABASE_URL || !SUPABASE_KEY) return '';
   try {
     const contentType = fileName.endsWith('.pdf') ? 'application/pdf' : 'image/png';
-    const res = await fetch(SUPABASE_URL + '/storage/v1/object/dashboards/' + fileName, {
+    const res = await fetchWithRetry(SUPABASE_URL + '/storage/v1/object/dashboards/' + fileName, {
       method: 'POST',
       headers: {
         'Content-Type':  contentType,
@@ -52,7 +65,7 @@ export async function uploadScreenshot(blob, fileName) {
 export async function saveRecord(payload) {
   if (!SUPABASE_URL || !SUPABASE_KEY) return null;
   try {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/research_submissions', {
+    const res = await fetchWithRetry(SUPABASE_URL + '/rest/v1/research_submissions', {
       method: 'POST',
       headers: {
         'Content-Type':  'application/json',
@@ -80,7 +93,7 @@ export async function saveRecord(payload) {
 export async function updateRecord(id, updates) {
   if (!SUPABASE_URL || !SUPABASE_KEY) return false;
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/research_submissions?id=eq.${id}`, {
+    const res = await fetchWithRetry(`${SUPABASE_URL}/rest/v1/research_submissions?id=eq.${id}`, {
       method: 'PATCH',
       headers: {
         'Content-Type':  'application/json',
