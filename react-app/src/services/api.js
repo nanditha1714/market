@@ -50,7 +50,7 @@ export async function uploadScreenshot(blob, fileName) {
 
 // ── Save record to Supabase DB ────────────────────────────────────────────────
 export async function saveRecord(payload) {
-  if (!SUPABASE_URL || !SUPABASE_KEY) return false;
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null;
   try {
     const res = await fetch(SUPABASE_URL + '/rest/v1/research_submissions', {
       method: 'POST',
@@ -63,14 +63,41 @@ export async function saveRecord(payload) {
       body: JSON.stringify(payload),
     });
     if (res.status === 201) {
-      console.log('✅ Saved to Supabase');
-      return true;
+      const data = await res.json();
+      console.log('✅ Saved to Supabase:', data);
+      return data[0]; // Return the created record object
     }
     const err = await res.text();
     console.warn('DB save failed:', err);
-    return false;
+    return null;
   } catch (err) {
     console.warn('Save error:', err);
+    return null;
+  }
+}
+
+// ── Update existing record in Supabase DB ─────────────────────────────────────
+export async function updateRecord(id, updates) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return false;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/research_submissions?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+      },
+      body: JSON.stringify(updates),
+    });
+    if (res.ok) {
+      console.log('✅ Updated Supabase record:', id);
+      return true;
+    }
+    const err = await res.text();
+    console.warn('DB update failed:', err);
+    return false;
+  } catch (err) {
+    console.warn('Update error:', err);
     return false;
   }
 }

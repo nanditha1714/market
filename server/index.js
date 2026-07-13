@@ -53,15 +53,15 @@ RULES:
 - 'geo': break down market share across focus regions, summing to 100 (NO 40/30/20/10).
 - 'challenges': EXACTLY 1 dense bullet point risk.
 - 'insights': 1 concise sentence summary.
-- 'detailedReport': MUST provide an extensive, high-quality, professional strategic analysis consisting of AT LEAST 2 detailed paragraphs (120-150 words per paragraph) for each section based on the survey and generated figures:
-  - 'executiveSummary': a comprehensive executive overview of the market landscape, core opportunity, and company positioning.
-  - 'marketGrowth': explain trends in the growth numbers, macro-economic demand drivers, and technological shifts.
-  - 'segmentation': analyze customer segments, behavioral patterns, purchasing power, and application to the company's offering.
-  - 'geography': analyze regional penetration, local regulation influence, and geographical expansion plans.
-  - 'competition': evaluate the competitive landscape, market share distribution, and core differentiators.
-  - 'radarAnalysis': deep-dive analysis of the competitive positioning matrix (Price, Quality, Brand, Innovation, Support).
-  - 'pricing': evaluate the pricing model, price point comparison, and recommended value extraction strategy.
-  - 'risks': explain the major risks, market entry barriers, operational challenges, and actionable mitigation paths.
+- 'detailedReport': MUST provide an extensive, high-quality, professional strategic analysis. For EACH section, return a single string containing EXACTLY three distinct parts separated by double-newlines (\n\n). Each part must start with "### [Subheading Title]" followed by a dense analysis paragraph (at least 150 words per paragraph). The total word count per section must be at least 450-500 words to fully fill an A4 PDF sheet:
+  - 'executiveSummary': 3 parts with subheadings analyzing the market environment, core opportunity, and competitive positioning.
+  - 'marketGrowth': 3 parts with subheadings explaining growth trends (CAGR), demand drivers, and technological shifts.
+  - 'segmentation': 3 parts with subheadings analyzing demographic profiles, purchasing behaviors, and product fit.
+  - 'geography': 3 parts with subheadings analyzing regional penetration, local regulatory influences, and expansion vectors.
+  - 'competition': 3 parts with subheadings analyzing player concentration, structural competitive dynamics, and your key differentiators.
+  - 'radarAnalysis': 3 parts with subheadings deep-diving into product quality, brand legacy vs agility, and support/innovation scores.
+  - 'pricing': 3 parts with subheadings evaluating pricing frameworks, customer price sensitivity, and monetization scaling paths.
+  - 'risks': 3 parts with subheadings identifying market barriers, key operational risks, and concrete mitigation plans.
 
 Return ONLY this EXACT JSON structure, populated:
 {"kpi":{"tam":"X.X","growthRate":"X.X%","customers":"X.X","competitors":${compCount},"stage":"${(answers.sc||'Ideation').split(" ")[0]}","price":"${answers.price||'Market Avg'}","stars":4},"growth":{"labels":["2018","2019","2020","2021","2022","2023","2024"],"values":[0,0,0,0,0,0,0]},"segments":[{"label":"X","value":50},{"label":"Y","value":30},{"label":"Z","value":20}],"geo":[{"label":"X","value":50},{"label":"Y","value":30},{"label":"Z","value":20}],"competitors":[{"name":"${comp1}","share":40},{"name":"${comp2}","share":25},{"name":"${comp3}","share":15},{"name":"Your Company","share":10},{"name":"Others","share":10}],"radarLabels":["Price","Quality","Brand","Innovation","Support"],"radarYou":[3,4,3,4,4],"radarComp":[4,3,4,3,3],"sentiment":{"positive":65,"neutral":25,"negative":10},"pricing":[{"name":"Your Company","color":"#16a34a","note":"Value"},{"name":"${comp1}","color":"#1a2b5e","note":"Premium"},{"name":"${comp2}","color":"#f59e0b","note":"Budget"}],"avgRating":"4.1","challenges":["Risk."],"insights":"Summary.","detailedReport":{"executiveSummary":"Exec summary paragraphs.","marketGrowth":"Growth analysis.","segmentation":"Segmentation analysis.","geography":"Geographic analysis.","competition":"Competitive share analysis.","radarAnalysis":"Radar Matrix positioning analysis.","pricing":"Pricing strategy recommendation.","risks":"Risks and mitigation strategy."}}`;

@@ -1,6 +1,6 @@
 import React, { useState, useCallback, Suspense, lazy } from 'react';
 import LoadingScreen from './components/LoadingScreen';
-import { callGemini } from './services/api';
+import { callGemini, saveRecord } from './services/api';
 
 const LoginPage  = lazy(() => import('./components/LoginPage'));
 const SurveyPage = lazy(() => import('./components/SurveyPage'));
@@ -36,6 +36,47 @@ export default function App() {
       setScreen(SCREENS.SURVEY);
       setTimeout(() => setErrorMsg(null), 8000);
       return;
+    }
+
+    // Auto-save to Supabase backend on completion
+    try {
+      const k = data.kpi || {};
+      const payload = {
+        name: user.name, phone: user.phone, email: user.email,
+        company_name: user.company, service: user.service,
+        industry: enriched.industry || '', problem: enriched.problem || '',
+        target_customer: enriched.customer || '', geography: enriched.geo || '',
+        tam_estimate: enriched.tam || '', competitors: enriched.competitors || '',
+        pricing_model: enriched.pricing || '', avg_price: enriched.price || '',
+        self_rating: enriched.ratings || '', stage_challenges: enriched.sc || '',
+        ai_tam: k.tam || '', ai_growth_rate: k.growthRate || '',
+        ai_customers: k.customers || '', ai_competitors: parseInt(k.competitors || 0),
+        ai_stage: k.stage || '', ai_price: k.price || '', ai_stars: parseFloat(k.stars || 0),
+        ai_growth_labels: JSON.stringify(data.growth?.labels || []),
+        ai_growth_values: JSON.stringify(data.growth?.values || []),
+        ai_segments: JSON.stringify(data.segments || []),
+        ai_geo: JSON.stringify(data.geo || []),
+        ai_competitors_data: JSON.stringify(data.competitors || []),
+        ai_radar_labels: JSON.stringify(data.radarLabels || []),
+        ai_radar_you: JSON.stringify(data.radarYou || []),
+        ai_radar_comp: JSON.stringify(data.radarComp || []),
+        ai_sentiment: JSON.stringify(data.sentiment || {}),
+        ai_pricing: JSON.stringify(data.pricing || []),
+        ai_avg_rating: data.avgRating || '',
+        ai_challenges: JSON.stringify(data.challenges || []),
+        ai_insights: data.insights || '',
+        dashboard_json: JSON.stringify(data),
+        detailed_report: JSON.stringify(data.detailedReport || {}),
+        pdf_url: null,
+        created_at: new Date().toISOString(),
+      };
+      
+      const dbRecord = await saveRecord(payload);
+      if (dbRecord && dbRecord.id) {
+        data.dbRecordId = dbRecord.id;
+      }
+    } catch (dbErr) {
+      console.warn('Auto-save database failure:', dbErr);
     }
 
     setDashData(data);

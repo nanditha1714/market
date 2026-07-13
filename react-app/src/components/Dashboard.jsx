@@ -3,7 +3,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import ChartCard from './ChartCard';
 import { CHART_COLORS } from '../constants';
-import { uploadScreenshot, saveRecord } from '../services/api';
+import { uploadScreenshot, saveRecord, updateRecord } from '../services/api';
 
 const co = (i) => CHART_COLORS[i % CHART_COLORS.length];
 
@@ -41,6 +41,24 @@ export default function Dashboard({ data, user, answers, onReset }) {
     risks: detailedReport.risks || 'The primary risks facing the company include intense competition from legacy vendors, high customer acquisition costs (CAC), and potential talent shortages. Mitigating these challenges requires investing in product feature differentiation.',
     ...detailedReport
   };
+
+  const renderReportParagraphs = useCallback((text) => {
+    return (text || '').split('\n\n').map((block, idx) => {
+      if (block.trim().startsWith('###')) {
+        const headerText = block.replace('###', '').trim();
+        return (
+          <div key={idx} style={{ fontSize: '11px', fontWeight: 800, color: '#1e3a8a', marginTop: '12px', marginBottom: '3px', textTransform: 'uppercase', letterSpacing: '0.01em', fontFamily: '"Inter", -apple-system, sans-serif' }}>
+            {headerText}
+          </div>
+        );
+      }
+      return (
+        <div key={idx} style={{ ...repStyles.bodyText, marginBottom: '6px' }}>
+          {block}
+        </div>
+      );
+    });
+  }, []);
 
   // ── Chart configs ──────────────────────────────────────────────────────────
   const growthData = {
@@ -151,7 +169,13 @@ export default function Dashboard({ data, user, answers, onReset }) {
         created_at: new Date().toISOString(),
       };
 
-      const ok = await saveRecord(payload);
+      let ok = false;
+      if (data.dbRecordId) {
+        ok = await updateRecord(data.dbRecordId, { pdf_url: docUrl });
+      } else {
+        const saved = await saveRecord(payload);
+        ok = !!saved;
+      }
       badge.style.background = ok ? 'var(--success)' : 'var(--danger)';
       badge.textContent = ok ? 'Export Complete' : 'System Error: Export Failed';
 
@@ -245,7 +269,13 @@ export default function Dashboard({ data, user, answers, onReset }) {
         created_at: new Date().toISOString(),
       };
 
-      const ok = await saveRecord(payload);
+      let ok = false;
+      if (data.dbRecordId) {
+        ok = await updateRecord(data.dbRecordId, { pdf_url: docUrl });
+      } else {
+        const saved = await saveRecord(payload);
+        ok = !!saved;
+      }
       badge.style.background = ok ? 'var(--success)' : 'var(--danger)';
       badge.textContent = ok ? 'Export Complete' : 'System Error: Export Failed';
 
@@ -435,11 +465,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
             <div style={repStyles.section}>
               <div style={repStyles.sectionTitle}>1. Executive Summary & Overview</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {(rep.executiveSummary || '').split('\n\n').map((p, idx) => (
-                  <div key={idx} style={repStyles.bodyText}>
-                    {p}
-                  </div>
-                ))}
+                {renderReportParagraphs(rep.executiveSummary)}
               </div>
             </div>
 
@@ -478,11 +504,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
             <div style={repStyles.section}>
               <div style={repStyles.sectionTitle}>2. Market Growth Trajectory & Forecasts</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-                {(rep.marketGrowth || '').split('\n\n').map((p, idx) => (
-                  <div key={idx} style={repStyles.bodyText}>
-                    {p}
-                  </div>
-                ))}
+                {renderReportParagraphs(rep.marketGrowth)}
               </div>
 
               <div style={repStyles.grid}>
@@ -532,11 +554,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
             <div style={repStyles.section}>
               <div style={repStyles.sectionTitle}>3. Customer Segmentation & Persona Distribution</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-                {(rep.segmentation || '').split('\n\n').map((p, idx) => (
-                  <div key={idx} style={repStyles.bodyText}>
-                    {p}
-                  </div>
-                ))}
+                {renderReportParagraphs(rep.segmentation)}
               </div>
 
               <div style={repStyles.grid}>
@@ -586,11 +604,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
             <div style={repStyles.section}>
               <div style={repStyles.sectionTitle}>4. Regional Distribution & GTM Localization</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-                {(rep.geography || '').split('\n\n').map((p, idx) => (
-                  <div key={idx} style={repStyles.bodyText}>
-                    {p}
-                  </div>
-                ))}
+                {renderReportParagraphs(rep.geography)}
               </div>
 
               <div style={repStyles.grid}>
@@ -640,11 +654,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
             <div style={repStyles.section}>
               <div style={repStyles.sectionTitle}>5. Competitor Share Distribution & Market Concentration</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-                {(rep.competition || '').split('\n\n').map((p, idx) => (
-                  <div key={idx} style={repStyles.bodyText}>
-                    {p}
-                  </div>
-                ))}
+                {renderReportParagraphs(rep.competition)}
               </div>
 
               <div style={repStyles.grid}>
@@ -694,11 +704,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
             <div style={repStyles.section}>
               <div style={repStyles.sectionTitle}>6. Strategic Vector Analysis</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-                {(rep.radarAnalysis || '').split('\n\n').map((p, idx) => (
-                  <div key={idx} style={repStyles.bodyText}>
-                    {p}
-                  </div>
-                ))}
+                {renderReportParagraphs(rep.radarAnalysis)}
               </div>
 
               <div style={repStyles.grid}>
@@ -750,11 +756,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
             <div style={repStyles.section}>
               <div style={repStyles.sectionTitle}>7. Monetization Strategy & Margin Capture</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-                {(rep.pricing || '').split('\n\n').map((p, idx) => (
-                  <div key={idx} style={repStyles.bodyText}>
-                    {p}
-                  </div>
-                ))}
+                {renderReportParagraphs(rep.pricing)}
               </div>
 
               <div style={repStyles.grid}>
@@ -807,11 +809,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
             <div style={repStyles.section}>
               <div style={repStyles.sectionTitle}>8. Strategic Risk Management</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
-                {(rep.risks || '').split('\n\n').map((p, idx) => (
-                  <div key={idx} style={repStyles.bodyText}>
-                    {p}
-                  </div>
-                ))}
+                {renderReportParagraphs(rep.risks)}
               </div>
 
               <div style={repStyles.grid}>
