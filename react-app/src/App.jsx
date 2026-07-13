@@ -66,7 +66,6 @@ export default function App() {
         ai_challenges: JSON.stringify(data.challenges || []),
         ai_insights: data.insights || '',
         dashboard_json: JSON.stringify(data),
-        detailed_report: JSON.stringify(data.detailedReport || {}),
         pdf_url: null,
         created_at: new Date().toISOString(),
       };

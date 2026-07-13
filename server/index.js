@@ -53,6 +53,8 @@ RULES:
 - 'geo': break down market share across focus regions, summing to 100 (NO 40/30/20/10).
 - 'challenges': EXACTLY 1 dense bullet point risk.
 - 'insights': 1 concise sentence summary.
+- DO NOT use raw double quotes (") inside detailedReport text, insights, or challenges. If you need to quote, use single quotes (') instead.
+- Ensure all newlines inside string values are escaped as \n.
 - 'detailedReport': MUST provide an extensive, high-quality, professional strategic analysis. For EACH section, return a single string containing EXACTLY three distinct parts separated by double-newlines (\n\n). Each part must start with "### [Subheading Title]" followed by a dense analysis paragraph (at least 150 words per paragraph). The total word count per section must be at least 450-500 words to fully fill an A4 PDF sheet:
   - 'executiveSummary': 3 parts with subheadings analyzing the market environment, core opportunity, and competitive positioning.
   - 'marketGrowth': 3 parts with subheadings explaining growth trends (CAGR), demand drivers, and technological shifts.
