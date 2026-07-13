@@ -268,15 +268,22 @@ export default function Dashboard({ data, user, answers, onReset }) {
   return (
     <div ref={dashRef} style={{ position:'fixed', inset:0, width:'100%', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflow:'hidden' }}>
       {/* Header */}
-      <div style={{ flexShrink:0, background:'var(--navy)', padding:'10px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--navy-light)' }}>
-        <div>
-          <h2 style={{ fontSize:'19px', fontWeight:600, color:'#fff', margin:0, letterSpacing:'-0.01em', textTransform: 'uppercase' }}>Market Research Output</h2>
-          <p style={{ fontSize:'14px', color:'#94a3b8', marginTop:'2px', fontWeight:500 }}>{user.name} | {user.company} | TARGET: {answers.customer}</p>
+      <div style={{ flexShrink:0, background:'var(--navy)', padding:'12px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--navy-light)' }}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '18px' }}>📊</span>
+            <h2 style={{ fontSize:'18px', fontWeight:700, color:'#fff', margin:0, letterSpacing:'-0.01em' }}>Market Research Dashboard</h2>
+          </div>
+          <p style={{ fontSize:'12px', color:'#94a3b8', marginTop:'4px', fontWeight:500 }}>
+            {user.name} - {user.company} - {answers.customer || user.service}
+          </p>
         </div>
         <div style={{ display:'flex', gap:'8px' }}>
           <button onClick={handleDownloadDashboard} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer' }}>Download PDF</button>
           <button onClick={handleDownloadReport} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--primary)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer' }}>Download Detailed Report</button>
-          <button onClick={onReset} style={{ padding:'5px 13px', border:'1px solid #334155', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer' }}>New Research</button>
+          <button onClick={onReset} style={{ padding:'6px 14px', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'14px', fontWeight:500, cursor:'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span>←</span> New Research
+          </button>
         </div>
       </div>
 
@@ -286,42 +293,42 @@ export default function Dashboard({ data, user, answers, onReset }) {
         {/* KPIs */}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:'8px' }}>
           {[
-            { label:'Total Market Size', val: k.tam },
-            { label:'Growth Rate',       val: k.growthRate, sub: '▲ ' + k.growthRate, subColor:'var(--success)' },
-            { label:'Target Customers',  val: k.customers },
-            { label:'Competitor Baseline',       val: k.competitors },
-            { label:'Company Stage',     val: k.stage, small: true },
-            { label:'Avg Market Price',  val: k.price, stars: true },
+            { label:'TOTAL MARKET SIZE', val: k.tam },
+            { label:'GROWTH RATE',       val: k.growthRate, sub: '▲ ' + k.growthRate, subColor:'var(--success)' },
+            { label:'TARGET CUSTOMERS',  val: k.customers },
+            { label:'COMPETITORS',       val: k.competitors },
+            { label:'COMPANY STAGE',     val: k.stage, small: true },
+            { label:'AVG MARKET PRICE',  val: k.price, stars: true },
           ].map((kpi, i) => (
             <div key={i} style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 14px', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', minWidth:0, justifyContent: 'center' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-                <div style={{ fontSize:'13px', color:'var(--text-muted)', fontWeight:600, textTransform:'uppercase', letterSpacing:'.05em' }}>{kpi.label}</div>
+                <div style={{ fontSize:'12px', color:'#64748b', fontWeight:600, textTransform:'uppercase', letterSpacing:'.05em' }}>{kpi.label}</div>
               </div>
               <div style={{ fontSize: kpi.small ? '20px' : '25px', fontWeight:700, color:'var(--text-main)', lineHeight:1.1 }}>{kpi.val || '—'}</div>
               {kpi.sub   && <div style={{ fontSize:'14px', color: kpi.subColor || 'var(--text-muted)', fontWeight:600, marginTop: '4px' }}>{kpi.sub}</div>}
-              {kpi.stars && <div style={{ color:'var(--navy-light)', fontSize:'17px', marginTop: '4px' }}>{'★'.repeat(stars)}{'☆'.repeat(5-stars)}</div>}
+              {kpi.stars && <div style={{ color:'#fbbf24', fontSize:'17px', marginTop: '4px' }}>{'★'.repeat(stars)}{'☆'.repeat(5-stars)}</div>}
             </div>
           ))}
         </div>
 
         {/* Row 2 */}
         <div style={{ display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr', gap:'8px', minHeight:0, overflow:'hidden' }}>
-          <ChartCard title="Market Growth Trajectory" type="line" data={growthData} options={growthOpts} />
-          <ChartCard title="Industry Segmentation" type="pie" data={segData} options={pieOpts(undefined)} />
-          <ChartCard title="Geographic Distribution" type="doughnut" data={geoData} options={pieOpts('55%')} />
+          <ChartCard title="📈 Market Growth Trend" type="line" data={growthData} options={growthOpts} />
+          <ChartCard title="🍊 Market Segmentation" type="pie" data={segData} options={pieOpts(undefined)} />
+          <ChartCard title="🌏 Geographic Distribution" type="doughnut" data={geoData} options={pieOpts('55%')} />
         </div>
 
         {/* Row 3 */}
         <div style={{ display:'grid', gridTemplateColumns:'0.9fr 1fr 1.6fr', gap:'8px', minHeight:0, overflow:'hidden' }}>
-          <ChartCard title="Competitor Market Share" type="doughnut" data={compPieData} options={pieOpts('50%')} />
-          <ChartCard title="Competitive Positioning Matrix" type="radar" data={radarData} options={radarOpts} />
+          <ChartCard title="🏆 Competitor Share" type="doughnut" data={compPieData} options={pieOpts('50%')} />
+          <ChartCard title="🕸️ Competitive Positioning" type="radar" data={radarData} options={radarOpts} />
 
           {/* Details 2x2 grid */}
           <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:'8px', minHeight:0, overflow:'hidden' }}>
             
             {/* Market Share Bars */}
             <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden' }}>
-              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', textTransform: 'uppercase' }}>Market Share Distribution</div>
+              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>📊</span> Market Share %</div>
               <div style={{ flex:1, display: 'flex', flexDirection: 'column', gap: '4px', overflow:'hidden' }}>
                 {(data.competitors || []).map((c, i) => (
                   <div key={i} style={{ display:'flex', alignItems:'center', gap:'8px' }}>
@@ -337,16 +344,16 @@ export default function Dashboard({ data, user, answers, onReset }) {
 
             {/* Rating & Sentiment */}
             <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden' }}>
-              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', textTransform: 'uppercase' }}>Sentiment Analysis</div>
-              <div style={{ display:'flex', alignItems:'center', gap:'6px', marginBottom:'8px' }}>
+              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>⭐</span> Rating & Sentiment</div>
+              <div style={{ display:'flex', alignItems:'center', gap:'2px', marginBottom:'8px' }}>
                 <span style={{ fontSize:'21px', fontWeight:700, color:'var(--text-main)' }}>{data.avgRating || '—'}</span>
-                <span style={{ fontSize:'13px', color:'var(--text-muted)' }}>IDX Score</span>
+                <span style={{ fontSize:'13px', color:'#94a3b8', marginLeft: '4px' }}>/ 5.0</span>
               </div>
               <div style={{ display:'flex', gap:'4px', flex: 1 }}>
                 {[
-                  { label:'POS', val:sv.positive, bg:'#f1f5f9', color:'var(--success)' },
-                  { label:'NEU',  val:sv.neutral,  bg:'#f8fafc', color:'var(--primary)' },
-                  { label:'NEG', val:sv.negative, bg:'#f8fafc', color:'var(--danger)' },
+                  { label:'Positive', val:sv.positive, bg:'#eafaf1', color:'#15803d' },
+                  { label:'Neutral',  val:sv.neutral,  bg:'#eff6ff', color:'#1d4ed8' },
+                  { label:'Negative', val:sv.negative, bg:'#fdf2f2', color:'#b91c1c' },
                 ].map(s => (
                   <div key={s.label} style={{ flex:1, textAlign:'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', borderRadius:'4px', background: s.bg, border: '1px solid #e2e8f0', padding:'6px' }}>
                     <div style={{ fontSize:'16px', fontWeight:700, color: s.color, lineHeight:1.1 }}>{s.val}%</div>
@@ -358,7 +365,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
 
             {/* Pricing */}
             <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden' }}>
-              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', textTransform: 'uppercase' }}>Pricing Architectures</div>
+              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>💰</span> Pricing</div>
               <div style={{ display:'flex', flexDirection:'column', gap: '4px', overflow:'hidden' }}>
                 {(data.pricing || []).map((p, i) => (
                   <div key={i} style={{ display:'flex', alignItems:'center', gap:'8px', padding:'4px 0', borderBottom:'1px solid #f1f5f9' }}>
@@ -372,27 +379,37 @@ export default function Dashboard({ data, user, answers, onReset }) {
 
             {/* Challenges */}
             <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden' }}>
-              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', textTransform: 'uppercase' }}>Macro Risks & Challenges</div>
+              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>⚠️</span> Challenges</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflow:'hidden' }}>
-                {(data.challenges || []).slice(0, 5).map((c, i) => (
-                  <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:'6px', padding:'2px 0', fontSize:'13px', fontWeight: 500, color:'var(--text-muted)', lineHeight: 1.4 }}>
-                    <span style={{ fontSize: '13px', color: 'var(--danger)', marginTop:'2px' }}>•</span>
-                    <span>{c}</span>
-                  </div>
-                ))}
+                {[
+                  { icon: '✖️', color: 'var(--danger)' },
+                  { icon: '📍', color: 'var(--primary)' },
+                  { icon: '🟢', color: 'var(--success)' },
+                ].map((iconObj, i) => {
+                  const challengeText = (data.challenges || [])[i];
+                  if (!challengeText) return null;
+                  return (
+                    <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:'6px', padding:'2px 0', fontSize:'13px', fontWeight: 500, color:'var(--text-muted)', lineHeight: 1.4 }}>
+                      <span style={{ fontSize: '12px', marginTop:'2px' }}>{iconObj.icon}</span>
+                      <span>{challengeText}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
 
         {/* Insights */}
-        <div style={{ background:'#ffffff', borderRadius:'var(--radius-sm)', padding:'8px 16px', border:'1px solid #cbd5e1', display:'flex', alignItems:'center', gap:'12px', overflow:'hidden' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '24px', height: '24px', borderRadius: '4px', background: 'var(--navy)', color: '#fff', fontSize: '12px', fontWeight: 'bold', flexShrink:0 }}>
-            AI
+        <div style={{ background:'#ffffff', borderRadius:'var(--radius-sm)', padding:'8px 16px', border:'1px solid #cbd5e1', display:'flex', alignItems:'center', gap:'12px', overflow:'hidden', flexShrink:0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize:'13px', fontWeight:700, color:'#1e3a8a', flexShrink: 0 }}>
+            <span>💡</span> AI Insights
           </div>
-          <div style={{ display: 'flex', flex: 1, alignItems: 'center', gap: '12px', overflow:'hidden' }}>
-            <div style={{ fontSize:'13px', fontWeight:700, color:'var(--navy)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Executive Summary</div>
-            <div style={{ fontSize:'15px', color:'var(--text-main)', fontWeight: 500, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{data.insights}</div>
+          <div style={{ flex: 1, fontSize:'13px', color:'var(--text-main)', fontWeight: 500, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+            {data.insights}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 600, color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px', flexShrink: 0 }}>
+            <span>☑️</span> Key
           </div>
         </div>
 
