@@ -324,35 +324,76 @@ export default function Dashboard({ data, user, answers, onReset }) {
       {/* Off-screen detailed report for PDF generation */}
       <div style={{ position: 'absolute', left: '-9999px', top: 0, display: 'flex', flexDirection: 'column', gap: '30px' }}>
         
-        {/* Page 1 */}
+        {/* Page 1: Cover Page & Executive Summary */}
         <div ref={page1Ref} style={repStyles.page}>
           <div>
             <div style={repStyles.header}>
-              <div style={repStyles.title}>Detailed Market Analysis Report</div>
+              <div style={repStyles.title}>Comprehensive Market Intelligence Report</div>
               <div style={repStyles.metaText}>
                 <strong>Prepared For:</strong> {user.company || 'N/A'} | <strong>Author:</strong> {user.name || 'N/A'} ({user.email}) | <strong>Date:</strong> {new Date().toLocaleDateString()}
               </div>
               <div style={{ ...repStyles.metaText, fontSize: '11px', marginTop: '2px' }}>
-                <strong>Product/Service:</strong> {user.service || 'N/A'}
+                <strong>Target Solution:</strong> {user.service || 'N/A'}
               </div>
             </div>
 
             {/* Executive Summary */}
             <div style={repStyles.section}>
-              <div style={repStyles.sectionTitle}>1. Executive Summary & AI Insights</div>
-              <div style={{ ...repStyles.bodyText, background: '#f8fafc', padding: '12px 16px', borderLeft: '3px solid #1e3a8a', borderRadius: '2px', fontStyle: 'italic', fontWeight: 500, fontSize: '13px', color: '#0f172a' }}>
-                {data.insights}
+              <div style={repStyles.sectionTitle}>1. Executive Summary & Overview</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {(rep.executiveSummary || '').split('\n\n').map((p, idx) => (
+                  <div key={idx} style={repStyles.bodyText}>
+                    {p}
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Section 2: Market Growth Trajectory */}
-            <div style={repStyles.section}>
-              <div style={repStyles.sectionTitle}>2. Market Growth Trajectory</div>
-              <div style={repStyles.grid}>
-                <div style={repStyles.bodyText}>
-                  {rep.marketGrowth}
+            {/* Visual Differentiators Summary */}
+            <div style={{ marginTop: '24px', background: '#f8fafc', padding: '16px', border: '1px solid #e2e8f0', borderRadius: '4px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', marginBottom: '8px' }}>Strategic Market Takeaways:</div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                <div style={{ borderLeft: '3px solid #1e3a8a', paddingLeft: '8px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a' }}>Primary Opportunity:</div>
+                  <div style={{ fontSize: '11px', color: '#475569', marginTop: '2px', lineHeight: 1.4 }}>Leverage advanced product innovation to address legacy systems vulnerabilities in B2B enterprise hubs.</div>
                 </div>
+                <div style={{ borderLeft: '3px solid #16a34a', paddingLeft: '8px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#16a34a' }}>Customer Success Alignment:</div>
+                  <div style={{ fontSize: '11px', color: '#475569', marginTop: '2px', lineHeight: 1.4 }}>High customer support satisfaction serves as the baseline customer retention engine.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={repStyles.footer}>
+            <span>CONFIDENTIAL - INFOPACE MARKET INTELLIGENCE</span>
+            <span>Page 1 of 8</span>
+          </div>
+        </div>
+
+        {/* Page 2: Market Growth Trajectory */}
+        <div ref={page2Ref} style={repStyles.page}>
+          <div>
+            <div style={repStyles.header}>
+              <div style={repStyles.title}>Market Growth & Macro Trends</div>
+              <div style={repStyles.metaText}>
+                <strong>Industry Sector:</strong> {answers.industry || 'N/A'} | <strong>Subject:</strong> 2018-2024 Size Projection
+              </div>
+            </div>
+
+            <div style={repStyles.section}>
+              <div style={repStyles.sectionTitle}>2. Market Growth Trajectory & Forecasts</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                {(rep.marketGrowth || '').split('\n\n').map((p, idx) => (
+                  <div key={idx} style={repStyles.bodyText}>
+                    {p}
+                  </div>
+                ))}
+              </div>
+
+              <div style={repStyles.grid}>
                 <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Growth Metrics Data</div>
                   <table style={repStyles.table}>
                     <thead>
                       <tr>
@@ -370,22 +411,48 @@ export default function Dashboard({ data, user, answers, onReset }) {
                     </tbody>
                   </table>
                 </div>
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Visual Trajectory</div>
+                  <ChartCard title="Trajectory Graph" type="line" data={growthData} options={{ ...growthOpts, layout: { padding: 4 } }} height="130px" style={{ background: '#f8fafc', padding: '6px', border: '1px solid #e2e8f0', boxShadow: 'none' }} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={repStyles.footer}>
+            <span>CONFIDENTIAL - INFOPACE MARKET INTELLIGENCE</span>
+            <span>Page 2 of 8</span>
+          </div>
+        </div>
+
+        {/* Page 3: Customer Segmentation */}
+        <div ref={page3Ref} style={repStyles.page}>
+          <div>
+            <div style={repStyles.header}>
+              <div style={repStyles.title}>Customer Segmentation Breakdown</div>
+              <div style={repStyles.metaText}>
+                <strong>Target Segment Focus:</strong> {answers.customer || 'N/A'}
               </div>
             </div>
 
-            {/* Section 3: Industry Segmentation */}
             <div style={repStyles.section}>
-              <div style={repStyles.sectionTitle}>3. Industry Customer Segmentation</div>
+              <div style={repStyles.sectionTitle}>3. Customer Segmentation & Persona Distribution</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                {(rep.segmentation || '').split('\n\n').map((p, idx) => (
+                  <div key={idx} style={repStyles.bodyText}>
+                    {p}
+                  </div>
+                ))}
+              </div>
+
               <div style={repStyles.grid}>
-                <div style={repStyles.bodyText}>
-                  {rep.segmentation}
-                </div>
                 <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Segment Shares</div>
                   <table style={repStyles.table}>
                     <thead>
                       <tr>
-                        <th style={repStyles.th}>Customer Segment</th>
-                        <th style={repStyles.th}>Share (%)</th>
+                        <th style={repStyles.th}>Segment Class</th>
+                        <th style={repStyles.th}>Distribution (%)</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -398,22 +465,48 @@ export default function Dashboard({ data, user, answers, onReset }) {
                     </tbody>
                   </table>
                 </div>
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Visual Distribution</div>
+                  <ChartCard title="Segmentation Graph" type="pie" data={segData} options={{ ...pieOpts(undefined), layout: { padding: 4 } }} height="130px" style={{ background: '#f8fafc', padding: '6px', border: '1px solid #e2e8f0', boxShadow: 'none' }} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={repStyles.footer}>
+            <span>CONFIDENTIAL - INFOPACE MARKET INTELLIGENCE</span>
+            <span>Page 3 of 8</span>
+          </div>
+        </div>
+
+        {/* Page 4: Geographic Distribution */}
+        <div ref={page4Ref} style={repStyles.page}>
+          <div>
+            <div style={repStyles.header}>
+              <div style={repStyles.title}>Geographic Distribution & Penetration</div>
+              <div style={repStyles.metaText}>
+                <strong>Geographical Scope:</strong> {answers.geo || 'N/A'}
               </div>
             </div>
 
-            {/* Section 4: Geographic Distribution */}
             <div style={repStyles.section}>
-              <div style={repStyles.sectionTitle}>4. Geographic Distribution & Regional Penetration</div>
+              <div style={repStyles.sectionTitle}>4. Regional Distribution & GTM Localization</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                {(rep.geography || '').split('\n\n').map((p, idx) => (
+                  <div key={idx} style={repStyles.bodyText}>
+                    {p}
+                  </div>
+                ))}
+              </div>
+
               <div style={repStyles.grid}>
-                <div style={repStyles.bodyText}>
-                  {rep.geography}
-                </div>
                 <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Regional Weights</div>
                   <table style={repStyles.table}>
                     <thead>
                       <tr>
-                        <th style={repStyles.th}>Region</th>
-                        <th style={repStyles.th}>Distribution (%)</th>
+                        <th style={repStyles.th}>Focus Territory</th>
+                        <th style={repStyles.th}>Percentage Share</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -426,39 +519,48 @@ export default function Dashboard({ data, user, answers, onReset }) {
                     </tbody>
                   </table>
                 </div>
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Regional Graph</div>
+                  <ChartCard title="Geography Graph" type="doughnut" data={geoData} options={{ ...pieOpts('55%'), layout: { padding: 4 } }} height="130px" style={{ background: '#f8fafc', padding: '6px', border: '1px solid #e2e8f0', boxShadow: 'none' }} />
+                </div>
               </div>
             </div>
           </div>
 
           <div style={repStyles.footer}>
             <span>CONFIDENTIAL - INFOPACE MARKET INTELLIGENCE</span>
-            <span>Page 1 of 2</span>
+            <span>Page 4 of 8</span>
           </div>
         </div>
 
-        {/* Page 2 */}
-        <div ref={page2Ref} style={repStyles.page}>
+        {/* Page 5: Competitor Share Analysis */}
+        <div ref={page5Ref} style={repStyles.page}>
           <div>
             <div style={repStyles.header}>
-              <div style={repStyles.title}>Detailed Market Analysis Report</div>
+              <div style={repStyles.title}>Competitive Landscape & Shares</div>
               <div style={repStyles.metaText}>
-                <strong>Company Context:</strong> {user.company || 'N/A'} | <strong>Target Customer Profile:</strong> {answers.customer || 'N/A'}
+                <strong>Top Benchmark:</strong> {answers.competitors || 'N/A'}
               </div>
             </div>
 
-            {/* Section 5: Competitive Positioning */}
             <div style={repStyles.section}>
-              <div style={repStyles.sectionTitle}>5. Competitor Share & Matrix Positioning</div>
+              <div style={repStyles.sectionTitle}>5. Competitor Share Distribution & Market Concentration</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                {(rep.competition || '').split('\n\n').map((p, idx) => (
+                  <div key={idx} style={repStyles.bodyText}>
+                    {p}
+                  </div>
+                ))}
+              </div>
+
               <div style={repStyles.grid}>
-                <div style={repStyles.bodyText}>
-                  {rep.competition}
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Share Standings</div>
                   <table style={repStyles.table}>
                     <thead>
                       <tr>
-                        <th style={repStyles.th}>Competitor Name</th>
-                        <th style={repStyles.th}>Market Share (%)</th>
+                        <th style={repStyles.th}>Market Player</th>
+                        <th style={repStyles.th}>Estimated Share (%)</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -470,12 +572,49 @@ export default function Dashboard({ data, user, answers, onReset }) {
                       ))}
                     </tbody>
                   </table>
+                </div>
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Visual Standing</div>
+                  <ChartCard title="Share Graph" type="doughnut" data={compPieData} options={{ ...pieOpts('50%'), layout: { padding: 4 } }} height="130px" style={{ background: '#f8fafc', padding: '6px', border: '1px solid #e2e8f0', boxShadow: 'none' }} />
+                </div>
+              </div>
+            </div>
+          </div>
 
+          <div style={repStyles.footer}>
+            <span>CONFIDENTIAL - INFOPACE MARKET INTELLIGENCE</span>
+            <span>Page 5 of 8</span>
+          </div>
+        </div>
+
+        {/* Page 6: Competitive Positioning Matrix */}
+        <div ref={page6Ref} style={repStyles.page}>
+          <div>
+            <div style={repStyles.header}>
+              <div style={repStyles.title}>Competitive Positioning Matrix</div>
+              <div style={repStyles.metaText}>
+                <strong>Benchmarking Profile:</strong> You vs Top Industry Competitor
+              </div>
+            </div>
+
+            <div style={repStyles.section}>
+              <div style={repStyles.sectionTitle}>6. Strategic Vector Analysis</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                {(rep.radarAnalysis || '').split('\n\n').map((p, idx) => (
+                  <div key={idx} style={repStyles.bodyText}>
+                    {p}
+                  </div>
+                ))}
+              </div>
+
+              <div style={repStyles.grid}>
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Vector Comparisons</div>
                   <table style={repStyles.table}>
                     <thead>
                       <tr>
-                        <th style={repStyles.th}>Metric</th>
-                        <th style={repStyles.th}>You (1-5)</th>
+                        <th style={repStyles.th}>KPI Vector</th>
+                        <th style={repStyles.th}>Self (1-5)</th>
                         <th style={repStyles.th}>Top Comp (1-5)</th>
                       </tr>
                     </thead>
@@ -490,22 +629,48 @@ export default function Dashboard({ data, user, answers, onReset }) {
                     </tbody>
                   </table>
                 </div>
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Positioning Graph</div>
+                  <ChartCard title="Matrix Graph" type="radar" data={radarData} options={{ ...radarOpts, layout: { padding: 4 } }} height="130px" style={{ background: '#f8fafc', padding: '6px', border: '1px solid #e2e8f0', boxShadow: 'none' }} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={repStyles.footer}>
+            <span>CONFIDENTIAL - INFOPACE MARKET INTELLIGENCE</span>
+            <span>Page 6 of 8</span>
+          </div>
+        </div>
+
+        {/* Page 7: Pricing Strategy & Monetization */}
+        <div ref={page7Ref} style={repStyles.page}>
+          <div>
+            <div style={repStyles.header}>
+              <div style={repStyles.title}>Pricing Strategy & Monetization Models</div>
+              <div style={repStyles.metaText}>
+                <strong>Selected Model:</strong> {answers.pricing || 'N/A'} | <strong>Base Price:</strong> {answers.price || 'N/A'}
               </div>
             </div>
 
-            {/* Section 6: Pricing Architectures */}
             <div style={repStyles.section}>
-              <div style={repStyles.sectionTitle}>6. Pricing Architecture & Market Positioning</div>
+              <div style={repStyles.sectionTitle}>7. Monetization Strategy & Margin Capture</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                {(rep.pricing || '').split('\n\n').map((p, idx) => (
+                  <div key={idx} style={repStyles.bodyText}>
+                    {p}
+                  </div>
+                ))}
+              </div>
+
               <div style={repStyles.grid}>
-                <div style={repStyles.bodyText}>
-                  {rep.pricing}
-                </div>
                 <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Pricing Architectures</div>
                   <table style={repStyles.table}>
                     <thead>
                       <tr>
-                        <th style={repStyles.th}>Product / Tier</th>
-                        <th style={repStyles.th}>Pricing Strategy</th>
+                        <th style={repStyles.th}>Offer Tier</th>
+                        <th style={repStyles.th}>Strategic Note</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -518,23 +683,12 @@ export default function Dashboard({ data, user, answers, onReset }) {
                     </tbody>
                   </table>
                 </div>
-              </div>
-            </div>
-
-            {/* Section 7: Macro Risks & Mitigations */}
-            <div style={repStyles.section}>
-              <div style={repStyles.sectionTitle}>7. Macro Risks, Challenges & Mitigations</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <div style={repStyles.bodyText}>
-                  {rep.risks}
-                </div>
-                <div style={{ background: '#fff1f2', padding: '10px 14px', borderLeft: '3px solid #b91c1c', borderRadius: '2px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#b91c1c', textTransform: 'uppercase', marginBottom: '4px' }}>Identified High-Priority Challenges:</div>
-                  <ul style={repStyles.bulletList}>
-                    {(data.challenges || []).map((c, idx) => (
-                      <li key={idx} style={repStyles.bulletItem}>{c}</li>
-                    ))}
-                  </ul>
+                <div>
+                  <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', padding: '12px', borderRadius: '4px', textAlign: 'center', height: '130px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 800, color: '#16a34a' }}>{data.avgRating || '4.2'}</div>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#475569', textTransform: 'uppercase', marginTop: '4px' }}>Value Index Score</div>
+                    <div style={{ fontSize: '10px', color: '#64748b', marginTop: '6px', lineHeight: 1.3 }}>Highly favorable pricing-to-feature conversion metric across target users.</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -542,7 +696,54 @@ export default function Dashboard({ data, user, answers, onReset }) {
 
           <div style={repStyles.footer}>
             <span>CONFIDENTIAL - INFOPACE MARKET INTELLIGENCE</span>
-            <span>Page 2 of 2</span>
+            <span>Page 7 of 8</span>
+          </div>
+        </div>
+
+        {/* Page 8: Macro Risks & Mitigations */}
+        <div ref={page8Ref} style={repStyles.page}>
+          <div>
+            <div style={repStyles.header}>
+              <div style={repStyles.title}>Macro Risks, Challenges & Mitigations</div>
+              <div style={repStyles.metaText}>
+                <strong>State:</strong> {k.stage || 'N/A'} | <strong>Risk Matrix Review</strong>
+              </div>
+            </div>
+
+            <div style={repStyles.section}>
+              <div style={repStyles.sectionTitle}>8. Strategic Risk Management</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+                {(rep.risks || '').split('\n\n').map((p, idx) => (
+                  <div key={idx} style={repStyles.bodyText}>
+                    {p}
+                  </div>
+                ))}
+              </div>
+
+              <div style={repStyles.grid}>
+                <div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#b91c1c', marginBottom: '6px', textTransform: 'uppercase' }}>Identified High-Priority Risks</div>
+                  <ul style={repStyles.bulletList}>
+                    {(data.challenges || []).map((c, idx) => (
+                      <li key={idx} style={repStyles.bulletItem}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <div style={{ background: '#fff1f2', border: '1px solid #fecdd3', padding: '12px', borderRadius: '4px', height: '130px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#b91c1c', textTransform: 'uppercase' }}>Mitigation Framework:</div>
+                    <div style={{ fontSize: '10px', color: '#991b1b', marginTop: '6px', lineHeight: 1.4 }}>
+                      Deploy self-service developer portals to reduce high-touch onboarding friction and scale technical differentiators.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={repStyles.footer}>
+            <span>CONFIDENTIAL - INFOPACE MARKET INTELLIGENCE</span>
+            <span>Page 8 of 8</span>
           </div>
         </div>
 
