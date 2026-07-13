@@ -18,9 +18,21 @@ const datalabelPie = {
 
 export default function Dashboard({ data, user, answers, onReset }) {
   const dashRef = useRef(null);
+  const page1Ref = useRef(null);
+  const page2Ref = useRef(null);
   const k = data.kpi || {};
   const stars = Math.round(k.stars || 4);
   const sv = data.sentiment || { positive: 70, neutral: 20, negative: 10 };
+  const detailedReport = data.detailedReport || {};
+  const rep = {
+    marketGrowth: detailedReport.marketGrowth || 'Based on the historical and projected data, the market has demonstrated consistent upward momentum. This steady growth is driven by accelerated digital transformation and increasing adoption rates across target demographics.',
+    segmentation: detailedReport.segmentation || 'The market is divided into distinct customer segments. The high concentration in Enterprise suggests significant contract value opportunities, while the SMB and Startup segments represent high-velocity growth areas.',
+    geography: detailedReport.geography || 'Geographical breakdown indicates that North America leads market share, with Europe representing a strong secondary market. Expansion efforts should prioritize strengthening presence in established markets.',
+    competition: detailedReport.competition || 'The competitive landscape features established players. According to the positioning matrix, your core differentiators lie in product innovation and customer support, whereas competitors leverage brand legacy.',
+    pricing: detailedReport.pricing || 'A comparative analysis of pricing structures shows a diverse range of models. Your product is positioned as a competitive value option, balancing advanced features with an accessible price point.',
+    risks: detailedReport.risks || 'The primary risks facing the company include intense competition from legacy vendors, high customer acquisition costs (CAC), and potential talent shortages. Mitigating these challenges requires investing in product feature differentiation.',
+    ...detailedReport
+  };
 
   // ── Chart configs ──────────────────────────────────────────────────────────
   const growthData = {
@@ -73,26 +85,52 @@ export default function Dashboard({ data, user, answers, onReset }) {
   const handleSave = useCallback(async () => {
     const badge = document.createElement('div');
     badge.style.cssText = 'position:fixed;bottom:16px;right:16px;background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:10px 18px;border-radius:4px;z-index:9999;box-shadow:var(--shadow-md);font-family:inherit';
-    badge.textContent = 'Exporting Image...';
+    badge.textContent = 'Exporting Dashboard...';
     document.body.appendChild(badge);
 
     try {
-      const canvas = await html2canvas(dashRef.current, {
+      // 1. Capture Dashboard Page
+      const canvasDash = await html2canvas(dashRef.current, {
         scale: 1.5, useCORS: true, allowTaint: true,
         backgroundColor: '#f8fafc', logging: false
       });
       
+      // 2. Capture Report Page 1
+      badge.textContent = 'Exporting Report Page 1...';
+      const canvasPage1 = await html2canvas(page1Ref.current, {
+        scale: 1.5, useCORS: true, allowTaint: true,
+        backgroundColor: '#ffffff', logging: false
+      });
+
+      // 3. Capture Report Page 2
+      badge.textContent = 'Exporting Report Page 2...';
+      const canvasPage2 = await html2canvas(page2Ref.current, {
+        scale: 1.5, useCORS: true, allowTaint: true,
+        backgroundColor: '#ffffff', logging: false
+      });
+
       const safeCompany = (user.company || 'unknown').replace(/[^a-z0-9]/gi, '_').toLowerCase();
       const fileName = safeCompany + '_' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 
-      badge.textContent = 'Generating PDF...';
-      const imgData = canvas.toDataURL('image/png');
+      badge.textContent = 'Generating Multi-page PDF...';
+      const imgDash = canvasDash.toDataURL('image/png');
+      const imgPage1 = canvasPage1.toDataURL('image/png');
+      const imgPage2 = canvasPage2.toDataURL('image/png');
+
       const pdf = new jsPDF({
-        orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+        orientation: canvasDash.width > canvasDash.height ? 'landscape' : 'portrait',
         unit: 'px',
-        format: [canvas.width, canvas.height]
+        format: [canvasDash.width, canvasDash.height]
       });
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.addImage(imgDash, 'PNG', 0, 0, canvasDash.width, canvasDash.height);
+
+      // Add Report Page 1 (Portrait)
+      pdf.addPage([canvasPage1.width, canvasPage1.height], 'portrait');
+      pdf.addImage(imgPage1, 'PNG', 0, 0, canvasPage1.width, canvasPage1.height);
+
+      // Add Report Page 2 (Portrait)
+      pdf.addPage([canvasPage2.width, canvasPage2.height], 'portrait');
+      pdf.addImage(imgPage2, 'PNG', 0, 0, canvasPage2.width, canvasPage2.height);
       
       // Trigger native client side download
       pdf.save(fileName + '.pdf');
@@ -149,7 +187,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
       console.error(err);
     }
     setTimeout(() => { if (badge.parentNode) badge.remove(); }, 6000);
-  }, [data, user, answers, k]);
+  }, [data, user, answers, k, page1Ref, page2Ref]);
 
   return (
     <div ref={dashRef} style={{ position:'fixed', inset:0, width:'100%', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflow:'hidden' }}>
@@ -282,7 +320,329 @@ export default function Dashboard({ data, user, answers, onReset }) {
         </div>
 
       </div>
+      
+      {/* Off-screen detailed report for PDF generation */}
+      <div style={{ position: 'absolute', left: '-9999px', top: 0, display: 'flex', flexDirection: 'column', gap: '30px' }}>
+        
+        {/* Page 1 */}
+        <div ref={page1Ref} style={repStyles.page}>
+          <div>
+            <div style={repStyles.header}>
+              <div style={repStyles.title}>Detailed Market Analysis Report</div>
+              <div style={repStyles.metaText}>
+                <strong>Prepared For:</strong> {user.company || 'N/A'} | <strong>Author:</strong> {user.name || 'N/A'} ({user.email}) | <strong>Date:</strong> {new Date().toLocaleDateString()}
+              </div>
+              <div style={{ ...repStyles.metaText, fontSize: '11px', marginTop: '2px' }}>
+                <strong>Product/Service:</strong> {user.service || 'N/A'}
+              </div>
+            </div>
+
+            {/* Executive Summary */}
+            <div style={repStyles.section}>
+              <div style={repStyles.sectionTitle}>1. Executive Summary & AI Insights</div>
+              <div style={{ ...repStyles.bodyText, background: '#f8fafc', padding: '12px 16px', borderLeft: '3px solid #1e3a8a', borderRadius: '2px', fontStyle: 'italic', fontWeight: 500, fontSize: '13px', color: '#0f172a' }}>
+                {data.insights}
+              </div>
+            </div>
+
+            {/* Section 2: Market Growth Trajectory */}
+            <div style={repStyles.section}>
+              <div style={repStyles.sectionTitle}>2. Market Growth Trajectory</div>
+              <div style={repStyles.grid}>
+                <div style={repStyles.bodyText}>
+                  {rep.marketGrowth}
+                </div>
+                <div>
+                  <table style={repStyles.table}>
+                    <thead>
+                      <tr>
+                        <th style={repStyles.th}>Year</th>
+                        <th style={repStyles.th}>Market Size ($B)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(data.growth?.labels || []).map((lbl, idx) => (
+                        <tr key={idx}>
+                          <td style={repStyles.td}>{lbl}</td>
+                          <td style={repStyles.td}>${(data.growth?.values || [])[idx] || 0}B</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 3: Industry Segmentation */}
+            <div style={repStyles.section}>
+              <div style={repStyles.sectionTitle}>3. Industry Customer Segmentation</div>
+              <div style={repStyles.grid}>
+                <div style={repStyles.bodyText}>
+                  {rep.segmentation}
+                </div>
+                <div>
+                  <table style={repStyles.table}>
+                    <thead>
+                      <tr>
+                        <th style={repStyles.th}>Customer Segment</th>
+                        <th style={repStyles.th}>Share (%)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(data.segments || []).map((s, idx) => (
+                        <tr key={idx}>
+                          <td style={repStyles.td}>{s.label}</td>
+                          <td style={repStyles.td}>{s.value}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 4: Geographic Distribution */}
+            <div style={repStyles.section}>
+              <div style={repStyles.sectionTitle}>4. Geographic Distribution & Regional Penetration</div>
+              <div style={repStyles.grid}>
+                <div style={repStyles.bodyText}>
+                  {rep.geography}
+                </div>
+                <div>
+                  <table style={repStyles.table}>
+                    <thead>
+                      <tr>
+                        <th style={repStyles.th}>Region</th>
+                        <th style={repStyles.th}>Distribution (%)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(data.geo || []).map((g, idx) => (
+                        <tr key={idx}>
+                          <td style={repStyles.td}>{g.label}</td>
+                          <td style={repStyles.td}>{g.value}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={repStyles.footer}>
+            <span>CONFIDENTIAL - INFOPACE MARKET INTELLIGENCE</span>
+            <span>Page 1 of 2</span>
+          </div>
+        </div>
+
+        {/* Page 2 */}
+        <div ref={page2Ref} style={repStyles.page}>
+          <div>
+            <div style={repStyles.header}>
+              <div style={repStyles.title}>Detailed Market Analysis Report</div>
+              <div style={repStyles.metaText}>
+                <strong>Company Context:</strong> {user.company || 'N/A'} | <strong>Target Customer Profile:</strong> {answers.customer || 'N/A'}
+              </div>
+            </div>
+
+            {/* Section 5: Competitive Positioning */}
+            <div style={repStyles.section}>
+              <div style={repStyles.sectionTitle}>5. Competitor Share & Matrix Positioning</div>
+              <div style={repStyles.grid}>
+                <div style={repStyles.bodyText}>
+                  {rep.competition}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <table style={repStyles.table}>
+                    <thead>
+                      <tr>
+                        <th style={repStyles.th}>Competitor Name</th>
+                        <th style={repStyles.th}>Market Share (%)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(data.competitors || []).map((c, idx) => (
+                        <tr key={idx}>
+                          <td style={repStyles.td}>{c.name}</td>
+                          <td style={repStyles.td}>{c.share}%</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  <table style={repStyles.table}>
+                    <thead>
+                      <tr>
+                        <th style={repStyles.th}>Metric</th>
+                        <th style={repStyles.th}>You (1-5)</th>
+                        <th style={repStyles.th}>Top Comp (1-5)</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(data.radarLabels || []).map((lbl, idx) => (
+                        <tr key={idx}>
+                          <td style={repStyles.td}>{lbl}</td>
+                          <td style={repStyles.td}>{(data.radarYou || [])[idx] || 0}</td>
+                          <td style={repStyles.td}>{(data.radarComp || [])[idx] || 0}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 6: Pricing Architectures */}
+            <div style={repStyles.section}>
+              <div style={repStyles.sectionTitle}>6. Pricing Architecture & Market Positioning</div>
+              <div style={repStyles.grid}>
+                <div style={repStyles.bodyText}>
+                  {rep.pricing}
+                </div>
+                <div>
+                  <table style={repStyles.table}>
+                    <thead>
+                      <tr>
+                        <th style={repStyles.th}>Product / Tier</th>
+                        <th style={repStyles.th}>Pricing Strategy</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(data.pricing || []).map((pr, idx) => (
+                        <tr key={idx}>
+                          <td style={repStyles.td}>{pr.name}</td>
+                          <td style={repStyles.td}>{pr.note}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 7: Macro Risks & Mitigations */}
+            <div style={repStyles.section}>
+              <div style={repStyles.sectionTitle}>7. Macro Risks, Challenges & Mitigations</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                <div style={repStyles.bodyText}>
+                  {rep.risks}
+                </div>
+                <div style={{ background: '#fff1f2', padding: '10px 14px', borderLeft: '3px solid #b91c1c', borderRadius: '2px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#b91c1c', textTransform: 'uppercase', marginBottom: '4px' }}>Identified High-Priority Challenges:</div>
+                  <ul style={repStyles.bulletList}>
+                    {(data.challenges || []).map((c, idx) => (
+                      <li key={idx} style={repStyles.bulletItem}>{c}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style={repStyles.footer}>
+            <span>CONFIDENTIAL - INFOPACE MARKET INTELLIGENCE</span>
+            <span>Page 2 of 2</span>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
+
+const repStyles = {
+  page: {
+    width: '800px',
+    height: '1130px',
+    background: '#ffffff',
+    color: '#0f172a',
+    padding: '45px 40px',
+    boxSizing: 'border-box',
+    fontFamily: '"Inter", -apple-system, sans-serif',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    border: '1px solid #e2e8f0',
+  },
+  header: {
+    borderBottom: '2px solid #0f172a',
+    paddingBottom: '8px',
+    marginBottom: '14px',
+  },
+  title: {
+    fontSize: '20px',
+    fontWeight: 800,
+    color: '#0f172a',
+    textTransform: 'uppercase',
+    letterSpacing: '-0.02em',
+  },
+  metaText: {
+    fontSize: '11px',
+    color: '#475569',
+    marginTop: '3px',
+    fontWeight: 500,
+  },
+  section: {
+    marginBottom: '14px',
+  },
+  sectionTitle: {
+    fontSize: '13px',
+    fontWeight: 700,
+    color: '#1e3a8a',
+    textTransform: 'uppercase',
+    borderBottom: '1px solid #e2e8f0',
+    paddingBottom: '3px',
+    marginBottom: '6px',
+  },
+  grid: {
+    display: 'grid',
+    gridTemplateColumns: '1.10fr 0.90fr',
+    gap: '15px',
+    alignItems: 'start',
+  },
+  bodyText: {
+    fontSize: '11.5px',
+    lineHeight: '1.5',
+    color: '#334155',
+    textAlign: 'justify',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+    fontSize: '10px',
+  },
+  th: {
+    background: '#f1f5f9',
+    color: '#0f172a',
+    fontWeight: 700,
+    textAlign: 'left',
+    padding: '5px 6px',
+    borderBottom: '1px solid #cbd5e1',
+  },
+  td: {
+    padding: '4px 6px',
+    borderBottom: '1px solid #f1f5f9',
+    color: '#334155',
+  },
+  footer: {
+    borderTop: '1px solid #e2e8f0',
+    paddingTop: '8px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    fontSize: '9px',
+    color: '#64748b',
+    fontWeight: 500,
+  },
+  bulletList: {
+    paddingLeft: '14px',
+    margin: '4px 0 0 0',
+  },
+  bulletItem: {
+    fontSize: '11px',
+    color: '#334155',
+    lineHeight: '1.4',
+    marginBottom: '2px',
+  }
+};
 

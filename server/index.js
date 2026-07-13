@@ -53,9 +53,16 @@ RULES:
 - 'geo': break down market share across focus regions, summing to 100 (NO 40/30/20/10).
 - 'challenges': EXACTLY 1 dense bullet point risk.
 - 'insights': 1 concise sentence summary.
+- 'detailedReport': MUST provide a deep-dive, professional analysis paragraph (3-4 sentences) for each section based on the survey and generated figures:
+  - 'marketGrowth': explain trends in the growth numbers and industry demand drivers.
+  - 'segmentation': analyze customer segments and how they apply to the company's product/service.
+  - 'geography': analyze regional penetration, opportunity, and expansion plans.
+  - 'competition': evaluate the competitive radar positioning and market share distribution.
+  - 'pricing': evaluate the pricing model, price point comparison, and recommended strategy.
+  - 'risks': explain the major risks/challenges and specific actionable mitigation steps.
 
 Return ONLY this EXACT JSON structure, populated:
-{"kpi":{"tam":"X.X","growthRate":"X.X%","customers":"X.X","competitors":${compCount},"stage":"${(answers.sc||'Ideation').split(" ")[0]}","price":"${answers.price||'Market Avg'}","stars":4},"growth":{"labels":["2018","2019","2020","2021","2022","2023","2024"],"values":[0,0,0,0,0,0,0]},"segments":[{"label":"X","value":50},{"label":"Y","value":30},{"label":"Z","value":20}],"geo":[{"label":"X","value":50},{"label":"Y","value":30},{"label":"Z","value":20}],"competitors":[{"name":"${comp1}","share":40},{"name":"${comp2}","share":25},{"name":"${comp3}","share":15},{"name":"Your Company","share":10},{"name":"Others","share":10}],"radarLabels":["Price","Quality","Brand","Innovation","Support"],"radarYou":[3,4,3,4,4],"radarComp":[4,3,4,3,3],"sentiment":{"positive":65,"neutral":25,"negative":10},"pricing":[{"name":"Your Company","color":"#16a34a","note":"Value"},{"name":"${comp1}","color":"#1a2b5e","note":"Premium"},{"name":"${comp2}","color":"#f59e0b","note":"Budget"}],"avgRating":"4.1","challenges":["Risk."],"insights":"Summary."}`;
+{"kpi":{"tam":"X.X","growthRate":"X.X%","customers":"X.X","competitors":${compCount},"stage":"${(answers.sc||'Ideation').split(" ")[0]}","price":"${answers.price||'Market Avg'}","stars":4},"growth":{"labels":["2018","2019","2020","2021","2022","2023","2024"],"values":[0,0,0,0,0,0,0]},"segments":[{"label":"X","value":50},{"label":"Y","value":30},{"label":"Z","value":20}],"geo":[{"label":"X","value":50},{"label":"Y","value":30},{"label":"Z","value":20}],"competitors":[{"name":"${comp1}","share":40},{"name":"${comp2}","share":25},{"name":"${comp3}","share":15},{"name":"Your Company","share":10},{"name":"Others","share":10}],"radarLabels":["Price","Quality","Brand","Innovation","Support"],"radarYou":[3,4,3,4,4],"radarComp":[4,3,4,3,3],"sentiment":{"positive":65,"neutral":25,"negative":10},"pricing":[{"name":"Your Company","color":"#16a34a","note":"Value"},{"name":"${comp1}","color":"#1a2b5e","note":"Premium"},{"name":"${comp2}","color":"#f59e0b","note":"Budget"}],"avgRating":"4.1","challenges":["Risk."],"insights":"Summary.","detailedReport":{"marketGrowth":"Growth analysis.","segmentation":"Segmentation analysis.","geography":"Geographic analysis.","competition":"Competitive matrix analysis.","pricing":"Pricing strategy recommendation.","risks":"Risks and mitigation strategy."}}`;
 }
 
 app.post('/api/generate', apiLimiter, async (req, res) => {
