@@ -4,15 +4,26 @@ export default function LoadingScreen() {
   return (
     <div style={{
       position:'fixed', inset:0, background:'#e4edf5',
-      display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'18px'
+      display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'20px',
+      fontFamily: '"Inter", -apple-system, sans-serif'
     }}>
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
       <div style={{
         width:'60px', height:'60px', borderRadius:'50%',
-        border:'4px solid rgba(255,255,255,.12)', borderTopColor:'#60a5fa',
-        animation:'spin .85s linear infinite'
+        border:'5px solid rgba(30, 58, 138, 0.1)', borderTopColor:'#1e3a8a',
+        animation:'spin 1s linear infinite'
       }} />
-      <div style={{ color:'#fff', fontSize:'15px', fontWeight:600 }}>Generating your Market Research Dashboard…</div>
-      <div style={{ color:'rgba(255,255,255,.5)', fontSize:'12px' }}>Powered by Gemini Flash 2.5 · Analysing your responses</div>
+      <div style={{ color:'#1e3a8a', fontSize:'18px', fontWeight:700, letterSpacing: '-0.01em', marginTop: '10px' }}>
+        Generating your Market Research Dashboard...
+      </div>
+      <div style={{ color:'#475569', fontSize:'13px', fontWeight: 500 }}>
+        Powered by Gemini Flash 2.5 · Analyzing your responses
+      </div>
     </div>
   );
 }

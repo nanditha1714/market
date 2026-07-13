@@ -20,15 +20,23 @@ export default function Dashboard({ data, user, answers, onReset }) {
   const dashRef = useRef(null);
   const page1Ref = useRef(null);
   const page2Ref = useRef(null);
+  const page3Ref = useRef(null);
+  const page4Ref = useRef(null);
+  const page5Ref = useRef(null);
+  const page6Ref = useRef(null);
+  const page7Ref = useRef(null);
+  const page8Ref = useRef(null);
   const k = data.kpi || {};
   const stars = Math.round(k.stars || 4);
   const sv = data.sentiment || { positive: 70, neutral: 20, negative: 10 };
   const detailedReport = data.detailedReport || {};
   const rep = {
-    marketGrowth: detailedReport.marketGrowth || 'Based on the historical and projected data, the market has demonstrated consistent upward momentum. This steady growth is driven by accelerated digital transformation and increasing adoption rates across target demographics.',
+    executiveSummary: detailedReport.executiveSummary || 'This comprehensive market research report provides an in-depth strategic analysis of the target industry, key demand drivers, and the competitive environment. The primary objective is to evaluate market opportunities, benchmark competitor strategies, and recommend actionable growth pathways.',
+    marketGrowth: detailedReport.marketGrowth || 'Based on the historical and projected data, the market has demonstrated consistent upward momentum. This growth is driven by accelerated digital transformation and increasing adoption rates.',
     segmentation: detailedReport.segmentation || 'The market is divided into distinct customer segments. The high concentration in Enterprise suggests significant contract value opportunities, while the SMB and Startup segments represent high-velocity growth areas.',
     geography: detailedReport.geography || 'Geographical breakdown indicates that North America leads market share, with Europe representing a strong secondary market. Expansion efforts should prioritize strengthening presence in established markets.',
     competition: detailedReport.competition || 'The competitive landscape features established players. According to the positioning matrix, your core differentiators lie in product innovation and customer support, whereas competitors leverage brand legacy.',
+    radarAnalysis: detailedReport.radarAnalysis || 'A detailed evaluation of the competitive positioning matrix highlights key strategic vectors. Innovation and support scores remain differentiators, while brand strength requires strategic GTM support.',
     pricing: detailedReport.pricing || 'A comparative analysis of pricing structures shows a diverse range of models. Your product is positioned as a competitive value option, balancing advanced features with an accessible price point.',
     risks: detailedReport.risks || 'The primary risks facing the company include intense competition from legacy vendors, high customer acquisition costs (CAC), and potential talent shortages. Mitigating these challenges requires investing in product feature differentiation.',
     ...detailedReport
