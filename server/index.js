@@ -57,7 +57,7 @@ RULES:
 - 'insights': 1 concise sentence summary.
 - DO NOT use raw double quotes (") inside detailedReport text, insights, or challenges. If you need to quote, use single quotes (') instead.
 - DO NOT use raw carriage returns or line breaks inside the JSON string values. You MUST escape all newlines as \\\\n.
-- 'detailedReport': MUST provide an extensive, high-quality, professional strategic analysis. For EACH section, return a single string containing EXACTLY three distinct parts separated by the escaped sequence \\\\n\\\\n. Each part must start with "### [Subheading Title]" followed by a dense analysis paragraph (between 100 and 120 words per paragraph). The total word count per section must be between 300 and 360 words to fit and fill the A4 PDF sheets cleanly without exceeding token limits or triggering proxy timeouts:
+- 'detailedReport': MUST provide an extensive, high-quality, professional strategic analysis. For EACH section, return a single string containing EXACTLY three distinct parts separated by the escaped sequence \\\\n\\\\n. Each part must start with "### [Subheading Title]" followed by a dense analysis paragraph (between 70 and 80 words per paragraph). The total word count per section must be between 210 and 240 words to fit and fill the A4 PDF sheets cleanly without exceeding token limits or triggering proxy timeouts:
   - 'executiveSummary': 3 parts with subheadings analyzing the market environment, core opportunity, and competitive positioning.
   - 'marketGrowth': 3 parts with subheadings explaining growth trends (CAGR), demand drivers, and technological shifts.
   - 'segmentation': 3 parts with subheadings analyzing demographic profiles, purchasing behaviors, and product fit.
@@ -85,7 +85,7 @@ app.post('/api/generate', apiLimiter, async (req, res) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: 'application/json', temperature: 1.0, maxOutputTokens: 8192 }
+          generationConfig: { responseMimeType: 'application/json', temperature: 1.0, maxOutputTokens: 4096 }
         })
       }
     );
