@@ -77,44 +77,45 @@ app.post('/api/generate', apiLimiter, async (req, res) => {
   const answers = req.body;
   const prompt = buildPrompt(answers);
 
-  try {
-    const response = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=' + GEMINI_KEY,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          generationConfig: { responseMimeType: 'application/json', temperature: 1.0, maxOutputTokens: 4096 }
-        })
-      }
-    );
-    
-    const json = await response.json();
-    let raw = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    
-    // If the response failed, dump the actual platform error block.
-    if (!raw) {
-      console.error("Gemini API Platform Error: HTTP", response.status);
-      console.error("Raw Payload:", JSON.stringify(json, null, 2));
-      throw new Error(json.error?.message || 'Empty Gemini response');
-    }
-    
-    raw = raw.replace(/```json|```/g, '').trim();
-    let data;
+  const maxRetries = 2;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      data = JSON.parse(raw);
-    } catch (parseErr) {
-      console.error('JSON Parse Error details:', parseErr.message);
-      console.error('Raw response length:', raw.length);
-      console.error('Raw response ending (last 300 chars):', raw.slice(-300));
-      console.error('Raw response snippet around error (position 13900-14300):', raw.slice(13500, 14500));
-      throw parseErr;
+      console.log(`Calling Gemini API (Attempt ${attempt}/${maxRetries})...`);
+      const response = await fetch(
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + GEMINI_KEY,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseMimeType: 'application/json', temperature: 1.0, maxOutputTokens: 4096 }
+          })
+        }
+      );
+      
+      const json = await response.json();
+      let raw = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      
+      if (!raw) {
+        console.error(`Gemini API Platform Error (attempt ${attempt}): HTTP`, response.status);
+        console.error("Raw Payload:", JSON.stringify(json, null, 2));
+        throw new Error(json.error?.message || 'Empty Gemini response');
+      }
+      
+      raw = raw.replace(/```json|```/g, '').trim();
+      const data = JSON.parse(raw);
+      
+      console.log(`✅ Gemini generated successfully on attempt ${attempt}`);
+      return res.json(data);
+    } catch (err) {
+      console.warn(`⚠️ Gemini API call failed on attempt ${attempt}:`, err.message);
+      if (attempt === maxRetries) {
+        console.error('❌ All Gemini API attempts exhausted. Failing with 500.');
+        return res.status(500).json({ error: "Failed to generate market research" });
+      }
+      // Wait 1.5 seconds before retrying
+      await new Promise(resolve => setTimeout(resolve, 1500));
     }
-    res.json(data);
-  } catch (err) {
-    console.error('Gemini proxy error:', err);
-    res.status(500).json({ error: "Failed to generate market research" });
   }
 });
 
