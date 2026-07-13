@@ -346,7 +346,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
       </div>
 
       {/* Main Grid: Forces layout into absolute single screen */}
-      <div style={{ flex:1, display:'grid', gridTemplateRows:'auto 1fr 1.2fr auto', gap:'8px', padding:'8px 12px', minHeight:0, overflow:'hidden' }}>
+      <div style={{ flex:1, display:'grid', gridTemplateRows:'82px 215px 255px 54px', gap:'8px', padding:'8px 12px', minHeight:0, overflow:'hidden' }}>
 
         {/* KPIs */}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:'8px' }}>
