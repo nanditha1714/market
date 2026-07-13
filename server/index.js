@@ -88,7 +88,7 @@ app.post('/api/generate', apiLimiter, async (req, res) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { responseMimeType: 'application/json', temperature: 1.0, maxOutputTokens: 4096 }
+            generationConfig: { responseMimeType: 'application/json', temperature: 1.0, maxOutputTokens: 32768 }
           })
         }
       );
