@@ -103,7 +103,22 @@ app.post('/api/generate', apiLimiter, async (req, res) => {
       }
       
       raw = raw.replace(/```json|```/g, '').trim();
-      const data = JSON.parse(raw);
+      let data;
+      try {
+        data = JSON.parse(raw);
+      } catch (parseErr) {
+        console.error('❌ JSON Parse Error details:', parseErr.message);
+        console.error('Raw response length:', raw.length);
+        console.error('Raw response content:', raw);
+        if (json.candidates?.[0]) {
+          console.error('Candidate Metadata:', JSON.stringify({
+            finishReason: json.candidates[0].finishReason,
+            safetyRatings: json.candidates[0].safetyRatings,
+            citationMetadata: json.candidates[0].citationMetadata,
+          }, null, 2));
+        }
+        throw parseErr;
+      }
       
       console.log(`✅ Gemini generated successfully on attempt ${attempt}`);
       return res.json(data);
