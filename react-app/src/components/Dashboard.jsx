@@ -90,57 +90,31 @@ export default function Dashboard({ data, user, answers, onReset }) {
   };
 
   // ── Screenshot & Save ──────────────────────────────────────────────────────
-  const handleSave = useCallback(async () => {
+  // ── Screenshot & Save Dashboard (Single page Landscape) ─────────────────────
+  const handleDownloadDashboard = useCallback(async () => {
     const badge = document.createElement('div');
     badge.style.cssText = 'position:fixed;bottom:16px;right:16px;background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:10px 18px;border-radius:4px;z-index:9999;box-shadow:var(--shadow-md);font-family:inherit';
     badge.textContent = 'Exporting Dashboard...';
     document.body.appendChild(badge);
 
     try {
-      // 1. Capture Dashboard Page
-      const canvasDash = await html2canvas(dashRef.current, {
+      const canvas = await html2canvas(dashRef.current, {
         scale: 1.5, useCORS: true, allowTaint: true,
         backgroundColor: '#f8fafc', logging: false
       });
       
-      // 2. Capture Report Page 1
-      badge.textContent = 'Exporting Report Page 1...';
-      const canvasPage1 = await html2canvas(page1Ref.current, {
-        scale: 1.5, useCORS: true, allowTaint: true,
-        backgroundColor: '#ffffff', logging: false
-      });
-
-      // 3. Capture Report Page 2
-      badge.textContent = 'Exporting Report Page 2...';
-      const canvasPage2 = await html2canvas(page2Ref.current, {
-        scale: 1.5, useCORS: true, allowTaint: true,
-        backgroundColor: '#ffffff', logging: false
-      });
-
       const safeCompany = (user.company || 'unknown').replace(/[^a-z0-9]/gi, '_').toLowerCase();
-      const fileName = safeCompany + '_' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const fileName = safeCompany + '_dashboard_' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 
-      badge.textContent = 'Generating Multi-page PDF...';
-      const imgDash = canvasDash.toDataURL('image/png');
-      const imgPage1 = canvasPage1.toDataURL('image/png');
-      const imgPage2 = canvasPage2.toDataURL('image/png');
-
+      badge.textContent = 'Generating PDF...';
+      const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF({
-        orientation: canvasDash.width > canvasDash.height ? 'landscape' : 'portrait',
+        orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
         unit: 'px',
-        format: [canvasDash.width, canvasDash.height]
+        format: [canvas.width, canvas.height]
       });
-      pdf.addImage(imgDash, 'PNG', 0, 0, canvasDash.width, canvasDash.height);
-
-      // Add Report Page 1 (Portrait)
-      pdf.addPage([canvasPage1.width, canvasPage1.height], 'portrait');
-      pdf.addImage(imgPage1, 'PNG', 0, 0, canvasPage1.width, canvasPage1.height);
-
-      // Add Report Page 2 (Portrait)
-      pdf.addPage([canvasPage2.width, canvasPage2.height], 'portrait');
-      pdf.addImage(imgPage2, 'PNG', 0, 0, canvasPage2.width, canvasPage2.height);
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
       
-      // Trigger native client side download
       pdf.save(fileName + '.pdf');
 
       badge.textContent = 'Uploading secure bundle...';
@@ -195,7 +169,101 @@ export default function Dashboard({ data, user, answers, onReset }) {
       console.error(err);
     }
     setTimeout(() => { if (badge.parentNode) badge.remove(); }, 6000);
-  }, [data, user, answers, k, page1Ref, page2Ref]);
+  }, [data, user, answers, k]);
+
+  // ── Screenshot & Save Detailed Report (8 Pages Portrait) ───────────────────
+  const handleDownloadReport = useCallback(async () => {
+    const badge = document.createElement('div');
+    badge.style.cssText = 'position:fixed;bottom:16px;right:16px;background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:10px 18px;border-radius:4px;z-index:9999;box-shadow:var(--shadow-md);font-family:inherit';
+    badge.textContent = 'Preparing Report...';
+    document.body.appendChild(badge);
+
+    try {
+      const pages = [page1Ref, page2Ref, page3Ref, page4Ref, page5Ref, page6Ref, page7Ref, page8Ref];
+      const canvases = [];
+      
+      for (let i = 0; i < pages.length; i++) {
+        badge.textContent = `Exporting Report Page ${i + 1} of 8...`;
+        const canvas = await html2canvas(pages[i].current, {
+          scale: 1.5, useCORS: true, allowTaint: true,
+          backgroundColor: '#ffffff', logging: false
+        });
+        canvases.push(canvas);
+      }
+
+      const safeCompany = (user.company || 'unknown').replace(/[^a-z0-9]/gi, '_').toLowerCase();
+      const fileName = safeCompany + '_detailed_report_' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+
+      badge.textContent = 'Generating 8-Page PDF...';
+      const first = canvases[0];
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'px',
+        format: [first.width, first.height]
+      });
+      pdf.addImage(first.toDataURL('image/png'), 'PNG', 0, 0, first.width, first.height);
+
+      for (let i = 1; i < canvases.length; i++) {
+        const c = canvases[i];
+        pdf.addPage([c.width, c.height], 'portrait');
+        pdf.addImage(c.toDataURL('image/png'), 'PNG', 0, 0, c.width, c.height);
+      }
+      
+      pdf.save(fileName + '.pdf');
+
+      badge.textContent = 'Uploading secure bundle...';
+      const pdfBlob = pdf.output('blob');
+      const docUrl = await uploadScreenshot(pdfBlob, fileName + '.pdf');
+
+      badge.textContent = 'Finalizing record...';
+      const payload = {
+        name: user.name, phone: user.phone, email: user.email,
+        company_name: user.company, service: user.service,
+        industry: answers.industry || '', problem: answers.problem || '',
+        target_customer: answers.customer || '', geography: answers.geo || '',
+        tam_estimate: answers.tam || '', competitors: answers.competitors || '',
+        pricing_model: answers.pricing || '', avg_price: answers.price || '',
+        self_rating: answers.ratings || '', stage_challenges: answers.sc || '',
+        ai_tam: k.tam || '', ai_growth_rate: k.growthRate || '',
+        ai_customers: k.customers || '', ai_competitors: parseInt(k.competitors || 0),
+        ai_stage: k.stage || '', ai_price: k.price || '', ai_stars: parseFloat(k.stars || 0),
+        ai_growth_labels: JSON.stringify(data.growth?.labels || []),
+        ai_growth_values: JSON.stringify(data.growth?.values || []),
+        ai_segments: JSON.stringify(data.segments || []),
+        ai_geo: JSON.stringify(data.geo || []),
+        ai_competitors_data: JSON.stringify(data.competitors || []),
+        ai_radar_labels: JSON.stringify(data.radarLabels || []),
+        ai_radar_you: JSON.stringify(data.radarYou || []),
+        ai_radar_comp: JSON.stringify(data.radarComp || []),
+        ai_sentiment: JSON.stringify(data.sentiment || {}),
+        ai_pricing: JSON.stringify(data.pricing || []),
+        ai_avg_rating: data.avgRating || '',
+        ai_challenges: JSON.stringify(data.challenges || []),
+        ai_insights: data.insights || '',
+        dashboard_json: JSON.stringify(data),
+        pdf_url: docUrl,
+        created_at: new Date().toISOString(),
+      };
+
+      const ok = await saveRecord(payload);
+      badge.style.background = ok ? 'var(--success)' : 'var(--danger)';
+      badge.textContent = ok ? 'Export Complete' : 'System Error: Export Failed';
+
+      if (ok && docUrl) {
+        const btn = document.createElement('a');
+        btn.href = docUrl; btn.target = '_blank';
+        btn.style.cssText = 'position:fixed;bottom:16px;right:200px;background:var(--primary);color:#fff;font-size:12px;font-weight:600;padding:10px 18px;border-radius:4px;z-index:9999;text-decoration:none;font-family:inherit;box-shadow:var(--shadow-md)';
+        btn.textContent = 'View Secure Document';
+        document.body.appendChild(btn);
+        setTimeout(() => btn.remove(), 8000);
+      }
+    } catch (err) {
+      badge.style.background = 'var(--danger)';
+      badge.textContent = 'Hardware/Permission Error';
+      console.error(err);
+    }
+    setTimeout(() => { if (badge.parentNode) badge.remove(); }, 6000);
+  }, [data, user, answers, k, page1Ref, page2Ref, page3Ref, page4Ref, page5Ref, page6Ref, page7Ref, page8Ref]);
 
   return (
     <div ref={dashRef} style={{ position:'fixed', inset:0, width:'100%', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflow:'hidden' }}>
@@ -206,7 +274,8 @@ export default function Dashboard({ data, user, answers, onReset }) {
           <p style={{ fontSize:'14px', color:'#94a3b8', marginTop:'2px', fontWeight:500 }}>{user.name} | {user.company} | TARGET: {answers.customer}</p>
         </div>
         <div style={{ display:'flex', gap:'8px' }}>
-          <button onClick={handleSave} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer' }}>Download PDF</button>
+          <button onClick={handleDownloadDashboard} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer' }}>Download PDF</button>
+          <button onClick={handleDownloadReport} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--primary)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer' }}>Download Detailed Report</button>
           <button onClick={onReset} style={{ padding:'5px 13px', border:'1px solid #334155', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer' }}>New Research</button>
         </div>
       </div>
