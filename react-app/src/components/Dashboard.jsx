@@ -9,10 +9,10 @@ const co = (i) => CHART_COLORS[i % CHART_COLORS.length];
 
 const datalabelPie = {
   color: '#000000',
-  font: { size: 15, weight: 'bold' },
+  font: { size: 10, weight: 'bold' },
   formatter: (v, ctx) => {
     const total = ctx.chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
-    return v > 5 ? Math.round((v / total) * 100) + '%' : '';
+    return v > 7 ? Math.round((v / total) * 100) + '%' : '';
   },
 };
 
@@ -93,9 +93,9 @@ export default function Dashboard({ data, user, answers, onReset }) {
   };
   const growthMin = Math.min(...(data.growth?.values || [0])) * 0.85;
   const growthOpts = {
-    layout: { padding: 24 },
+    layout: { padding: { top: 4, bottom: 0, left: 2, right: 2 } },
     plugins: { legend: { display: false }, datalabels: { display: false }, tooltip: { callbacks: { label: c => '$' + c.parsed.y.toFixed(1) + 'B' } } },
-    scales: { x: { ticks: { font: { size: 14 } }, grid: { display: false } }, y: { min: parseFloat(growthMin.toFixed(1)), ticks: { font: { size: 14 }, callback: v => '$' + v + 'B' }, grid: { color: '#f1f5f9' } } },
+    scales: { x: { ticks: { font: { size: 11 } }, grid: { display: false } }, y: { min: parseFloat(growthMin.toFixed(1)), ticks: { font: { size: 11 }, callback: v => '$' + v + 'B' }, grid: { color: '#f1f5f9' } } },
   };
 
   const segData = {
@@ -103,7 +103,13 @@ export default function Dashboard({ data, user, answers, onReset }) {
     datasets: [{ data: (data.segments || []).map(s => s.value), backgroundColor: ['#60a5fa', '#34d399', '#fbbf24'], borderWidth: 1, borderColor: '#ffffff' }],
   };
   const pieOpts = (cutout) => ({
-    cutout, layout: { padding: 24 }, plugins: { legend: { position: 'right', labels: { font: { size: 14 }, boxWidth: 10, padding: 6 } }, tooltip: { callbacks: { label: c => c.label + ': ' + c.parsed + '%' } }, datalabels: datalabelPie },
+    cutout, 
+    layout: { padding: { top: 4, bottom: 4, left: 4, right: 12 } }, 
+    plugins: { 
+      legend: { position: 'right', labels: { font: { size: 10 }, boxWidth: 8, padding: 4 } }, 
+      tooltip: { callbacks: { label: c => c.label + ': ' + c.parsed + '%' } }, 
+      datalabels: datalabelPie 
+    },
   });
 
   const geoData = {
@@ -124,9 +130,9 @@ export default function Dashboard({ data, user, answers, onReset }) {
     ],
   };
   const radarOpts = {
-    layout: { padding: 24 },
-    scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, font: { size: 13 }, display: false }, pointLabels: { font: { size: 14 } }, grid: { color: '#f1f5f9' }, angleLines: { color: '#f1f5f9' } } },
-    plugins: { legend: { position: 'bottom', labels: { font: { size: 14 }, boxWidth: 10, padding: 6 } }, datalabels: { display: false } },
+    layout: { padding: 4 },
+    scales: { r: { min: 0, max: 5, ticks: { stepSize: 1, font: { size: 10 }, display: false }, pointLabels: { font: { size: 10 } }, grid: { color: '#f1f5f9' }, angleLines: { color: '#f1f5f9' } } },
+    plugins: { legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 8, padding: 4 } }, datalabels: { display: false } },
   };
 
   // ── Screenshot & Save ──────────────────────────────────────────────────────
@@ -418,12 +424,12 @@ export default function Dashboard({ data, user, answers, onReset }) {
             {/* Pricing */}
             <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden' }}>
               <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>💰</span> Pricing</div>
-              <div style={{ display:'flex', flexDirection:'column', gap: '4px', overflow:'hidden' }}>
+              <div style={{ display:'flex', flexDirection:'column', gap: '3px', overflow:'hidden' }}>
                 {(data.pricing || []).map((p, i) => (
-                  <div key={i} style={{ display:'flex', alignItems:'center', gap:'8px', padding:'4px 0', borderBottom:'1px solid #f1f5f9' }}>
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:'8px', padding:'2px 0', borderBottom:'1px solid #f1f5f9' }}>
                     <div style={{ width:'6px', height:'6px', borderRadius:'1px', background: p.color, flexShrink:0 }} />
-                    <div style={{ fontSize:'13px', fontWeight:600, color: 'var(--text-main)', flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{p.name}</div>
-                    <div style={{ fontSize:'12px', color:'var(--text-muted)', whiteSpace:'nowrap' }}>{p.note}</div>
+                    <div style={{ fontSize:'12px', fontWeight:600, color: 'var(--text-main)', flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{p.name}</div>
+                    <div style={{ fontSize:'11px', color:'var(--text-muted)', whiteSpace:'nowrap' }}>{p.note}</div>
                   </div>
                 ))}
               </div>
@@ -432,7 +438,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
             {/* Challenges */}
             <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden' }}>
               <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>⚠️</span> Challenges</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflow:'hidden' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflowY:'auto', flex: 1 }}>
                 {[
                   { icon: '✖️', color: 'var(--danger)' },
                   { icon: '📍', color: 'var(--primary)' },
@@ -441,8 +447,8 @@ export default function Dashboard({ data, user, answers, onReset }) {
                   const challengeText = (data.challenges || [])[i];
                   if (!challengeText) return null;
                   return (
-                    <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:'6px', padding:'2px 0', fontSize:'13px', fontWeight: 500, color:'var(--text-muted)', lineHeight: 1.4 }}>
-                      <span style={{ fontSize: '12px', marginTop:'2px' }}>{iconObj.icon}</span>
+                    <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:'6px', padding:'1px 0', fontSize:'11.5px', fontWeight: 500, color:'var(--text-muted)', lineHeight: 1.3 }}>
+                      <span style={{ fontSize: '11px', marginTop:'1px' }}>{iconObj.icon}</span>
                       <span>{challengeText}</span>
                     </div>
                   );
@@ -457,7 +463,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize:'13px', fontWeight:700, color:'#1e3a8a', flexShrink: 0 }}>
             <span>💡</span> AI Insights
           </div>
-          <div style={{ flex: 1, fontSize:'13px', color:'var(--text-main)', fontWeight: 500, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+          <div style={{ flex: 1, fontSize:'12.5px', color:'var(--text-main)', fontWeight: 500, lineHeight: 1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', wordBreak: 'break-word' }}>
             {data.insights}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '11px', fontWeight: 600, color: '#64748b', background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px', flexShrink: 0 }}>
