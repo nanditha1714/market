@@ -55,6 +55,7 @@ RULES:
 - 'geo': break down market share across focus regions, summing to 100 (NO 40/30/20/10).
 - 'challenges': EXACTLY 1 dense bullet point risk.
 - 'insights': 1 concise sentence summary.
+- 'kpi.price': MUST be a short value of 2-3 words or a clean number/integer (e.g. '$15,000/yr', '$500/mo', or 'USD 250'). DO NOT write a full sentence or paragraph.
 - DO NOT use raw double quotes (") inside detailedReport text, insights, or challenges. If you need to quote, use single quotes (') instead.
 - DO NOT use raw carriage returns or line breaks inside the JSON string values. You MUST escape all newlines as \\\\n.
 - 'detailedReport': MUST provide an extensive, high-quality, professional strategic analysis. For EACH section, return a single string containing EXACTLY three distinct parts separated by the escaped sequence \\\\n\\\\n. Each part must start with "### [Subheading Title]" followed by a dense analysis paragraph (between 70 and 80 words per paragraph). The total word count per section must be between 210 and 240 words to fit and fill the A4 PDF sheets cleanly without exceeding token limits or triggering proxy timeouts:

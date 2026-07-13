@@ -362,7 +362,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
                 <div style={{ fontSize:'12px', color:'#64748b', fontWeight:600, textTransform:'uppercase', letterSpacing:'.05em' }}>{kpi.label}</div>
               </div>
-              <div style={{ fontSize: kpi.small ? '20px' : '25px', fontWeight:700, color:'var(--text-main)', lineHeight:1.1 }}>{kpi.val || '—'}</div>
+              <div style={{ fontSize: kpi.val && kpi.val.length > 25 ? '11px' : (kpi.val && kpi.val.length > 12 ? '14px' : (kpi.small ? '18px' : '23px')), fontWeight:700, color:'var(--text-main)', lineHeight:1.15 }}>{kpi.val || '—'}</div>
               {kpi.sub   && <div style={{ fontSize:'14px', color: kpi.subColor || 'var(--text-muted)', fontWeight:600, marginTop: '4px' }}>{kpi.sub}</div>}
               {kpi.stars && <div style={{ color:'#fbbf24', fontSize:'17px', marginTop: '4px' }}>{'★'.repeat(stars)}{'☆'.repeat(5-stars)}</div>}
             </div>
