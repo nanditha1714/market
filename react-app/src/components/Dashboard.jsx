@@ -43,7 +43,8 @@ export default function Dashboard({ data, user, answers, onReset }) {
   };
 
   const renderReportParagraphs = useCallback((text) => {
-    const lines = (text || '').split(/\r?\n/);
+    const normalizedText = (text || '').replace(/\\n/gi, '\n');
+    const lines = normalizedText.split(/\r?\n/);
     const elements = [];
     let currentParagraph = [];
 
