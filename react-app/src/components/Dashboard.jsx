@@ -63,7 +63,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
         }
         const headerText = line.replace('###', '').trim();
         elements.push(
-          <div key={`h-${i}`} style={{ fontSize: '11px', fontWeight: 800, color: '#1e3a8a', marginTop: '10px', marginBottom: '3px', textTransform: 'uppercase', letterSpacing: '0.01em', fontFamily: '"Inter", -apple-system, sans-serif' }}>
+          <div key={`h-${i}`} style={{ fontSize: '13.5px', fontWeight: 800, color: '#1e3a8a', marginTop: '18px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.01em', fontFamily: '"Inter", -apple-system, sans-serif' }}>
             {headerText}
           </div>
         );
@@ -933,18 +933,18 @@ const repStyles = {
   table: {
     width: '100%',
     borderCollapse: 'collapse',
-    fontSize: '10px',
+    fontSize: '11px',
   },
   th: {
     background: '#f1f5f9',
     color: '#0f172a',
     fontWeight: 700,
     textAlign: 'left',
-    padding: '6px 8px',
+    padding: '7px 10px',
     borderBottom: '1px solid #cbd5e1',
   },
   td: {
-    padding: '5px 8px',
+    padding: '6px 10px',
     borderBottom: '1px solid #f1f5f9',
     color: '#334155',
   },
@@ -958,14 +958,14 @@ const repStyles = {
     fontWeight: 500,
   },
   bulletList: {
-    paddingLeft: '16px',
-    margin: '6px 0 0 0',
+    paddingLeft: '18px',
+    margin: '8px 0 0 0',
   },
   bulletItem: {
-    fontSize: '11px',
+    fontSize: '12px',
     color: '#334155',
-    lineHeight: '1.5',
-    marginBottom: '4px',
+    lineHeight: '1.6',
+    marginBottom: '6px',
   }
 };
 
