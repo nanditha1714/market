@@ -83,7 +83,7 @@ const s = {
     position: 'relative'
   },
   sidebar: {
-    width: '320px',
+    width: '380px',
     background: '#0c1427',
     padding: '40px 30px',
     display: 'flex',
@@ -91,7 +91,8 @@ const s = {
     justifyContent: 'space-between',
     flexShrink: 0,
     borderRight: '1px solid rgba(255,255,255,0.05)',
-    zIndex: 5
+    zIndex: 5,
+    overflowY: 'auto'
   },
   sidebarBrandCard: {
     background: '#ffffff',
@@ -453,18 +454,36 @@ export default function LoginPage({ onLogin }) {
             <p style={s.sidebarDesc}>
               Our engine maps your sector, geography, and model — then surfaces a personalised intelligence brief within minutes.
             </p>
+
+            <div style={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              {[
+                { title: 'Instant Boardroom Insights', desc: 'Get a professional-grade market analysis in under 60 seconds, saving weeks of manual desk research.' },
+                { title: 'Personalized Market Roadmaps', desc: 'No generic templates. Receive custom benchmarks tailored specifically to your product and geography.' },
+                { title: 'Investment-Grade PDF Reports', desc: 'Instantly download structured, A4 PDF reports designed to impress investors and stakeholders.' }
+              ].map((pt, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                  <span style={{ color: '#38bdf8', fontSize: '14px', marginTop: '2px', fontWeight: 'bold' }}>✓</span>
+                  <div>
+                    <h4 style={{ color: '#ffffff', fontSize: '13.5px', fontWeight: 600, marginBottom: '2px' }}>{pt.title}</h4>
+                    <p style={{ color: '#94a3b8', fontSize: '12px', lineHeight: 1.45 }}>{pt.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div>
             <div style={s.sidebarDivider} />
-            <div>
-              <div style={s.statNumber}>3×</div>
-              <div style={s.statDesc}>Faster than traditional research</div>
-            </div>
-            <div style={s.sidebarDivider} />
-            <div>
-              <div style={s.statNumber}>50+</div>
-              <div style={s.statDesc}>Data points analysed per assessment</div>
+            <div style={{ display: 'flex', gap: '20px' }}>
+              <div style={{ flex: 1 }}>
+                <div style={s.statNumber}>3×</div>
+                <div style={s.statDesc}>Faster than traditional research</div>
+              </div>
+              <div style={{ width: '1px', background: 'rgba(255,255,255,0.08)' }} />
+              <div style={{ flex: 1 }}>
+                <div style={s.statNumber}>50+</div>
+                <div style={s.statDesc}>Data points analysed per assessment</div>
+              </div>
             </div>
           </div>
         </div>
