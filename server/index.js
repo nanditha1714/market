@@ -12,7 +12,11 @@ app.set('trust proxy', 1);
 app.use(helmet({
   contentSecurityPolicy: false, // Disabled for ease of dynamic chart rendering
 }));
-app.use(cors());
+app.use(cors({
+  origin: ['https://mra.infopaceindia.co.in', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
 
 // API Rate Limiter: 5 requests per 1-minute window per IP
