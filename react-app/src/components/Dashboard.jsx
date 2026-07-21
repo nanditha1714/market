@@ -888,20 +888,20 @@ const repStyles = {
     border: '1px solid #e2e8f0',
   },
   header: {
-    borderBottom: '2px solid #0f172a',
+    borderBottom: '2px solid #1e3a8a',
     paddingBottom: '10px',
     marginBottom: '20px',
   },
   title: {
     fontSize: '22px',
     fontWeight: 800,
-    color: '#0f172a',
+    color: '#1e3a8a',
     textTransform: 'uppercase',
     letterSpacing: '-0.02em',
   },
   metaText: {
     fontSize: '11px',
-    color: '#475569',
+    color: '#000000',
     marginTop: '4px',
     fontWeight: 500,
   },
@@ -927,7 +927,7 @@ const repStyles = {
   bodyText: {
     fontSize: '12px',
     lineHeight: '1.65',
-    color: '#334155',
+    color: '#000000',
     textAlign: 'justify',
   },
   table: {
@@ -937,7 +937,7 @@ const repStyles = {
   },
   th: {
     background: '#f1f5f9',
-    color: '#0f172a',
+    color: '#000000',
     fontWeight: 700,
     textAlign: 'left',
     padding: '7px 10px',
@@ -946,7 +946,7 @@ const repStyles = {
   td: {
     padding: '6px 10px',
     borderBottom: '1px solid #f1f5f9',
-    color: '#334155',
+    color: '#000000',
   },
   footer: {
     borderTop: '1px solid #e2e8f0',
@@ -963,7 +963,7 @@ const repStyles = {
   },
   bulletItem: {
     fontSize: '12px',
-    color: '#334155',
+    color: '#000000',
     lineHeight: '1.6',
     marginBottom: '6px',
   }
