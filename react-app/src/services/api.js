@@ -114,3 +114,37 @@ export async function updateRecord(id, updates) {
     return false;
   }
 }
+
+// ── Send OTP for authentication ──────────────────────────────────────────────
+export async function sendOtp(email) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/auth/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Failed to send OTP');
+    return { success: true, message: json.message };
+  } catch (err) {
+    console.error('Send OTP error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Verify OTP for authentication ────────────────────────────────────────────
+export async function verifyOtp(email, otp) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/auth/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp })
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Invalid OTP');
+    return { success: true, message: json.message };
+  } catch (err) {
+    console.error('Verify OTP error:', err);
+    return { success: false, error: err.message };
+  }
+}

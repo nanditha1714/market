@@ -135,6 +135,96 @@ app.post('/api/generate', apiLimiter, async (req, res) => {
   }
 });
 
+// ── Authentication & OTP Email Verification (SMTP) ──────────────────────────
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST || 'smtp.gmail.com',
+  port: parseInt(process.env.SMTP_PORT || '587'),
+  secure: process.env.SMTP_PORT === '465',
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+const otpCache = {};
+
+// Request OTP
+app.post('/api/auth/send-otp', async (req, res) => {
+  const { email } = req.body;
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'Valid email is required.' });
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+  otpCache[email] = {
+    otp,
+    expiresAt: Date.now() + 10 * 60 * 1000, // 10 minutes
+  };
+
+  try {
+    const mailOptions = {
+      from: process.env.SMTP_FROM || `"Infopace Security" <${process.env.SMTP_USER}>`,
+      to: email,
+      subject: 'Your Market Research Verification OTP',
+      text: `Your One-Time Password (OTP) for verification is: ${otp}\n\nThis OTP is valid for 10 minutes. Please enter it on the website to complete your signup.\n\nBest regards,\nInfopace Team`,
+      html: `
+        <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px 24px; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff;">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <h2 style="color: #1e3a8a; margin: 0; font-size: 22px; font-weight: 800; letter-spacing: -0.01em;">Infopace Market Intelligence</h2>
+          </div>
+          <p style="font-size: 15px; color: #334155; line-height: 1.6; margin: 0 0 20px 0;">
+            To verify your account and generate your market research dashboard, please use the following 6-digit One-Time Password (OTP):
+          </p>
+          <div style="background: #f1f5f9; padding: 18px 24px; border-radius: 6px; font-size: 32px; font-weight: 800; color: #1e3a8a; text-align: center; letter-spacing: 0.25em; margin: 24px 0; border: 1px solid #e2e8f0;">
+            ${otp}
+          </div>
+          <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin: 24px 0 0 0; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+            This OTP is valid for 10 minutes. If you did not request this research submission, you can safely ignore this email.
+          </p>
+        </div>
+      `,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`[OTP] Sent successfully to ${email}`);
+    res.json({ success: true, message: 'OTP sent successfully.' });
+  } catch (err) {
+    console.warn(`[OTP Fallback] SMTP failed, logging to console. For ${email}, the OTP is: ${otp}`, err.message);
+    // Return mock success in development if env is not configured, to let the user review the UI flow!
+    if (!process.env.SMTP_USER) {
+      return res.json({ success: true, message: 'OTP simulated and printed in console logs.' });
+    }
+    res.status(500).json({ error: 'Failed to send verification email. Please check server SMTP configuration.' });
+  }
+});
+
+// Verify OTP
+app.post('/api/auth/verify-otp', async (req, res) => {
+  const { email, otp } = req.body;
+  if (!email || !otp) {
+    return res.status(400).json({ error: 'Email and OTP are required.' });
+  }
+
+  const cached = otpCache[email];
+  if (!cached) {
+    return res.status(400).json({ error: 'No verification request found for this email.' });
+  }
+
+  if (Date.now() > cached.expiresAt) {
+    delete otpCache[email];
+    return res.status(400).json({ error: 'OTP has expired.' });
+  }
+
+  if (cached.otp !== otp.trim()) {
+    return res.status(400).json({ error: 'Invalid verification code. Please try again.' });
+  }
+
+  delete otpCache[email];
+  res.json({ success: true, message: 'OTP verified successfully.' });
+});
+
 // Production: serve React build
 if (process.env.NODE_ENV === 'production') {
   const path = require('path');
