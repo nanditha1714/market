@@ -98,7 +98,7 @@ export default function App() {
       )}
       <Suspense fallback={<LoadingScreen />}>
         {screen === SCREENS.LOGIN && <LoginPage onLogin={handleLogin} />}
-        {screen === SCREENS.SURVEY && <SurveyPage onComplete={handleSurveyComplete} />}
+        {screen === SCREENS.SURVEY && <SurveyPage user={user} onComplete={handleSurveyComplete} />}
         {screen === SCREENS.LOADING && <LoadingScreen />}
         {screen === SCREENS.DASHBOARD && <Dashboard data={dashData} user={user} answers={answers} onReset={handleReset} />}
       </Suspense>
