@@ -431,7 +431,7 @@ export default function LoginPage({ onLogin }) {
           </div>
           <div style={s.topBarTextWrap}>
             <span style={s.topBarCompany}>Infopace Management Pvt Ltd</span>
-            <span style={s.topBarAssessment}>Market Potential Assessment</span>
+            <span style={s.topBarAssessment}>Market Research</span>
           </div>
         </div>
         <div style={s.topBarRight}>
@@ -448,7 +448,7 @@ export default function LoginPage({ onLogin }) {
             <div style={s.sidebarBrandCard}>
               <img src="/logo.png" alt="Infopace Logo" style={{ height: '28px', objectFit: 'contain' }} />
             </div>
-            <span style={s.sidebarSubtitle}>Market Potential Assessment</span>
+            <span style={s.sidebarSubtitle}>Market Research</span>
             <h2 style={s.sidebarTitle}>Know your market before your competitors do.</h2>
             <p style={s.sidebarDesc}>
               Our engine maps your sector, geography, and model — then surfaces a personalised intelligence brief within minutes.
