@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { QUESTIONS } from '../constants';
+import BackgroundCanvas from './BackgroundCanvas';
 
 export default function SurveyPage({ onComplete }) {
   const [cur, setCur] = useState(0);
@@ -39,9 +40,10 @@ export default function SurveyPage({ onComplete }) {
   const isLast = cur === QUESTIONS.length - 1;
 
   return (
-    <div style={{ position: 'fixed', inset: 0, background: '#e4edf5', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '10vh 20px', overflowY: 'auto' }}>
+    <div style={{ position: 'fixed', inset: 0, background: '#f8fafc', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '6vh 20px', overflowY: 'auto', backgroundImage: 'linear-gradient(to right, rgba(99, 102, 241, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(99, 102, 241, 0.03) 1px, transparent 1px)', backgroundSize: '36px 36px' }}>
+      <BackgroundCanvas />
       
-      <div style={{ width: '100%', maxWidth: '800px', margin: 'auto' }}>
+      <div className="animate-fade-in" style={{ width: '100%', maxWidth: '720px', margin: 'auto', background: '#ffffff', borderRadius: '16px', border: '1px solid #cbd5e1', boxShadow: '0 10px 25px rgba(0, 0, 0, 0.02)', zIndex: 5, overflow: 'hidden' }}>
         {/* Header */}
         <div style={{ padding: '32px 20px 24px', borderBottom: '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
           <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#1e3a8a', letterSpacing: '-0.01em', marginBottom: '8px' }}>Market Research</h1>

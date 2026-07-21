@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { sendOtp, verifyOtp } from '../services/api';
+import BackgroundCanvas from './BackgroundCanvas';
 
 const s = {
   container: {
@@ -488,23 +489,9 @@ export default function LoginPage({ onLogin }) {
           </div>
         </div>
 
-        {/* Right content pane with floating wireframes */}
+        {/* Right content pane with reactive background */}
         <div style={s.contentPane}>
-          {/* Wireframe Pyramid (SVG) */}
-          <svg width="150" height="150" viewBox="0 0 100 100" style={{ position: 'absolute', top: '8%', right: '10%', opacity: 0.12, pointerEvents: 'none' }}>
-            <polygon points="50,15 15,75 50,85" fill="none" stroke="#2563eb" strokeWidth="0.8" />
-            <polygon points="50,15 50,85 85,75" fill="none" stroke="#2563eb" strokeWidth="0.8" />
-            <polygon points="50,15 15,75 85,75" fill="none" stroke="#2563eb" strokeDasharray="2 2" strokeWidth="0.5" />
-          </svg>
-
-          {/* Wireframe Sphere (SVG) */}
-          <svg width="180" height="180" viewBox="0 0 100 100" style={{ position: 'absolute', bottom: '10%', right: '5%', opacity: 0.08, pointerEvents: 'none' }}>
-            <circle cx="50" cy="50" r="40" fill="none" stroke="#2563eb" strokeWidth="0.6" />
-            <ellipse cx="50" cy="50" rx="40" ry="15" fill="none" stroke="#2563eb" strokeWidth="0.6" />
-            <ellipse cx="50" cy="50" rx="15" ry="40" fill="none" stroke="#2563eb" strokeWidth="0.6" />
-            <line x1="10" y1="50" x2="90" y2="50" stroke="#2563eb" strokeWidth="0.6" />
-            <line x1="50" y1="10" x2="50" y2="90" stroke="#2563eb" strokeWidth="0.6" />
-          </svg>
+          <BackgroundCanvas />
 
           <div className="animate-fade-in" style={s.card}>
             {renderStepIndicator()}
