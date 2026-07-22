@@ -32,10 +32,10 @@ export default function LoadingScreen() {
           animation:'spin 1s linear infinite'
         }} />
         <div style={{ color:'#1e3a8a', fontSize:'18px', fontWeight:700, letterSpacing: '-0.01em', marginTop: '10px' }}>
-          Generating your Market Research Dashboard...
+          Your Market Research Dashboard is processing...
         </div>
         <div style={{ color:'#475569', fontSize:'13px', fontWeight: 500 }}>
-          Powered by Gemini Flash 2.5 · Analyzing your responses
+          Analyzing parameters and generating strategic insights
         </div>
       </div>
     </div>

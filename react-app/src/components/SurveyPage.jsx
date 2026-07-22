@@ -538,6 +538,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={s.select}
                 >
                   <option value="">Select...</option>
+                  <option value="India">India</option>
                   <option value="North America">North America</option>
                   <option value="Europe (EU/UK)">Europe (EU/UK)</option>
                   <option value="South Asia (SAARC)">South Asia (SAARC)</option>
