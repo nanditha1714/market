@@ -468,12 +468,12 @@ export default function LoginPage({ onLogin }) {
             <div style={s.sidebarDivider} />
             <div style={{ display: 'flex', gap: '20px' }}>
               <div style={{ flex: 1 }}>
-                <div style={s.statNumber}>3×</div>
+                <div style={s.statNumber}>2×</div>
                 <div style={s.statDesc}>Faster than traditional research</div>
               </div>
               <div style={{ width: '1px', background: 'rgba(255,255,255,0.08)' }} />
               <div style={{ flex: 1 }}>
-                <div style={s.statNumber}>50+</div>
+                <div style={s.statNumber}>35+</div>
                 <div style={s.statDesc}>Data points analysed per assessment</div>
               </div>
             </div>
