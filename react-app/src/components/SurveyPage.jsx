@@ -428,6 +428,7 @@ export default function SurveyPage({ user, onComplete }) {
     } else {
       // Compile everything back to the 10 baseline keys expected by App.jsx
       const compiled = {
+        businessName: form.businessName,
         industry: `${form.industry} (${form.businessType})`,
         problem: `${form.problem}${form.marketDrivers ? '\n\nMarket Drivers: ' + form.marketDrivers : ''}`,
         customer: `${form.customer}${form.painPoints ? '\n\nPain Points: ' + form.painPoints : ''}`,
@@ -437,7 +438,26 @@ export default function SurveyPage({ user, onComplete }) {
         pricing: form.pricing,
         price: form.price,
         ratings: `${form.strengths}${form.ratings ? '\n\nCapabilities Vector: ' + form.ratings : ''}`,
-        sc: `${form.sc} Stage. Roadblocks: ${form.challenges}${form.gtm ? '\n\nGTM Strategy: ' + form.gtm : ''}`
+        sc: `${form.sc} Stage. Roadblocks: ${form.challenges}${form.gtm ? '\n\nGTM Strategy: ' + form.gtm : ''}`,
+        rawAnswers: {
+          businessName: form.businessName,
+          industry: form.industry,
+          businessType: form.businessType,
+          geo: form.geo,
+          problem: form.problem,
+          sc: form.sc,
+          tam: form.tam,
+          marketDrivers: form.marketDrivers,
+          customer: form.customer,
+          painPoints: form.painPoints,
+          competitors: form.competitors,
+          strengths: form.strengths,
+          pricing: form.pricing,
+          price: form.price,
+          challenges: form.challenges,
+          ratings: form.ratings,
+          gtm: form.gtm
+        }
       };
       onComplete(compiled);
     }

@@ -43,7 +43,8 @@ export default function App() {
       const k = data.kpi || {};
       const payload = {
         name: user.name, phone: user.phone, email: user.email,
-        company_name: user.company, service: user.service,
+        company_name: surveyAnswers.businessName || user.company,
+        service: user.service,
         industry: enriched.industry || '', problem: enriched.problem || '',
         target_customer: enriched.customer || '', geography: enriched.geo || '',
         tam_estimate: enriched.tam || '', competitors: enriched.competitors || '',
@@ -65,7 +66,7 @@ export default function App() {
         ai_avg_rating: data.avgRating || '',
         ai_challenges: JSON.stringify(data.challenges || []),
         ai_insights: data.insights || '',
-        dashboard_json: JSON.stringify(data),
+        dashboard_json: JSON.stringify({ ...data, raw_survey_answers: surveyAnswers.rawAnswers }),
         pdf_url: null,
         created_at: new Date().toISOString(),
       };
