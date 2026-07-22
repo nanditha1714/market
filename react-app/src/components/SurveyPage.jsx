@@ -262,12 +262,89 @@ export default function SurveyPage({ user, onComplete }) {
     consent: false
   });
   const [inputFocused, setInputFocused] = useState({});
+  const [gibberishError, setGibberishError] = useState(null);
 
-  const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
+  const isGibberish = (text) => {
+    if (!text || text.trim().length === 0) return false;
+    const words = text.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim().split(/\s+/);
+    for (const word of words) {
+      if (/^[a-z]+$/.test(word)) {
+        if (word.length > 5) {
+          const vowels = (word.match(/[aeiou]/g) || []).length;
+          if (vowels === 0) return true;
+          if (word.length > 8 && (vowels / word.length) < 0.15) return true;
+        }
+        if (/(?:asdf|qwerty|zxcv|lkjh|mnbvc|12345)/i.test(word)) return true;
+        if (/(.)\1{4,}/.test(word)) return true;
+      }
+    }
+    if (words.length > 3) {
+      const unique = new Set(words);
+      if (unique.size / words.length < 0.35) return true;
+    }
+    return false;
+  };
+
+  const checkCurrentStepGibberish = () => {
+    const checkFields = [];
+    if (currentStep === 1) {
+      checkFields.push({ name: 'Product/Business Name', val: form.businessName, key: 'businessName' });
+      checkFields.push({ name: 'Problem description', val: form.problem, key: 'problem' });
+    } else if (currentStep === 2) {
+      checkFields.push({ name: 'TAM estimate', val: form.tam, key: 'tam' });
+      checkFields.push({ name: 'Market Drivers', val: form.marketDrivers, key: 'marketDrivers' });
+    } else if (currentStep === 3) {
+      checkFields.push({ name: 'Target Customer', val: form.customer, key: 'customer' });
+      checkFields.push({ name: 'Customer Pain Points', val: form.painPoints, key: 'painPoints' });
+    } else if (currentStep === 4) {
+      const compList = form.competitors.split(',').map(c => c.trim()).filter(c => c.length > 5);
+      for (const comp of compList) {
+        checkFields.push({ name: 'Competitor name', val: comp, key: 'competitors' });
+      }
+      checkFields.push({ name: 'Strengths/weaknesses', val: form.strengths, key: 'strengths' });
+    } else if (currentStep === 5) {
+      checkFields.push({ name: 'Average Pricing Rate', val: form.price, key: 'price' });
+    } else if (currentStep === 6) {
+      checkFields.push({ name: 'Biggest Roadblocks', val: form.challenges, key: 'challenges' });
+      checkFields.push({ name: 'Key Vulnerabilities', val: form.ratings, key: 'ratings' });
+    } else if (currentStep === 7) {
+      if (form.gtm.trim()) {
+        checkFields.push({ name: 'Go-To-Market strategy', val: form.gtm, key: 'gtm' });
+      }
+    }
+    for (const f of checkFields) {
+      if (isGibberish(f.val)) {
+        return `Nonsensical or test inputs detected in "${f.name}". Please answer the questions properly once again.`;
+      }
+    }
+    return null;
+  };
+
+  const set = (k) => (e) => {
+    setForm(f => ({ ...f, [k]: e.target.value }));
+    setGibberishError(null);
+  };
   const setFocus = (k, val) => setInputFocused(prev => ({ ...prev, [k]: val }));
 
-  const getBorderColor = (k) => (inputFocused[k] ? '#1d4ed8' : '#cbd5e1');
-  const getBoxShadow = (k) => (inputFocused[k] ? '0 0 0 1px #1d4ed8' : 'none');
+  const getBorderColor = (k) => {
+    if (gibberishError && isFieldCheckedInCurrentStep(k) && isGibberish(form[k])) return 'var(--danger)';
+    return inputFocused[k] ? '#1d4ed8' : '#cbd5e1';
+  };
+  const getBoxShadow = (k) => {
+    if (gibberishError && isFieldCheckedInCurrentStep(k) && isGibberish(form[k])) return '0 0 0 1px var(--danger)';
+    return inputFocused[k] ? '0 0 0 1px #1d4ed8' : 'none';
+  };
+
+  const isFieldCheckedInCurrentStep = (k) => {
+    if (currentStep === 1) return k === 'businessName' || k === 'problem';
+    if (currentStep === 2) return k === 'tam' || k === 'marketDrivers';
+    if (currentStep === 3) return k === 'customer' || k === 'painPoints';
+    if (currentStep === 4) return k === 'competitors' || k === 'strengths';
+    if (currentStep === 5) return k === 'price';
+    if (currentStep === 6) return k === 'challenges' || k === 'ratings';
+    if (currentStep === 7) return k === 'gtm';
+    return false;
+  };
 
   const getStepIcon = (step) => {
     switch (step) {
@@ -338,6 +415,14 @@ export default function SurveyPage({ user, onComplete }) {
 
   const handleNext = () => {
     if (!isStepValid()) return;
+    
+    // Check for gibberish
+    const gibberishMsg = checkCurrentStepGibberish();
+    if (gibberishMsg) {
+      setGibberishError(gibberishMsg);
+      return;
+    }
+
     if (currentStep < 7) {
       setCurrentStep(c => c + 1);
     } else {
@@ -769,6 +854,25 @@ export default function SurveyPage({ user, onComplete }) {
         {/* Card Body */}
         <div style={s.cardBody}>
           {renderStepFields()}
+
+          {gibberishError && (
+            <div style={{
+              marginTop: '16px',
+              padding: '12px 16px',
+              background: '#fef2f2',
+              borderLeft: '4px solid #ef4444',
+              borderRadius: '4px',
+              color: '#991b1b',
+              fontSize: '13px',
+              fontWeight: 500,
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '16px' }}>⚠️</span>
+              <span>{gibberishError}</span>
+            </div>
+          )}
         </div>
 
         {/* Card Footer */}

@@ -38,7 +38,7 @@ function buildPrompt(answers) {
   const comp3 = compList[2] || 'Competitor C';
   const compCount = compList.length > 0 ? compList.length : 3;
 
-  return `You are a market analyst. Generate a highly accurate JSON dataset reflecting this survey (DO NOT hallucinate templates). If the input is gibberish/test characters, abort and return EXACTLY: {"error": "Invalid/nonsensical input."}
+  return `You are a market analyst. Generate a highly accurate JSON dataset reflecting this survey (DO NOT hallucinate templates). If the input is gibberish/test characters, abort and return EXACTLY: {"error": "Invalid or nonsensical input detected. Please answer the questions properly once again."}
 SURVEY:
 1.Industry: ${answers.industry}
 2.Problem: ${answers.problem}
@@ -76,10 +76,49 @@ Return ONLY this EXACT JSON structure, populated:
 {"kpi":{"tam":"X.X","growthRate":"X.X%","customers":"X.X","competitors":${compCount},"stage":"${(answers.sc||'Ideation').split(" ")[0]}","price":"${answers.price||'Market Avg'}","stars":4},"growth":{"labels":["2018","2019","2020","2021","2022","2023","2024"],"values":[0,0,0,0,0,0,0]},"segments":[{"label":"X","value":50},{"label":"Y","value":30},{"label":"Z","value":20}],"geo":[{"label":"X","value":50},{"label":"Y","value":30},{"label":"Z","value":20}],"competitors":[{"name":"${comp1}","share":40},{"name":"${comp2}","share":25},{"name":"${comp3}","share":15},{"name":"Your Company","share":10},{"name":"Others","share":10}],"radarLabels":["Price","Quality","Brand","Innovation","Support"],"radarYou":[3,4,3,4,4],"radarComp":[4,3,4,3,3],"sentiment":{"positive":65,"neutral":25,"negative":10},"pricing":[{"name":"Your Company","color":"#16a34a","note":"Value"},{"name":"${comp1}","color":"#1a2b5e","note":"Premium"},{"name":"${comp2}","color":"#f59e0b","note":"Budget"}],"avgRating":"4.1","challenges":["Risk."],"insights":"Summary.","detailedReport":{"executiveSummary":"Exec summary paragraphs.","marketGrowth":"Growth analysis.","segmentation":"Segmentation analysis.","geography":"Geographic analysis.","competition":"Competitive share analysis.","radarAnalysis":"Radar Matrix positioning analysis.","pricing":"Pricing strategy recommendation.","risks":"Risks and mitigation strategy."}}`;
 }
 
+function isGibberish(text) {
+  if (!text || typeof text !== 'string' || text.trim().length === 0) return false;
+  const words = text.toLowerCase().replace(/[^a-z0-9\s]/g, '').trim().split(/\s+/);
+  for (const word of words) {
+    if (/^[a-z]+$/.test(word)) {
+      if (word.length > 5) {
+        const vowels = (word.match(/[aeiou]/g) || []).length;
+        if (vowels === 0) return true;
+        if (word.length > 8 && (vowels / word.length) < 0.15) return true;
+      }
+      if (/(?:asdf|qwerty|zxcv|lkjh|mnbvc|12345)/i.test(word)) return true;
+      if (/(.)\1{4,}/.test(word)) return true;
+    }
+  }
+  if (words.length > 3) {
+    const unique = new Set(words);
+    if (unique.size / words.length < 0.35) return true;
+  }
+  return false;
+}
+
 app.post('/api/generate', apiLimiter, async (req, res) => {
   if (!GEMINI_KEY) return res.status(500).json({ error: "Server missing Gemini API Key" });
   
   const answers = req.body;
+
+  // Pre-flight check for gibberish
+  const fieldsToCheck = [
+    answers.industry,
+    answers.problem,
+    answers.customer,
+    answers.tam,
+    answers.competitors,
+    answers.price,
+    answers.ratings,
+    answers.sc
+  ];
+  for (const field of fieldsToCheck) {
+    if (isGibberish(field)) {
+      return res.status(400).json({ error: "Invalid or nonsensical input detected. Please answer the questions properly once again." });
+    }
+  }
+  
   const prompt = buildPrompt(answers);
 
   const maxRetries = 2;
