@@ -320,17 +320,8 @@ export default function LoginPage({ onLogin }) {
 
   const handleSubmit = async () => {
     if (!validate()) return;
-    setLoading(true);
-    setOtpError(null);
-    setOtpSentMsg(null);
-    const res = await sendOtp(form.email);
-    setLoading(false);
-    if (res.success) {
-      setStep('OTP');
-      setOtpSentMsg('A verification code has been sent to your email.');
-    } else {
-      setOtpError(res.error || 'Failed to send verification code. Please check SMTP settings.');
-    }
+    // Email verification bypassed for now. Proceed directly to survey.
+    onLogin(form);
   };
 
   const handleVerify = async () => {
@@ -718,7 +709,7 @@ export default function LoginPage({ onLogin }) {
                     onMouseOver={e => { if(isStep2Valid() && !loading) e.currentTarget.style.background = '#1e293b' }}
                     onMouseOut={e => { if(isStep2Valid() && !loading) e.currentTarget.style.background = '#1e3a8a' }}
                   >
-                    {loading ? 'Sending verification...' : 'Verify Email & Start Research'}
+                    {loading ? 'Processing...' : 'Proceed to Research'}
                   </button>
                 </div>
               </div>
