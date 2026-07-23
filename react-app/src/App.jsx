@@ -1,6 +1,6 @@
-import React, { useState, useCallback, Suspense, lazy } from 'react';
+import React, { useState, useCallback, useEffect, Suspense, lazy } from 'react';
 import LoadingScreen from './components/LoadingScreen';
-import { callGemini, saveRecord } from './services/api';
+import { callGemini, saveRecord, getRecord } from './services/api';
 
 const LoginPage  = lazy(() => import('./components/LoginPage'));
 const SurveyPage = lazy(() => import('./components/SurveyPage'));
@@ -15,9 +15,105 @@ export default function App() {
   const [dashData, setDashData] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
+  // Helper to parse current URL hash and sync state
+  const parseHash = useCallback(async () => {
+    const hash = window.location.hash || '#/login';
+    const path = hash.split('?')[0];
+    const params = new URLSearchParams(hash.split('?')[1] || '');
+    const id = params.get('id');
+
+    // Load active session from localStorage
+    const storedUser = localStorage.getItem('infopace_user_session');
+    let currentUser = null;
+    if (storedUser) {
+      try {
+        currentUser = JSON.parse(storedUser);
+      } catch (e) {
+        console.warn('Failed to parse user session');
+      }
+    }
+
+    if (!currentUser) {
+      setUser(null);
+      setScreen(SCREENS.LOGIN);
+      if (window.location.hash !== '#/login') {
+        window.location.hash = '#/login';
+      }
+      return;
+    }
+
+    setUser(currentUser);
+
+    if (path === '#/login') {
+      window.location.hash = '#/survey';
+    } else if (path === '#/survey') {
+      setScreen(SCREENS.SURVEY);
+    } else if (path === '#/dashboard') {
+      if (id) {
+        // Skip query request if state is already loaded for this record
+        if (dashData && (dashData.dbRecordId === id || dashData.id === id)) {
+          setScreen(SCREENS.DASHBOARD);
+          return;
+        }
+        setScreen(SCREENS.LOADING);
+        const record = await getRecord(id);
+        if (record) {
+          try {
+            const parsedDash = JSON.parse(record.dashboard_json);
+            parsedDash.dbRecordId = record.id;
+
+            const reconstructedAnswers = {
+              businessName: record.company_name,
+              industry: record.industry,
+              problem: record.problem,
+              customer: record.target_customer,
+              geo: record.geography,
+              tam: record.tam_estimate,
+              competitors: record.competitors,
+              pricing: record.pricing_model,
+              price: record.avg_price,
+              ratings: record.self_rating,
+              sc: record.stage_challenges,
+              rawAnswers: parsedDash.raw_survey_answers
+            };
+
+            setAnswers(reconstructedAnswers);
+            setDashData(parsedDash);
+            setScreen(SCREENS.DASHBOARD);
+          } catch (err) {
+            console.error('Error reconstructing dashboard from DB:', err);
+            window.location.hash = '#/survey';
+          }
+        } else {
+          alert('Requested market research report could not be found.');
+          window.location.hash = '#/survey';
+        }
+      } else {
+        if (dashData) {
+          setScreen(SCREENS.DASHBOARD);
+        } else {
+          window.location.hash = '#/survey';
+        }
+      }
+    }
+  }, [dashData]);
+
+  // Sync hash routing on mount and hashchange events
+  useEffect(() => {
+    parseHash();
+    const handleHashChange = () => {
+      parseHash();
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
+  }, [parseHash]);
+
   const handleLogin = useCallback((userInfo) => {
+    localStorage.setItem('infopace_user_session', JSON.stringify(userInfo));
     setUser(userInfo);
-    setScreen(SCREENS.SURVEY);
+    window.location.hash = '#/survey';
   }, []);
 
   const handleSurveyComplete = useCallback(async (surveyAnswers) => {
@@ -26,18 +122,18 @@ export default function App() {
       ...surveyAnswers,
       industry: surveyAnswers.industry || ((user?.company || '') + ' — ' + (user?.service || '').slice(0, 80)),
     };
-    setAnswers(enriched);
     setScreen(SCREENS.LOADING);
 
     const data = await callGemini(enriched);
     
     if (data.error) {
       setErrorMsg(data.error);
-      setScreen(SCREENS.SURVEY);
+      window.location.hash = '#/survey';
       setTimeout(() => setErrorMsg(null), 8000);
       return;
     }
 
+    let dbRecordId = null;
     // Auto-save to Supabase backend on completion
     try {
       const k = data.kpi || {};
@@ -73,21 +169,28 @@ export default function App() {
       
       const dbRecord = await saveRecord(payload);
       if (dbRecord && dbRecord.id) {
+        dbRecordId = dbRecord.id;
         data.dbRecordId = dbRecord.id;
       }
     } catch (dbErr) {
       console.warn('Auto-save database failure:', dbErr);
     }
 
+    setAnswers(enriched);
     setDashData(data);
-    setScreen(SCREENS.DASHBOARD);
+    if (dbRecordId) {
+      window.location.hash = `#/dashboard?id=${dbRecordId}`;
+    } else {
+      window.location.hash = '#/dashboard';
+    }
   }, [user]);
 
   const handleReset = useCallback(() => {
-    setScreen(SCREENS.LOGIN);
+    localStorage.removeItem('infopace_user_session');
     setUser(null);
     setAnswers(null);
     setDashData(null);
+    window.location.hash = '#/login';
   }, []);
 
   return (

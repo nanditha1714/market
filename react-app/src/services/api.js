@@ -89,6 +89,30 @@ export async function saveRecord(payload) {
   }
 }
 
+// ── Get single record from Supabase DB ─────────────────────────────────────────
+export async function getRecord(id) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+  try {
+    const res = await fetchWithRetry(`${SUPABASE_URL}/rest/v1/research_submissions?id=eq.${id}`, {
+      method: 'GET',
+      headers: {
+        'apikey':        SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+      }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data[0] || null;
+    }
+    const err = await res.text();
+    console.warn('DB get failed:', err);
+    return null;
+  } catch (err) {
+    console.warn('Get error:', err);
+    return null;
+  }
+}
+
 // ── Update existing record in Supabase DB ─────────────────────────────────────
 export async function updateRecord(id, updates) {
   if (!SUPABASE_URL || !SUPABASE_KEY) return false;
