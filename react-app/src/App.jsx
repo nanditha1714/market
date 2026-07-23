@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, Suspense, lazy } from 'react';
+import React, { useState, useCallback, useEffect, useRef, Suspense, lazy } from 'react';
 import LoadingScreen from './components/LoadingScreen';
 import { callGemini, saveRecord, getRecord } from './services/api';
 
@@ -14,6 +14,7 @@ export default function App() {
   const [answers, setAnswers] = useState(null);
   const [dashData, setDashData] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const lastSavedIdRef = useRef(null);
 
   // Helper to parse current URL hash and sync state
   const parseHash = useCallback(async () => {
@@ -50,8 +51,8 @@ export default function App() {
       setScreen(SCREENS.SURVEY);
     } else if (path === '#/dashboard') {
       if (id) {
-        // Skip query request if state is already loaded for this record
-        if (dashData && (dashData.dbRecordId === id || dashData.id === id)) {
+        // Skip query request if state is already loaded for this record or just completed
+        if (lastSavedIdRef.current === id || (dashData && (dashData.dbRecordId === id || dashData.id === id))) {
           setScreen(SCREENS.DASHBOARD);
           return;
         }
@@ -171,6 +172,7 @@ export default function App() {
       if (dbRecord && dbRecord.id) {
         dbRecordId = dbRecord.id;
         data.dbRecordId = dbRecord.id;
+        lastSavedIdRef.current = dbRecord.id;
       }
     } catch (dbErr) {
       console.warn('Auto-save database failure:', dbErr);
@@ -187,6 +189,7 @@ export default function App() {
 
   const handleReset = useCallback(() => {
     localStorage.removeItem('infopace_user_session');
+    lastSavedIdRef.current = null;
     setUser(null);
     setAnswers(null);
     setDashData(null);
