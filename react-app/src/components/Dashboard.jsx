@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useState } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import ChartCard from './ChartCard';
@@ -16,10 +16,74 @@ const datalabelPie = {
   },
 };
 
+const loadScript = (src) => {
+  return new Promise((resolve) => {
+    if (document.querySelector(`script[src="${src}"]`)) {
+      resolve(true);
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = src;
+    script.onload = () => resolve(true);
+    script.onerror = () => resolve(false);
+    document.body.appendChild(script);
+  });
+};
+
 export default function Dashboard({ data, user, answers, onReset }) {
   const dashRef = useRef(null);
   const page1Ref = useRef(null);
   const page2Ref = useRef(null);
+  const [isPaid, setIsPaid] = useState(() => {
+    const key = `isPaid_${user?.email || 'global'}`;
+    return localStorage.getItem(key) === 'true';
+  });
+  const [paying, setPaying] = useState(false);
+
+  const handlePayment = async (onSuccess) => {
+    setPaying(true);
+    const loaded = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
+    if (!loaded) {
+      alert("Failed to load Razorpay payment gateway script. Please check your internet connection.");
+      setPaying(false);
+      return;
+    }
+
+    const keyId = process.env.REACT_APP_RAZORPAY_KEY_ID || "rzp_test_defaultKeyId";
+
+    const options = {
+      key: keyId,
+      amount: "49900", // ₹499.00
+      currency: "INR",
+      name: "Infopace Management Pvt Ltd",
+      description: "Unlock Report & Dashboard Downloads",
+      image: "/logo.png",
+      handler: function (response) {
+        console.log("Razorpay Payment ID:", response.razorpay_payment_id);
+        const storageKey = `isPaid_${user?.email || 'global'}`;
+        localStorage.setItem(storageKey, 'true');
+        setIsPaid(true);
+        setPaying(false);
+        if (onSuccess) onSuccess();
+      },
+      prefill: {
+        name: user?.name || "",
+        email: user?.email || "",
+        contact: user?.phone || ""
+      },
+      theme: {
+        color: "#1e3a8a"
+      },
+      modal: {
+        ondismiss: function () {
+          setPaying(false);
+        }
+      }
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
   const page3Ref = useRef(null);
   const page4Ref = useRef(null);
   const page5Ref = useRef(null);
@@ -138,7 +202,8 @@ export default function Dashboard({ data, user, answers, onReset }) {
 
   // ── Screenshot & Save ──────────────────────────────────────────────────────
   // ── Screenshot & Save Dashboard (Single page Landscape) ─────────────────────
-  const handleDownloadDashboard = useCallback(async () => {
+  // ── Screenshot & Save Dashboard (Single page Landscape) ─────────────────────
+  const executeDownloadDashboard = useCallback(async () => {
     const badge = document.createElement('div');
     badge.style.cssText = 'position:fixed;bottom:16px;right:16px;background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:10px 18px;border-radius:4px;z-index:9999;box-shadow:var(--shadow-md);font-family:inherit';
     badge.textContent = 'Exporting Dashboard...';
@@ -224,8 +289,16 @@ export default function Dashboard({ data, user, answers, onReset }) {
     setTimeout(() => { if (badge.parentNode) badge.remove(); }, 6000);
   }, [data, user, answers, k]);
 
+  const handleDownloadDashboard = useCallback(() => {
+    if (!isPaid) {
+      handlePayment(executeDownloadDashboard);
+      return;
+    }
+    executeDownloadDashboard();
+  }, [isPaid, executeDownloadDashboard]);
+
   // ── Screenshot & Save Detailed Report (8 Pages Portrait) ───────────────────
-  const handleDownloadReport = useCallback(async () => {
+  const executeDownloadReport = useCallback(async () => {
     const badge = document.createElement('div');
     badge.style.cssText = 'position:fixed;bottom:16px;right:16px;background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:10px 18px;border-radius:4px;z-index:9999;box-shadow:var(--shadow-md);font-family:inherit';
     badge.textContent = 'Preparing Report...';
@@ -324,6 +397,14 @@ export default function Dashboard({ data, user, answers, onReset }) {
     setTimeout(() => { if (badge.parentNode) badge.remove(); }, 6000);
   }, [data, user, answers, k, page1Ref, page2Ref, page3Ref, page4Ref, page5Ref, page6Ref, page7Ref, page8Ref]);
 
+  const handleDownloadReport = useCallback(() => {
+    if (!isPaid) {
+      handlePayment(executeDownloadReport);
+      return;
+    }
+    executeDownloadReport();
+  }, [isPaid, executeDownloadReport]);
+
   return (
     <div ref={dashRef} style={{ position:'fixed', inset:0, width:'100%', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflow:'hidden' }}>
       {/* Header */}
@@ -338,8 +419,12 @@ export default function Dashboard({ data, user, answers, onReset }) {
           </p>
         </div>
         <div style={{ display:'flex', gap:'8px' }}>
-          <button onClick={handleDownloadDashboard} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer' }}>Download PDF</button>
-          <button onClick={handleDownloadReport} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--primary)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer' }}>Download Detailed Report</button>
+          <button onClick={handleDownloadDashboard} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+            {isPaid ? 'Download PDF' : 'Download PDF (🔒 ₹499)'}
+          </button>
+          <button onClick={handleDownloadReport} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--primary)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+            {isPaid ? 'Download Detailed Report' : 'Download Detailed Report (🔒 ₹499)'}
+          </button>
           <button onClick={onReset} style={{ padding:'6px 14px', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'14px', fontWeight:500, cursor:'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>←</span> New Research
           </button>
