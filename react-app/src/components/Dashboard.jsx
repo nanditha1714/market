@@ -53,7 +53,7 @@ export default function Dashboard({ data, user, answers, onReset }) {
 
     const options = {
       key: keyId,
-      amount: "49900", // ₹499.00
+      amount: "100", // ₹1.00
       currency: "INR",
       name: "Infopace Management Pvt Ltd",
       description: "Unlock Report & Dashboard Downloads",
@@ -420,10 +420,10 @@ export default function Dashboard({ data, user, answers, onReset }) {
         </div>
         <div style={{ display:'flex', gap:'8px' }}>
           <button onClick={handleDownloadDashboard} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
-            {isPaid ? 'Download PDF' : 'Download PDF (🔒 ₹499)'}
+            {isPaid ? 'Download PDF' : 'Download PDF (🔒 ₹1)'}
           </button>
           <button onClick={handleDownloadReport} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--primary)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
-            {isPaid ? 'Download Detailed Report' : 'Download Detailed Report (🔒 ₹499)'}
+            {isPaid ? 'Download Detailed Report' : 'Download Detailed Report (🔒 ₹1)'}
           </button>
           <button onClick={onReset} style={{ padding:'6px 14px', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'14px', fontWeight:500, cursor:'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>←</span> New Research
