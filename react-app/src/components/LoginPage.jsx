@@ -309,48 +309,58 @@ export default function LoginPage({ onLogin, initialGoogleUser }) {
   const [otpSentMsg, setOtpSentMsg] = useState(null);
   const [inputFocused, setInputFocused] = useState({});
 
-  const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
+  const set = (k) => (e) => {
+    setForm(f => ({ ...f, [k]: e.target.value }));
+    if (errors[k]) {
+      setErrors(prev => ({ ...prev, [k]: null }));
+    }
+  };
+
+  const handlePhoneChange = (e) => {
+    const val = e.target.value.replace(/\D/g, ''); // Only allow numbers (0-9)
+    setForm(f => ({ ...f, phone: val.slice(0, 10) })); // Cap at 10 digits
+    if (errors.phone) {
+      setErrors(prev => ({ ...prev, phone: null }));
+    }
+  };
 
   const setFocus = (k, val) => {
     setInputFocused(prev => ({ ...prev, [k]: val }));
   };
 
-  const isStep1Valid = () => {
-    if (!form.name.trim()) return false;
-    if (!form.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) return false;
-    if (!form.company.trim()) return false;
-    if (!form.role) return false;
-    const phoneClean = form.phone.replace(/\s+/g, '');
-    if (!/^[6-9]\d{9}$/.test(phoneClean)) return false;
-    return true;
-  };
-
-  const isStep2Valid = () => {
-    if (!form.service.trim()) return false;
-    if (!form.consent) return false;
-    return true;
-  };
-
-  const validate = () => {
+  const validateStep1 = () => {
     const errs = {};
-    if (!form.name.trim()) errs.name = 'Required';
+    if (!form.name.trim()) errs.name = 'Full name is required';
+    if (!form.email.trim()) {
+      errs.email = 'Email address is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      errs.email = 'Please enter a valid email address';
+    }
+    if (!form.company.trim()) errs.company = 'Organization/Company name is required';
+    if (!form.role) errs.role = 'Role selection is required';
     
     const phoneClean = form.phone.replace(/\s+/g, '');
-    if (!/^[6-9]\d{9}$/.test(phoneClean)) errs.phone = 'Must start with 6-9 and be 10 digits';
+    if (!phoneClean) {
+      errs.phone = 'Phone number is required';
+    } else if (!/^[6-9]\d{9}$/.test(phoneClean)) {
+      errs.phone = 'Must be a 10-digit number starting with 6-9';
+    }
     
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Valid email required';
-    
-    if (!form.company.trim()) errs.company = 'Required';
-    if (!form.role) errs.role = 'Required';
-    if (!form.service.trim()) errs.service = 'Required';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
+  };
+
+  const validateStep2 = () => {
+    const errs = {};
+    if (!form.service.trim()) errs.service = 'Description of your product, service, or business idea is required';
+    if (!form.consent) errs.consent = 'You must agree to the terms to proceed';
     
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
 
   const handleSubmit = async () => {
-    if (!validate()) return;
-    // Email verification bypassed for now. Proceed directly to survey.
+    if (!validateStep2()) return;
     onLogin(form);
   };
 
@@ -580,6 +590,7 @@ export default function LoginPage({ onLogin, initialGoogleUser }) {
                         style={s.input}
                       />
                     </div>
+                    {errors.name && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{errors.name}</div>}
                   </div>
 
                   <div style={s.field}>
@@ -595,6 +606,7 @@ export default function LoginPage({ onLogin, initialGoogleUser }) {
                         style={s.input}
                       />
                     </div>
+                    {errors.email && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{errors.email}</div>}
                   </div>
 
                   <div style={s.field}>
@@ -610,6 +622,7 @@ export default function LoginPage({ onLogin, initialGoogleUser }) {
                         style={s.input}
                       />
                     </div>
+                    {errors.company && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{errors.company}</div>}
                   </div>
 
                   <div style={s.field}>
@@ -632,6 +645,7 @@ export default function LoginPage({ onLogin, initialGoogleUser }) {
                         <option value="Other">Other</option>
                       </select>
                     </div>
+                    {errors.role && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{errors.role}</div>}
                   </div>
 
                   <div style={{ ...s.field, gridColumn: '1 / -1' }}>
@@ -645,13 +659,17 @@ export default function LoginPage({ onLogin, initialGoogleUser }) {
                         type="text"
                         placeholder="9876543210"
                         value={form.phone}
-                        onChange={set('phone')}
+                        onChange={handlePhoneChange}
                         onFocus={() => setFocus('phone', true)}
                         onBlur={() => setFocus('phone', false)}
                         style={s.input}
                       />
                     </div>
-                    <span style={{ fontSize: '11px', color: '#64748b', marginTop: '-3px' }}>India: 10 digits, starts 6–9</span>
+                    {errors.phone ? (
+                      <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{errors.phone}</div>
+                    ) : (
+                      <span style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>India: 10 digits, starts 6–9</span>
+                    )}
                   </div>
 
                   {/* Team Size Option */}
@@ -689,17 +707,13 @@ export default function LoginPage({ onLogin, initialGoogleUser }) {
 
                 <button
                   onClick={() => {
-                    if (isStep1Valid()) {
+                    if (validateStep1()) {
                       setCurrentSubStep(2);
                     }
                   }}
-                  disabled={!isStep1Valid()}
-                  style={{
-                    ...s.buttonPrimary,
-                    ...(!isStep1Valid() ? s.buttonDisabled : {})
-                  }}
-                  onMouseOver={e => { if(isStep1Valid()) e.currentTarget.style.background = '#1e293b' }}
-                  onMouseOut={e => { if(isStep1Valid()) e.currentTarget.style.background = '#1e3a8a' }}
+                  style={s.buttonPrimary}
+                  onMouseOver={e => e.currentTarget.style.background = '#1e293b'}
+                  onMouseOut={e => e.currentTarget.style.background = '#1e3a8a'}
                 >
                   Continue →
                 </button>
@@ -732,19 +746,28 @@ export default function LoginPage({ onLogin, initialGoogleUser }) {
                         style={{ ...s.input, resize: 'none' }}
                       />
                     </div>
+                    {errors.service && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{errors.service}</div>}
                   </div>
 
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginTop: '6px' }}>
-                    <input 
-                      type="checkbox" 
-                      id="consent"
-                      checked={form.consent || false}
-                      onChange={(e) => setForm(f => ({ ...f, consent: e.target.checked }))}
-                      style={{ width: '17px', height: '17px', marginTop: '1px', cursor: 'pointer', accentColor: '#1e3a8a' }}
-                    />
-                    <label htmlFor="consent" style={{ fontSize: '12.5px', color: '#475569', lineHeight: 1.45, cursor: 'pointer', userSelect: 'none' }}>
-                      I consent to the collection and processing of my details to generate this market research dashboard.
-                    </label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '6px' }}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                      <input 
+                        type="checkbox" 
+                        id="consent"
+                        checked={form.consent || false}
+                        onChange={(e) => {
+                          setForm(f => ({ ...f, consent: e.target.checked }));
+                          if (errors.consent) {
+                            setErrors(prev => ({ ...prev, consent: null }));
+                          }
+                        }}
+                        style={{ width: '17px', height: '17px', marginTop: '1px', cursor: 'pointer', accentColor: '#1e3a8a' }}
+                      />
+                      <label htmlFor="consent" style={{ fontSize: '12.5px', color: '#475569', lineHeight: 1.45, cursor: 'pointer', userSelect: 'none' }}>
+                        I consent to the collection and processing of my details to generate this market research dashboard.
+                      </label>
+                    </div>
+                    {errors.consent && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{errors.consent}</div>}
                   </div>
                 </div>
 
@@ -773,14 +796,14 @@ export default function LoginPage({ onLogin, initialGoogleUser }) {
                   
                   <button
                     onClick={handleSubmit}
-                    disabled={!isStep2Valid() || loading}
+                    disabled={loading}
                     style={{
                       ...s.buttonPrimary,
                       flex: 1,
-                      ...((!isStep2Valid() || loading) ? s.buttonDisabled : {})
+                      ...(loading ? s.buttonDisabled : {})
                     }}
-                    onMouseOver={e => { if(isStep2Valid() && !loading) e.currentTarget.style.background = '#1e293b' }}
-                    onMouseOut={e => { if(isStep2Valid() && !loading) e.currentTarget.style.background = '#1e3a8a' }}
+                    onMouseOver={e => { if(!loading) e.currentTarget.style.background = '#1e293b' }}
+                    onMouseOut={e => { if(!loading) e.currentTarget.style.background = '#1e3a8a' }}
                   >
                     {loading ? 'Processing...' : 'Proceed to Research'}
                   </button>

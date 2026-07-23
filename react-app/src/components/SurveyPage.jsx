@@ -9,8 +9,8 @@ const s = {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: '24px',
+    justifyContent: 'flex-start',
+    padding: '40px 24px',
     overflowY: 'auto',
     backgroundImage: 'linear-gradient(to right, rgba(99, 102, 241, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(99, 102, 241, 0.03) 1px, transparent 1px)',
     backgroundSize: '36px 36px',
@@ -278,6 +278,13 @@ export default function SurveyPage({ user, onComplete }) {
   });
   const [inputFocused, setInputFocused] = useState({});
   const [gibberishError, setGibberishError] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
+
+  // Clear step-specific validation errors when moving between steps
+  useEffect(() => {
+    setValidationErrors({});
+    setGibberishError(null);
+  }, [currentStep]);
 
   // Sync form state changes to localStorage
   useEffect(() => {
@@ -350,14 +357,19 @@ export default function SurveyPage({ user, onComplete }) {
   const set = (k) => (e) => {
     setForm(f => ({ ...f, [k]: e.target.value }));
     setGibberishError(null);
+    if (validationErrors[k]) {
+      setValidationErrors(prev => ({ ...prev, [k]: null }));
+    }
   };
   const setFocus = (k, val) => setInputFocused(prev => ({ ...prev, [k]: val }));
 
   const getBorderColor = (k) => {
+    if (validationErrors[k]) return 'var(--danger)';
     if (gibberishError && isFieldCheckedInCurrentStep(k) && isGibberish(form[k])) return 'var(--danger)';
     return inputFocused[k] ? '#1d4ed8' : '#cbd5e1';
   };
   const getBoxShadow = (k) => {
+    if (validationErrors[k]) return '0 0 0 1px var(--danger)';
     if (gibberishError && isFieldCheckedInCurrentStep(k) && isGibberish(form[k])) return '0 0 0 1px var(--danger)';
     return inputFocused[k] ? '0 0 0 1px #1d4ed8' : 'none';
   };
@@ -412,36 +424,55 @@ export default function SurveyPage({ user, onComplete }) {
     }
   };
 
-  const isStepValid = () => {
-    switch (currentStep) {
-      case 1:
-        return (
-          form.businessName.trim().length > 0 &&
-          form.industry.length > 0 &&
-          form.businessType.length > 0 &&
-          form.geo.length > 0 &&
-          form.problem.trim().length >= 20 &&
-          form.sc.length > 0
-        );
-      case 2:
-        return form.tam.trim().length > 0 && form.marketDrivers.trim().length > 0;
-      case 3:
-        return form.customer.trim().length > 0 && form.painPoints.trim().length > 0;
-      case 4:
-        return form.competitors.trim().length > 0 && form.strengths.trim().length > 0;
-      case 5:
-        return form.pricing.length > 0 && form.price.trim().length > 0;
-      case 6:
-        return form.challenges.trim().length > 0 && form.ratings.trim().length > 0;
-      case 7:
-        return form.consent;
-      default:
-        return false;
+  const validateCurrentStep = () => {
+    const errs = {};
+    if (currentStep === 1) {
+      if (!form.businessName.trim()) errs.businessName = 'Business name is required.';
+      if (!form.industry) errs.industry = 'Industry/Sector is required.';
+      if (!form.businessType) errs.businessType = 'Business type is required.';
+      if (!form.geo) errs.geo = 'Target geography is required.';
+      if (form.problem.trim().length < 20) {
+        errs.problem = `Please describe the problem statement (minimum 20 characters, current: ${form.problem.trim().length}).`;
+      }
+      if (!form.sc) errs.sc = 'Current stage selection is required.';
+    } else if (currentStep === 2) {
+      if (form.tam.trim().length < 20) {
+        errs.tam = `Please describe addressable market estimate logic (minimum 20 characters, current: ${form.tam.trim().length}).`;
+      }
+      if (form.marketDrivers.trim().length < 20) {
+        errs.marketDrivers = `Please describe core macro demand drivers (minimum 20 characters, current: ${form.marketDrivers.trim().length}).`;
+      }
+    } else if (currentStep === 3) {
+      if (form.customer.trim().length < 20) {
+        errs.customer = `Please describe target customer profiles (minimum 20 characters, current: ${form.customer.trim().length}).`;
+      }
+      if (form.painPoints.trim().length < 20) {
+        errs.painPoints = `Please describe customer pain points (minimum 20 characters, current: ${form.painPoints.trim().length}).`;
+      }
+    } else if (currentStep === 4) {
+      if (form.competitors.trim().length < 20) {
+        errs.competitors = `Please list your competitors (minimum 20 characters, current: ${form.competitors.trim().length}).`;
+      }
+      if (form.strengths.trim().length < 20) {
+        errs.strengths = `Please describe your unique strengths (minimum 20 characters, current: ${form.strengths.trim().length}).`;
+      }
+    } else if (currentStep === 5) {
+      if (!form.pricing) errs.pricing = 'Pricing model is required.';
+      if (!form.price.trim()) errs.price = 'Average pricing estimate is required.';
+    } else if (currentStep === 6) {
+      if (form.challenges.trim().length < 20) {
+        errs.challenges = `Please describe challenges/roadblocks (minimum 20 characters, current: ${form.challenges.trim().length}).`;
+      }
+      if (!form.ratings) errs.ratings = 'Self-rating parameter is required.';
+    } else if (currentStep === 7) {
+      if (!form.consent) errs.consent = 'Please check the consent box to generate your dashboard.';
     }
+    setValidationErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handleNext = () => {
-    if (!isStepValid()) return;
+    if (!validateCurrentStep()) return;
     
     // Check for gibberish
     const gibberishMsg = checkCurrentStepGibberish();
@@ -449,6 +480,7 @@ export default function SurveyPage({ user, onComplete }) {
       setGibberishError(gibberishMsg);
       return;
     }
+    setGibberishError(null);
 
     if (currentStep < 7) {
       setCurrentStep(c => c + 1);
@@ -508,6 +540,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={s.input}
                 />
               </div>
+              {validationErrors.businessName && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.businessName}</div>}
             </div>
 
             <div style={s.field}>
@@ -531,6 +564,7 @@ export default function SurveyPage({ user, onComplete }) {
                   <option value="Other">Other</option>
                 </select>
               </div>
+              {validationErrors.industry && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.industry}</div>}
             </div>
 
             <div style={s.field}>
@@ -552,6 +586,7 @@ export default function SurveyPage({ user, onComplete }) {
                   <option value="Other">Other</option>
                 </select>
               </div>
+              {validationErrors.businessType && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.businessType}</div>}
             </div>
 
             <div style={s.field}>
@@ -575,6 +610,7 @@ export default function SurveyPage({ user, onComplete }) {
                   <option value="Global">Global</option>
                 </select>
               </div>
+              {validationErrors.geo && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.geo}</div>}
             </div>
 
             <div style={{ ...s.field, gridColumn: '1 / -1' }}>
@@ -595,7 +631,11 @@ export default function SurveyPage({ user, onComplete }) {
                   style={{ ...s.input, resize: 'none' }}
                 />
               </div>
-              <span style={{ fontSize: '11.5px', color: '#64748b', marginTop: '-3px' }}>Be specific — min 20 characters</span>
+              {validationErrors.problem ? (
+                <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.problem}</div>
+              ) : (
+                <span style={{ fontSize: '11.5px', color: '#64748b', marginTop: '-3px' }}>Be specific — min 20 characters</span>
+              )}
             </div>
 
             {/* Stage Selector */}
@@ -608,7 +648,12 @@ export default function SurveyPage({ user, onComplete }) {
                     <button
                       key={st}
                       type="button"
-                      onClick={() => setForm(f => ({ ...f, sc: st }))}
+                      onClick={() => {
+                        setForm(f => ({ ...f, sc: st }));
+                        if (validationErrors.sc) {
+                          setValidationErrors(prev => ({ ...prev, sc: null }));
+                        }
+                      }}
                       style={{
                         padding: '8px 14px',
                         borderRadius: '6px',
@@ -628,6 +673,7 @@ export default function SurveyPage({ user, onComplete }) {
                   );
                 })}
               </div>
+              {validationErrors.sc && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.sc}</div>}
             </div>
           </div>
         );
@@ -648,6 +694,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={s.input}
                 />
               </div>
+              {validationErrors.tam && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.tam}</div>}
             </div>
             <div style={s.field}>
               <label style={s.label}>Core Market Drivers & growth factors *</label>
@@ -662,6 +709,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={{ ...s.input, resize: 'none' }}
                 />
               </div>
+              {validationErrors.marketDrivers && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.marketDrivers}</div>}
             </div>
           </div>
         );
@@ -682,6 +730,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={{ ...s.input, resize: 'none' }}
                 />
               </div>
+              {validationErrors.customer && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.customer}</div>}
             </div>
             <div style={s.field}>
               <label style={s.label}>Primary Customer Pain Points *</label>
@@ -696,6 +745,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={{ ...s.input, resize: 'none' }}
                 />
               </div>
+              {validationErrors.painPoints && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.painPoints}</div>}
             </div>
           </div>
         );
@@ -716,6 +766,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={s.input}
                 />
               </div>
+              {validationErrors.competitors && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.competitors}</div>}
             </div>
             <div style={s.field}>
               <label style={s.label}>Your strengths & weaknesses vs Competitors *</label>
@@ -730,6 +781,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={{ ...s.input, resize: 'none' }}
                 />
               </div>
+              {validationErrors.strengths && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.strengths}</div>}
             </div>
           </div>
         );
@@ -756,6 +808,7 @@ export default function SurveyPage({ user, onComplete }) {
                   <option value="Other">Other</option>
                 </select>
               </div>
+              {validationErrors.pricing && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.pricing}</div>}
             </div>
 
             <div style={s.field}>
@@ -771,6 +824,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={s.input}
                 />
               </div>
+              {validationErrors.price && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.price}</div>}
             </div>
           </div>
         );
@@ -791,6 +845,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={{ ...s.input, resize: 'none' }}
                 />
               </div>
+              {validationErrors.challenges && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.challenges}</div>}
             </div>
             <div style={s.field}>
               <label style={s.label}>Key Technical / Product Vulnerabilities *</label>
@@ -805,6 +860,7 @@ export default function SurveyPage({ user, onComplete }) {
                   style={{ ...s.input, resize: 'none' }}
                 />
               </div>
+              {validationErrors.ratings && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.ratings}</div>}
             </div>
           </div>
         );
@@ -827,17 +883,25 @@ export default function SurveyPage({ user, onComplete }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginTop: '12px' }}>
-              <input 
-                type="checkbox" 
-                id="consentResearch"
-                checked={form.consent}
-                onChange={(e) => setForm(f => ({ ...f, consent: e.target.checked }))}
-                style={{ width: '18px', height: '18px', marginTop: '1px', cursor: 'pointer', accentColor: '#1d4ed8' }}
-              />
-              <label htmlFor="consentResearch" style={{ fontSize: '13px', color: '#475569', lineHeight: 1.45, cursor: 'pointer', userSelect: 'none' }}>
-                I authorize the AI engine to compile my survey parameters, perform real-time baseline indexing, and output a detailed research report.
-              </label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                <input 
+                  type="checkbox" 
+                  id="consentResearch"
+                  checked={form.consent || false}
+                  onChange={(e) => {
+                    setForm(f => ({ ...f, consent: e.target.checked }));
+                    if (validationErrors.consent) {
+                      setValidationErrors(prev => ({ ...prev, consent: null }));
+                    }
+                  }}
+                  style={{ width: '18px', height: '18px', marginTop: '1px', cursor: 'pointer', accentColor: '#1d4ed8' }}
+                />
+                <label htmlFor="consentResearch" style={{ fontSize: '13px', color: '#475569', lineHeight: 1.45, cursor: 'pointer', userSelect: 'none' }}>
+                  I authorize the AI engine to compile my survey parameters, perform real-time baseline indexing, and output a detailed research report.
+                </label>
+              </div>
+              {validationErrors.consent && <div style={{ color: '#ef4444', fontSize: '11px', marginTop: '4px', fontWeight: 600 }}>{validationErrors.consent}</div>}
             </div>
           </div>
         );
@@ -942,13 +1006,9 @@ export default function SurveyPage({ user, onComplete }) {
 
           <button
             onClick={handleNext}
-            disabled={!isStepValid()}
-            style={{
-              ...s.buttonPrimary,
-              ...(!isStepValid() ? s.buttonDisabled : {})
-            }}
-            onMouseOver={e => { if(isStepValid()) e.currentTarget.style.background = '#1e3a8a' }}
-            onMouseOut={e => { if(isStepValid()) e.currentTarget.style.background = '#1d4ed8' }}
+            style={s.buttonPrimary}
+            onMouseOver={e => e.currentTarget.style.background = '#1e3a8a'}
+            onMouseOut={e => e.currentTarget.style.background = '#1d4ed8'}
           >
             {currentStep === 7 ? 'Execute Analysis & Generate Dashboard →' : 'Next →'}
           </button>
