@@ -148,3 +148,37 @@ export async function verifyOtp(email, otp) {
     return { success: false, error: err.message };
   }
 }
+
+// ── Create Razorpay Order ────────────────────────────────────────────────────
+export async function createRazorpayOrder(amount) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/payments/order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount })
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Failed to create payment order');
+    return { success: true, orderId: json.orderId };
+  } catch (err) {
+    console.error('Create Razorpay order error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Verify Razorpay Payment ──────────────────────────────────────────────────
+export async function verifyRazorpayPayment(payload) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/payments/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Payment verification failed');
+    return { success: true };
+  } catch (err) {
+    console.error('Verify Razorpay payment error:', err);
+    return { success: false, error: err.message };
+  }
+}

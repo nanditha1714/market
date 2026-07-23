@@ -3,7 +3,7 @@ import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
 import ChartCard from './ChartCard';
 import { CHART_COLORS } from '../constants';
-import { uploadScreenshot, saveRecord, updateRecord } from '../services/api';
+import { uploadScreenshot, saveRecord, updateRecord, createRazorpayOrder, verifyRazorpayPayment } from '../services/api';
 
 const co = (i) => CHART_COLORS[i % CHART_COLORS.length];
 
@@ -42,6 +42,16 @@ export default function Dashboard({ data, user, answers, onReset }) {
 
   const handlePayment = async (onSuccess) => {
     setPaying(true);
+
+    // Step 1: Create the Razorpay Order on the backend securely
+    const orderRes = await createRazorpayOrder(1); // ₹1.00
+    if (!orderRes.success) {
+      alert(`Failed to initialize transaction: ${orderRes.error}`);
+      setPaying(false);
+      return;
+    }
+
+    // Step 2: Load the Razorpay Checkout script
     const loaded = await loadScript("https://checkout.razorpay.com/v1/checkout.js");
     if (!loaded) {
       alert("Failed to load Razorpay payment gateway script. Please check your internet connection.");
@@ -58,13 +68,25 @@ export default function Dashboard({ data, user, answers, onReset }) {
       name: "Infopace Management Pvt Ltd",
       description: "Unlock Report & Dashboard Downloads",
       image: "/logo.png",
-      handler: function (response) {
-        console.log("Razorpay Payment ID:", response.razorpay_payment_id);
-        const storageKey = `isPaid_${user?.email || 'global'}`;
-        localStorage.setItem(storageKey, 'true');
-        setIsPaid(true);
-        setPaying(false);
-        if (onSuccess) onSuccess();
+      order_id: orderRes.orderId, // Pass the backend-generated Order ID
+      handler: async function (response) {
+        // Step 3: Verify the payment signature securely on the backend
+        const verifyRes = await verifyRazorpayPayment({
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_signature: response.razorpay_signature
+        });
+
+        if (verifyRes.success) {
+          const storageKey = `isPaid_${user?.email || 'global'}`;
+          localStorage.setItem(storageKey, 'true');
+          setIsPaid(true);
+          setPaying(false);
+          if (onSuccess) onSuccess();
+        } else {
+          alert(`Payment verification failed: ${verifyRes.error}`);
+          setPaying(false);
+        }
       },
       prefill: {
         name: user?.name || "",

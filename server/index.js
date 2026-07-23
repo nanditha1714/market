@@ -1,4 +1,5 @@
 const express = require('express');
+const crypto = require('crypto');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -269,6 +270,77 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 
   delete otpCache[email];
   res.json({ success: true, message: 'OTP verified successfully.' });
+});
+
+// ── Razorpay Integration: Create Order & Verify Signature ───────────────────
+app.post('/api/payments/order', async (req, res) => {
+  try {
+    const { amount } = req.body; // In INR e.g. 1
+    const amountInPaise = Math.round(parseFloat(amount || 0) * 100);
+    
+    const keyId = process.env.RAZORPAY_KEY_ID || process.env.REACT_APP_RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!keyId || !keySecret) {
+      console.error('❌ Missing RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET in environment');
+      return res.status(500).json({ error: 'Razorpay keys not configured on server' });
+    }
+
+    const auth = Buffer.from(`${keyId}:${keySecret}`).toString('base64');
+    const response = await fetch('https://api.razorpay.com/v1/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Basic ${auth}`
+      },
+      body: JSON.stringify({
+        amount: amountInPaise,
+        currency: 'INR',
+        receipt: `receipt_${Date.now()}`
+      })
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      res.json({ success: true, orderId: data.id });
+    } else {
+      console.error('Razorpay Order API failure:', data);
+      res.status(response.status).json({ error: data.error?.description || 'Failed to create payment order' });
+    }
+  } catch (err) {
+    console.error('Create payment order error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+app.post('/api/payments/verify', async (req, res) => {
+  try {
+    const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!keySecret) {
+      return res.status(500).json({ error: 'Razorpay Key Secret not configured on server' });
+    }
+
+    if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
+      return res.status(400).json({ error: 'Missing payment signature verification parameters' });
+    }
+
+    const body = razorpay_order_id + '|' + razorpay_payment_id;
+    const expectedSignature = crypto
+      .createHmac('sha256', keySecret)
+      .update(body.toString())
+      .digest('hex');
+
+    if (expectedSignature === razorpay_signature) {
+      res.json({ success: true, message: 'Payment verified successfully.' });
+    } else {
+      res.status(400).json({ error: 'Invalid payment signature verification failed.' });
+    }
+  } catch (err) {
+    console.error('Verify payment signature error:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
 
 // Production: serve React build
