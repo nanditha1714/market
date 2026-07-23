@@ -15,6 +15,7 @@ export default function App() {
   const [dashData, setDashData] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const lastSavedIdRef = useRef(null);
+  const loadedDashIdRef = useRef(null);
 
   // Helper to parse current URL hash and sync state
   const parseHash = useCallback(async () => {
@@ -52,7 +53,7 @@ export default function App() {
     } else if (path === '#/dashboard') {
       if (id) {
         // Skip query request if state is already loaded for this record or just completed
-        if (lastSavedIdRef.current === id || (dashData && (dashData.dbRecordId === id || dashData.id === id))) {
+        if (lastSavedIdRef.current === id || loadedDashIdRef.current === id) {
           setScreen(SCREENS.DASHBOARD);
           return;
         }
@@ -80,6 +81,7 @@ export default function App() {
 
             setAnswers(reconstructedAnswers);
             setDashData(parsedDash);
+            loadedDashIdRef.current = record.id;
             setScreen(SCREENS.DASHBOARD);
           } catch (err) {
             console.error('Error reconstructing dashboard from DB:', err);
@@ -90,14 +92,10 @@ export default function App() {
           window.location.hash = '#/survey';
         }
       } else {
-        if (dashData) {
-          setScreen(SCREENS.DASHBOARD);
-        } else {
-          window.location.hash = '#/survey';
-        }
+        window.location.hash = '#/survey';
       }
     }
-  }, [dashData]);
+  }, []);
 
   // Sync hash routing on mount and hashchange events
   useEffect(() => {
@@ -173,6 +171,7 @@ export default function App() {
         dbRecordId = dbRecord.id;
         data.dbRecordId = dbRecord.id;
         lastSavedIdRef.current = dbRecord.id;
+        loadedDashIdRef.current = dbRecord.id;
       }
     } catch (dbErr) {
       console.warn('Auto-save database failure:', dbErr);
@@ -190,6 +189,7 @@ export default function App() {
   const handleReset = useCallback(() => {
     localStorage.removeItem('infopace_user_session');
     lastSavedIdRef.current = null;
+    loadedDashIdRef.current = null;
     setUser(null);
     setAnswers(null);
     setDashData(null);
