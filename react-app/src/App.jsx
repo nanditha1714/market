@@ -52,6 +52,12 @@ export default function App() {
   // Helper to parse current URL hash and sync state
   const parseHash = useCallback(async () => {
     const hash = window.location.hash || '#/login';
+
+    // If an OAuth callback is in progress, yield control to the OAuth detector hook
+    if (hash.includes('access_token=') || hash.includes('id_token=')) {
+      return;
+    }
+
     const path = hash.split('?')[0];
     const params = new URLSearchParams(hash.split('?')[1] || '');
     const id = params.get('id');

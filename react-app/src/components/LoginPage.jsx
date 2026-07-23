@@ -289,7 +289,8 @@ export default function LoginPage({ onLogin, initialGoogleUser }) {
     }
   }, [initialGoogleUser]);
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = (e) => {
+    if (e) e.preventDefault();
     const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
     if (!SUPABASE_URL) {
       alert('Supabase URL not configured.');
