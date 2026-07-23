@@ -222,23 +222,32 @@ export async function getRazorpayKey() {
 
 // ── Fetch Google User Profile via Supabase OAuth token ────────────────────────
 export async function getGoogleUserProfile(accessToken) {
-  if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+  console.log('[API Debug] getGoogleUserProfile called with token length:', accessToken ? accessToken.length : 0);
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.error('[API Debug] Missing Supabase config. URL:', SUPABASE_URL, 'Key Present:', !!SUPABASE_KEY);
+    return null;
+  }
   try {
-    const res = await fetchWithRetry(`${SUPABASE_URL}/auth/v1/user`, {
+    const url = `${SUPABASE_URL}/auth/v1/user`;
+    console.log('[API Debug] Sending request to Supabase Auth user endpoint:', url);
+    const res = await fetchWithRetry(url, {
       method: 'GET',
       headers: {
         'apikey':        SUPABASE_KEY,
         'Authorization': `Bearer ${accessToken}`,
       }
     });
+    console.log('[API Debug] Supabase Auth response status:', res.status);
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      console.log('[API Debug] Supabase profile data parsed successfully.');
+      return data;
     }
     const err = await res.text();
-    console.warn('OAuth user profile retrieval failed:', err);
+    console.error('[API Debug] Supabase Auth profile fetch failed with status:', res.status, 'Body:', err);
     return null;
   } catch (err) {
-    console.warn('Get Google profile error:', err);
+    console.error('[API Debug] Supabase Auth fetch network error:', err);
     return null;
   }
 }

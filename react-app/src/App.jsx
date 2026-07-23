@@ -22,16 +22,19 @@ export default function App() {
   useEffect(() => {
     const checkOAuth = async () => {
       const hash = window.location.hash;
+      console.log('[OAuth Debug] Current URL hash fragment:', hash);
       if (hash && (hash.includes('access_token=') || hash.includes('#access_token='))) {
         const cleanHash = hash.replace(/^#\/?/, '');
         const params = new URLSearchParams(cleanHash);
         const token = params.get('access_token');
         if (token) {
-          // Clear hash immediately to hide access token from browser address bar
+          console.log('[OAuth Debug] Google Access Token found! Clearing hash fragment...');
           window.history.replaceState(null, null, ' ');
           
           setScreen(SCREENS.LOADING);
+          console.log('[OAuth Debug] Fetching user profile from Supabase...');
           const profile = await getGoogleUserProfile(token);
+          console.log('[OAuth Debug] User profile response received:', profile);
           if (profile && profile.email) {
             setInitialGoogleUser({
               name: profile.user_metadata?.full_name || profile.user_metadata?.name || '',
@@ -41,6 +44,9 @@ export default function App() {
               role: '',
               service: ''
             });
+            console.log('[OAuth Debug] LoginPage form state pre-filled successfully.');
+          } else {
+            console.warn('[OAuth Debug] Supabase profile retrieval failed or returned invalid email.');
           }
           setScreen(SCREENS.LOGIN);
         }
