@@ -34,10 +34,8 @@ export default function Dashboard({ data, user, answers, onReset }) {
   const dashRef = useRef(null);
   const page1Ref = useRef(null);
   const page2Ref = useRef(null);
-  const [isPaid, setIsPaid] = useState(() => {
-    const key = `isPaid_${user?.email || 'global'}`;
-    return localStorage.getItem(key) === 'true';
-  });
+  // Temporarily bypass payment lock (set to true) until Razorpay merchant KYC is approved
+  const [isPaid, setIsPaid] = useState(true);
   const [paying, setPaying] = useState(false);
 
   const handlePayment = async (onSuccess) => {
