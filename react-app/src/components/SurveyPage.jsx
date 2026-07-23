@@ -239,7 +239,7 @@ const s = {
 
 const stages = ['Idea Stage', 'MVP / Prototype', 'Live Pilots', 'Paying Customers', 'Scaling / Growth'];
 
-export default function SurveyPage({ user, onComplete }) {
+export default function SurveyPage({ user, onComplete, onReset }) {
   const [currentStep, setCurrentStep] = useState(() => {
     const key = `infopace_survey_current_step_${user?.email || 'global'}`;
     const saved = localStorage.getItem(key);
@@ -914,6 +914,41 @@ export default function SurveyPage({ user, onComplete }) {
   return (
     <div style={s.container}>
       <BackgroundCanvas />
+      
+      {onReset && (
+        <button
+          onClick={onReset}
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '20px',
+            zIndex: 100,
+            background: '#ffffff',
+            border: '1px solid #cbd5e1',
+            color: '#475569',
+            padding: '8px 16px',
+            borderRadius: '8px',
+            fontSize: '13px',
+            fontWeight: 600,
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+            transition: 'all 0.2s',
+          }}
+          onMouseOver={e => {
+            e.currentTarget.style.background = '#f8fafc';
+            e.currentTarget.style.borderColor = '#94a3b8';
+          }}
+          onMouseOut={e => {
+            e.currentTarget.style.background = '#ffffff';
+            e.currentTarget.style.borderColor = '#cbd5e1';
+          }}
+        >
+          <span>🔄</span> New Research
+        </button>
+      )}
       
       {/* Title Header */}
       <div style={s.headerWrap}>

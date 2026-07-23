@@ -271,7 +271,7 @@ export default function App() {
       )}
       <Suspense fallback={<LoadingScreen />}>
         {screen === SCREENS.LOGIN && <LoginPage onLogin={handleLogin} initialGoogleUser={initialGoogleUser} />}
-        {screen === SCREENS.SURVEY && <SurveyPage user={user} onComplete={handleSurveyComplete} />}
+        {screen === SCREENS.SURVEY && <SurveyPage user={user} onComplete={handleSurveyComplete} onReset={handleReset} />}
         {screen === SCREENS.LOADING && <LoadingScreen />}
         {screen === SCREENS.DASHBOARD && <Dashboard data={dashData} user={user} answers={answers} onReset={handleReset} />}
       </Suspense>
