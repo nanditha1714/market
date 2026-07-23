@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BackgroundCanvas from './BackgroundCanvas';
 
 const s = {
@@ -240,29 +240,56 @@ const s = {
 const stages = ['Idea Stage', 'MVP / Prototype', 'Live Pilots', 'Paying Customers', 'Scaling / Growth'];
 
 export default function SurveyPage({ user, onComplete }) {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [form, setForm] = useState({
-    businessName: user?.company || '',
-    industry: '',
-    businessType: '',
-    geo: '',
-    problem: '',
-    sc: '',
-    tam: '',
-    marketDrivers: '',
-    customer: '',
-    painPoints: '',
-    competitors: '',
-    strengths: '',
-    pricing: '',
-    price: '',
-    challenges: '',
-    ratings: '',
-    gtm: '',
-    consent: false
+  const [currentStep, setCurrentStep] = useState(() => {
+    const key = `infopace_survey_current_step_${user?.email || 'global'}`;
+    const saved = localStorage.getItem(key);
+    return saved ? parseInt(saved, 10) : 1;
+  });
+  const [form, setForm] = useState(() => {
+    const key = `infopace_survey_form_answers_${user?.email || 'global'}`;
+    const saved = localStorage.getItem(key);
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        console.warn('Failed to parse saved survey form');
+      }
+    }
+    return {
+      businessName: user?.company || '',
+      industry: '',
+      businessType: '',
+      geo: '',
+      problem: '',
+      sc: '',
+      tam: '',
+      marketDrivers: '',
+      customer: '',
+      painPoints: '',
+      competitors: '',
+      strengths: '',
+      pricing: '',
+      price: '',
+      challenges: '',
+      ratings: '',
+      gtm: '',
+      consent: false
+    };
   });
   const [inputFocused, setInputFocused] = useState({});
   const [gibberishError, setGibberishError] = useState(null);
+
+  // Sync form state changes to localStorage
+  useEffect(() => {
+    const key = `infopace_survey_form_answers_${user?.email || 'global'}`;
+    localStorage.setItem(key, JSON.stringify(form));
+  }, [form, user]);
+
+  // Sync step changes to localStorage
+  useEffect(() => {
+    const key = `infopace_survey_current_step_${user?.email || 'global'}`;
+    localStorage.setItem(key, currentStep.toString());
+  }, [currentStep, user]);
 
   const isGibberish = (text) => {
     if (!text || text.trim().length === 0) return false;

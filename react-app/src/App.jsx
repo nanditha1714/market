@@ -52,8 +52,12 @@ export default function App() {
       setScreen(SCREENS.SURVEY);
     } else if (path === '#/dashboard') {
       if (id) {
-        // Skip query request if state is already loaded for this record or just completed
-        if (lastSavedIdRef.current === id || loadedDashIdRef.current === id) {
+        // Skip query request if state is already loaded for this record or just completed (string cast prevents type mismatch)
+        const isCurrentSaved = lastSavedIdRef.current && String(lastSavedIdRef.current) === String(id);
+        const isCurrentLoaded = loadedDashIdRef.current && String(loadedDashIdRef.current) === String(id);
+        const isStateMatching = dashData && (String(dashData.dbRecordId) === String(id) || String(dashData.id) === String(id));
+
+        if (isCurrentSaved || isCurrentLoaded || isStateMatching) {
           setScreen(SCREENS.DASHBOARD);
           return;
         }
@@ -92,7 +96,11 @@ export default function App() {
           window.location.hash = '#/survey';
         }
       } else {
-        window.location.hash = '#/survey';
+        if (dashData) {
+          setScreen(SCREENS.DASHBOARD);
+        } else {
+          window.location.hash = '#/survey';
+        }
       }
     }
   }, []);
@@ -177,8 +185,15 @@ export default function App() {
       console.warn('Auto-save database failure:', dbErr);
     }
 
+    // Clear survey answers from cache upon successful completion
+    const formKey = `infopace_survey_form_answers_${user?.email || 'global'}`;
+    const stepKey = `infopace_survey_current_step_${user?.email || 'global'}`;
+    localStorage.removeItem(formKey);
+    localStorage.removeItem(stepKey);
+
     setAnswers(enriched);
     setDashData(data);
+    setScreen(SCREENS.DASHBOARD);
     if (dbRecordId) {
       window.location.hash = `#/dashboard?id=${dbRecordId}`;
     } else {
@@ -188,6 +203,13 @@ export default function App() {
 
   const handleReset = useCallback(() => {
     localStorage.removeItem('infopace_user_session');
+    if (user?.email) {
+      localStorage.removeItem(`infopace_survey_form_answers_${user.email}`);
+      localStorage.removeItem(`infopace_survey_current_step_${user.email}`);
+    } else {
+      localStorage.removeItem('infopace_survey_form_answers_global');
+      localStorage.removeItem('infopace_survey_current_step_global');
+    }
     lastSavedIdRef.current = null;
     loadedDashIdRef.current = null;
     setUser(null);
