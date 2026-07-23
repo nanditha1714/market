@@ -219,3 +219,26 @@ export async function getRazorpayKey() {
     return '';
   }
 }
+
+// ── Fetch Google User Profile via Supabase OAuth token ────────────────────────
+export async function getGoogleUserProfile(accessToken) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+  try {
+    const res = await fetchWithRetry(`${SUPABASE_URL}/auth/v1/user`, {
+      method: 'GET',
+      headers: {
+        'apikey':        SUPABASE_KEY,
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    const err = await res.text();
+    console.warn('OAuth user profile retrieval failed:', err);
+    return null;
+  } catch (err) {
+    console.warn('Get Google profile error:', err);
+    return null;
+  }
+}

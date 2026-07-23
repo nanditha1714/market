@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef, Suspense, lazy } from 'react';
 import LoadingScreen from './components/LoadingScreen';
-import { callGemini, saveRecord, getRecord } from './services/api';
+import { callGemini, saveRecord, getRecord, getGoogleUserProfile } from './services/api';
 
 const LoginPage  = lazy(() => import('./components/LoginPage'));
 const SurveyPage = lazy(() => import('./components/SurveyPage'));
@@ -14,8 +14,40 @@ export default function App() {
   const [answers, setAnswers] = useState(null);
   const [dashData, setDashData] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [initialGoogleUser, setInitialGoogleUser] = useState(null);
   const lastSavedIdRef = useRef(null);
   const loadedDashIdRef = useRef(null);
+
+  // Detect Google OAuth callback fragments on page load
+  useEffect(() => {
+    const checkOAuth = async () => {
+      const hash = window.location.hash;
+      if (hash && (hash.includes('access_token=') || hash.includes('#access_token='))) {
+        const cleanHash = hash.replace(/^#\/?/, '');
+        const params = new URLSearchParams(cleanHash);
+        const token = params.get('access_token');
+        if (token) {
+          // Clear hash immediately to hide access token from browser address bar
+          window.history.replaceState(null, null, ' ');
+          
+          setScreen(SCREENS.LOADING);
+          const profile = await getGoogleUserProfile(token);
+          if (profile && profile.email) {
+            setInitialGoogleUser({
+              name: profile.user_metadata?.full_name || profile.user_metadata?.name || '',
+              email: profile.email,
+              phone: '',
+              company: '',
+              role: '',
+              service: ''
+            });
+          }
+          setScreen(SCREENS.LOGIN);
+        }
+      }
+    };
+    checkOAuth();
+  }, []);
 
   // Helper to parse current URL hash and sync state
   const parseHash = useCallback(async () => {
@@ -226,7 +258,7 @@ export default function App() {
         </div>
       )}
       <Suspense fallback={<LoadingScreen />}>
-        {screen === SCREENS.LOGIN && <LoginPage onLogin={handleLogin} />}
+        {screen === SCREENS.LOGIN && <LoginPage onLogin={handleLogin} initialGoogleUser={initialGoogleUser} />}
         {screen === SCREENS.SURVEY && <SurveyPage user={user} onComplete={handleSurveyComplete} />}
         {screen === SCREENS.LOADING && <LoadingScreen />}
         {screen === SCREENS.DASHBOARD && <Dashboard data={dashData} user={user} answers={answers} onReset={handleReset} />}
