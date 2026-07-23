@@ -273,6 +273,11 @@ app.post('/api/auth/verify-otp', async (req, res) => {
 });
 
 // ── Razorpay Integration: Create Order & Verify Signature ───────────────────
+app.get('/api/payments/key', (req, res) => {
+  const keyId = process.env.RAZORPAY_KEY_ID || process.env.REACT_APP_RAZORPAY_KEY_ID || '';
+  res.json({ keyId });
+});
+
 app.post('/api/payments/order', async (req, res) => {
   try {
     const { amount } = req.body; // In INR e.g. 1

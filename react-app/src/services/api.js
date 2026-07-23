@@ -182,3 +182,16 @@ export async function verifyRazorpayPayment(payload) {
     return { success: false, error: err.message };
   }
 }
+
+// ── Fetch Razorpay Public Key ────────────────────────────────────────────────
+export async function getRazorpayKey() {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/payments/key`);
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Failed to fetch Razorpay key');
+    return json.keyId;
+  } catch (err) {
+    console.error('Get Razorpay key error:', err);
+    return '';
+  }
+}
