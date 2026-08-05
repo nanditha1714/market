@@ -332,7 +332,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
         if (currentParagraph.length > 0) {
           const paraText = currentParagraph.join(' ');
           elements.push(
-            <p key={`p-${i}`} className="cii-body" style={{ fontSize: '11.5px', lineHeight: '1.65', color: '#334155', marginBottom: '8px', textTransform: 'none', fontFamily: '"Inter", system-ui, sans-serif' }}>
+            <p key={`p-${i}`} className="cii-body" style={{ fontSize: '11.5px', lineHeight: '1.65', color: '#000000', marginBottom: '8px', textTransform: 'none', fontFamily: '"Inter", system-ui, sans-serif' }}>
               {renderFormattedText(paraText)}
             </p>
           );
@@ -352,7 +352,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
     if (currentParagraph.length > 0) {
       const paraText = currentParagraph.join(' ');
       elements.push(
-        <p key="p-last" className="cii-body" style={{ fontSize: '11.5px', lineHeight: '1.65', color: '#334155', marginBottom: '8px', textTransform: 'none', fontFamily: '"Inter", system-ui, sans-serif' }}>
+        <p key="p-last" className="cii-body" style={{ fontSize: '11.5px', lineHeight: '1.65', color: '#000000', marginBottom: '8px', textTransform: 'none', fontFamily: '"Inter", system-ui, sans-serif' }}>
           {renderFormattedText(paraText)}
         </p>
       );
@@ -808,7 +808,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             height: 1130px;
             box-sizing: border-box;
             background: #ffffff;
-            color: #1e293b;
+            color: #000000;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             padding: 40px 45px;
             display: flex;
@@ -871,7 +871,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           }
           .cii-pg-sub {
             font-size: 12px;
-            color: #64748b;
+            color: #000000;
             line-height: 1.45;
             margin-bottom: 12px;
           }
@@ -888,7 +888,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           .cii-body {
             font-size: 11.5px;
             line-height: 1.65;
-            color: #334155;
+            color: #000000;
             margin-bottom: 6px;
             text-align: justify;
           }
@@ -898,7 +898,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             border-radius: 8px;
             padding: 10px 14px;
             font-size: 11px;
-            color: #334155;
+            color: #000000;
             line-height: 1.55;
             margin: 10px 0;
           }
@@ -962,7 +962,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             padding: 6px 8px;
             font-size: 11px;
             border-bottom: 1px solid rgba(17,68,160,0.14);
-            color: #1e293b;
+            color: #000000;
           }
           .cii-flag-row {
             display: flex;
@@ -1004,8 +1004,8 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             color: #1a56db;
             margin-bottom: 2px;
           }
-          .cii-action-text { font-size: 11.5px; color: #334155; line-height: 1.6; }
-          .cii-action-why { font-size: 10.5px; color: #64748b; line-height: 1.5; margin-top: 2px; font-style: italic; }
+          .cii-action-text { font-size: 11.5px; color: #000000; line-height: 1.6; }
+          .cii-action-why { font-size: 10.5px; color: #000000; line-height: 1.5; margin-top: 2px; font-style: italic; }
           .cii-action-signal {
             font-size: 10.5px;
             color: #0f766e;
@@ -1048,7 +1048,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           .cii-a-card.up .cii-a-card-score { color: #166534; }
           .cii-a-card.down .cii-a-card-score { color: #9f1239; }
           .cii-a-card-dim { font-size: 11.5px; font-weight: 700; color: #061228; margin-bottom: 2px; }
-          .cii-a-card-desc { font-size: 10px; color: #475569; line-height: 1.45; }
+          .cii-a-card-desc { font-size: 10px; color: #000000; line-height: 1.45; }
 
           .cii-spread-row {
             display: flex;
@@ -1057,11 +1057,11 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             margin-bottom: 4px;
             font-size: 10.5px;
           }
-          .cii-spread-label { width: 110px; font-weight: 600; color: #334155; white-space: nowrap; }
+          .cii-spread-label { width: 110px; font-weight: 600; color: #000000; white-space: nowrap; }
           .cii-spread-track { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; position: relative; }
           .cii-spread-fill { height: 100%; border-radius: 4px; }
           .cii-spread-avg { position: absolute; top: -1px; width: 2px; height: 10px; background: #475569; }
-          .cii-spread-val { width: 35px; text-align: right; font-weight: 700; font-family: 'IBM Plex Mono', monospace; color: #1e293b; }
+          .cii-spread-val { width: 35px; text-align: right; font-weight: 700; font-family: 'IBM Plex Mono', monospace; color: #000000; }
 
           .analysis-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
           .a-card { border-radius: 10px; padding: 12px 14px; }
@@ -1072,7 +1072,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           .a-card.down .a-card-label { color: #be185d; }
           .a-card-score { font-family: 'IBM Plex Mono', monospace; font-size: 32px; font-weight: 700; color: #061228; line-height: 1; }
           .a-card-dim { font-size: 13px; font-weight: 700; color: #061228; margin-top: 4px; }
-          .a-card-desc { font-size: 10.5px; color: #64748b; margin-top: 3px; line-height: 1.5; }
+          .a-card-desc { font-size: 10.5px; color: #000000; margin-top: 3px; line-height: 1.5; }
 
           .spread-row { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
           .spread-label { width: 95px; font-size: 10.5px; font-weight: 600; color: #061228; flex-shrink: 0; }
@@ -1124,13 +1124,13 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           .dim-score-col { text-align: center; width: 60px; flex-shrink: 0; }
           .dim-score-col .n { font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 700; line-height: 1; }
           .dim-score-col .band { font-size: 8.5px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-top: 2px; }
-          .dim-body { flex: 1; font-size: 10.5px; color: #334155; line-height: 1.5; }
+          .dim-body { flex: 1; font-size: 10.5px; color: #000000; line-height: 1.5; }
           .dim-name { font-size: 12px; font-weight: 700; color: #061228; margin-bottom: 2px; }
-          .dim-desc { font-size: 10.5px; color: #475569; margin-bottom: 3px; font-style: italic; }
-          .dim-tell { font-size: 10px; color: #334155; margin-bottom: 2px; position: relative; padding-left: 9px; }
+          .dim-desc { font-size: 10.5px; color: #000000; margin-bottom: 3px; font-style: italic; }
+          .dim-tell { font-size: 10px; color: #000000; margin-bottom: 2px; position: relative; padding-left: 9px; }
           .dim-tell::before { content: '•'; position: absolute; left: 0; color: #1a56db; }
-          .dim-extra { font-size: 9.5px; color: #64748b; margin-top: 2px; background: #f8fafc; padding: 3px 6px; border-radius: 4px; border-left: 2px solid #cbd5e1; }
-          .dim-extra .k { font-weight: 700; color: #334155; }
+          .dim-extra { font-size: 9.5px; color: #000000; margin-top: 2px; background: #f8fafc; padding: 3px 6px; border-radius: 4px; border-left: 2px solid #cbd5e1; }
+          .dim-extra .k { font-weight: 700; color: #000000; }
         `}</style>
         
         {/* Page 1: Cover Page (Market Research Assessment) */}
@@ -1224,10 +1224,10 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             <div className="cii-eyebrow">Company Overview</div>
             <div className="cii-pg-title" style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '34px', fontWeight: 700, marginBottom: '5mm', color: '#061228' }}>Our Assessment Suite</div>
 
-            <p style={{ fontSize: '11.5px', color: '#334155', lineHeight: 1.75, marginBottom: '3mm', textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>
+            <p style={{ fontSize: '11.5px', color: '#000000', lineHeight: 1.75, marginBottom: '3mm', textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>
               Over the reporting period, Infopace continued to strengthen its portfolio of AI-powered business assessment tools, delivering intelligent, data-driven solutions that assist entrepreneurs, startups, and organizations make informed strategic decisions.
             </p>
-            <p style={{ fontSize: '11.5px', color: '#334155', lineHeight: 1.75, marginBottom: '5mm', textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>
+            <p style={{ fontSize: '11.5px', color: '#000000', lineHeight: 1.75, marginBottom: '5mm', textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>
               Each assessment leverages AI to analyze user responses and generate comprehensive reports containing actionable insights, key findings, strengths, improvement areas, and tailored recommendations. The current suite includes the following five tools:
             </p>
 
@@ -1245,7 +1245,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
                   <div style={{ width: '4px', background: tool.color, borderRadius: '2px', flexShrink: 0 }}></div>
                   <div>
                     <div style={{ fontWeight: 700, fontSize: '12.5px', color: '#0f172a', marginBottom: '2px' }}>{tool.name}</div>
-                    <div style={{ fontSize: '10.5px', color: '#475569', lineHeight: 1.55, textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>{tool.desc}</div>
+                    <div style={{ fontSize: '10.5px', color: '#000000', lineHeight: 1.55, textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>{tool.desc}</div>
                   </div>
                 </div>
               ))}
@@ -1658,13 +1658,13 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             <div className="cii-eyebrow">Organization Profile</div>
             <div className="cii-pg-title" style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '34px', fontWeight: 700, marginBottom: '4mm', color: '#061228' }}>About <span style={{ color: '#1a56db' }}>Infopace</span></div>
 
-            <div style={{ fontSize: '11px', color: '#334155', lineHeight: 1.6, marginBottom: '8px' }}>
+            <div style={{ fontSize: '11px', color: '#000000', lineHeight: 1.6, marginBottom: '8px' }}>
               <p style={{ marginBottom: '4px' }}>Infopace Management Pvt. Ltd is a Bengaluru-based strategic change management and business transformation company established in 1999, providing advisory and technology-driven solutions that help businesses improve operational efficiency, accelerate growth and adapt to changing market conditions.</p>
               <p>Our approach combines deep sector expertise with data-driven methodology — every engagement begins with understanding the specific operational and market context a client is working within, rather than applying a generic playbook. This is the same philosophy behind the AI-powered assessment tools used to generate this report: structured, evidence-based, and built to reflect the individual, not a template.</p>
             </div>
 
             <div className="cii-sec-title">What We Do</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', fontSize: '9.8px', color: '#334155', marginBottom: '8px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', fontSize: '9.8px', color: '#000000', marginBottom: '8px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Growth Acceleration Partner</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> AI-Enabled Solutions</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Global Capabilities Center</div>
@@ -1689,24 +1689,20 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '10px' }}>
               <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '6px 8px', textAlign: 'left' }}>
                 <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '20px', fontWeight: 800, color: '#1a56db' }}>200+</div>
-                <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '1px' }}>Specialists, avg. 7 yrs expertise</div>
+                <div style={{ fontSize: '8.5px', color: '#000000', marginTop: '1px' }}>Specialists, avg. 7 yrs expertise</div>
               </div>
               <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '6px 8px', textAlign: 'left' }}>
                 <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '20px', fontWeight: 800, color: '#1a56db' }}>850+</div>
-                <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '1px' }}>Long-lasting client partnerships</div>
+                <div style={{ fontSize: '8.5px', color: '#000000', marginTop: '1px' }}>Long-lasting client partnerships</div>
               </div>
               <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '6px 8px', textAlign: 'left' }}>
                 <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '20px', fontWeight: 800, color: '#1a56db' }}>7000+</div>
-                <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '1px' }}>Projects in digital transformation</div>
+                <div style={{ fontSize: '8.5px', color: '#000000', marginTop: '1px' }}>Projects in digital transformation</div>
               </div>
             </div>
 
             {/* Template Page 15 Bottom Image Banner */}
-            <div style={{ height: '110px', borderRadius: '8px', overflow: 'hidden', background: 'linear-gradient(135deg, #1e3a8a 0%, #1a56db 50%, #06b6d4 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)', padding: '16px', textAlign: 'center', position: 'relative' }}>
-              <div style={{ position: 'relative', zIndex: 1 }}>
-                <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: '"Playfair Display", Georgia, serif', marginBottom: '4px', letterSpacing: '0.02em' }}>Driving Strategic Change &amp; Global Enterprise Innovation</div>
-                <div style={{ fontSize: '10px', opacity: 0.95, maxWidth: '460px', margin: '0 auto', fontFamily: '"Inter", sans-serif' }}>Transforming organizations worldwide with data-driven advisory and AI assessment solutions since 1999.</div>
-              </div>
+            <div style={{ height: '240px', borderRadius: '8px', overflow: 'hidden', backgroundImage: 'url("/building.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', marginTop: '12px' }}>
             </div>
           </div>
 
@@ -1716,8 +1712,9 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </div>
         </div>
 
+
         {/* Page 11: Thank You & Contact (CII Template Page 16 - White Theme Word-for-Word) */}
-        <div ref={page11Ref} className="cii-page" style={{ background: '#ffffff', color: '#0f172a', position: 'relative' }}>
+        <div ref={page11Ref} className="cii-page" style={{ background: '#ffffff', color: '#000000', position: 'relative' }}>
           {waveSvg}
           <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
             <div>
@@ -1726,27 +1723,24 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
                 <div className="cii-pg-num">11 / 11</div>
               </div>
 
-              <div className="cii-eyebrow">Contact &amp; Advisory</div>
-              <div className="cii-pg-title" style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '38px', fontWeight: 700, marginBottom: '5mm', color: '#061228' }}>Thank You</div>
-
-              <p style={{ fontSize: '11.5px', color: '#334155', lineHeight: 1.75, marginBottom: '6mm', fontFamily: '"Inter", sans-serif', textTransform: 'none' }}>
-                We empower business leaders with evidence-based intelligence, AI assessments, and actionable execution roadmaps. Contact our strategic advisory team to discuss custom growth initiatives and digital transformation.
-              </p>
-
-              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.18)', borderRadius: '10px', padding: '18px 22px', maxWidth: '480px', marginBottom: '6mm' }}>
-                <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#1a56db', marginBottom: '8px', letterSpacing: '0.12em', fontFamily: '"IBM Plex Mono", monospace' }}>Headquarters &amp; Contact</div>
-                <div style={{ fontSize: '12px', color: '#1e293b', lineHeight: 1.8, fontFamily: '"Inter", sans-serif' }}>
-                  <strong style={{ fontSize: '13.5px', color: '#0f172a' }}>Infopace Management Pvt. Ltd.</strong><br/>
-                  Bengaluru, Karnataka, India<br/>
-                  🌐 <strong>Website:</strong> <a href="https://www.infopaceindia.com" target="_blank" rel="noreferrer" style={{ color: '#1a56db', textDecoration: 'none' }}>www.infopaceindia.com</a><br/>
-                  ✉️ <strong>Email:</strong> info@infopaceindia.com
+              <div style={{ position: 'relative', zIndex: 2, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '6mm 0 0' }}>
+                <div style={{ fontSize: '11.5px', letterSpacing: '.2em', textTransform: 'uppercase', color: '#1a56db', fontWeight: 600, marginBottom: '5mm', fontFamily: '"IBM Plex Mono", monospace' }}>Thank You</div>
+                <div style={{ fontWeight: 700, fontSize: '44px', lineHeight: 1.21, color: '#061228', marginBottom: '7mm', fontFamily: '"Playfair Display", Georgia, serif' }}>Thank you<br/>for reading.</div>
+                <p style={{ fontSize: '13px', color: '#000000', lineHeight: 1.87, maxWidth: '400px', marginBottom: '9mm', fontFamily: '"Inter", sans-serif', textTransform: 'none' }}>
+                  If you have any questions or would like to discuss these findings further, please don't hesitate to reach out to us.
+                </p>
+                <div style={{ width: '240px', height: '1px', background: '#cbd5e1', marginBottom: '7mm' }}></div>
+                <div style={{ fontSize: '12px', color: '#000000', lineHeight: 2.09, fontFamily: '"Inter", sans-serif' }}>
+                  <div>2nd Floor, Halkatti Icon, 14, Sankey Rd, Sadashiva Nagar, Guttahalli, Bengaluru, Karnataka 560003</div>
+                  <div style={{ color: '#1a56db', fontWeight: 700, marginTop: '2mm', fontSize: '13.5px' }}>+91 9845263775</div>
+                  <div style={{ marginTop: '1mm' }}>info@infopaceindia.com &nbsp;·&nbsp; infospaceindia.com</div>
                 </div>
               </div>
             </div>
 
             <div className="cii-pg-ftr">
               <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-              <div>End of Intelligence Report</div>
+              <div>AI-Evaluated Report</div>
             </div>
           </div>
         </div>
