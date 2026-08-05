@@ -1450,7 +1450,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', alignItems: 'center' }}>
                 <ChartCard title="🌏 Geographic Breakdown" type="doughnut" data={geoData} options={{ ...pieOpts('55%'), layout: { padding: 4 } }} height="145px" style={{ background: '#ffffff', padding: '8px', border: '1px solid #e2e8f0', boxShadow: 'none' }} />
                 <div>
-                  <div style={{ fontSize: '11px', fontWeight 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Territory Breakdown</div>
+                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Territory Breakdown</div>
                   <table className="cii-table">
                     <thead>
                       <tr>
