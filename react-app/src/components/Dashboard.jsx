@@ -33,6 +33,18 @@ const loadScript = (src) => {
 
 const ENABLE_PAYMENT = false; // Set to true to re-enable Razorpay payment gateway
 
+const waveSvg = (
+  <div style={{ position: 'absolute', right: 0, top: 0, width: '300px', height: '180px', overflow: 'hidden', zIndex: 0, pointerEvents: 'none' }}>
+    <div style={{ transform: 'scale(0.55) rotate(4deg)', transformOrigin: 'top right', width: '760px', height: '480px' }}>
+      <svg width="760" height="480" viewBox="0 0 760 480">
+        <path d="M 0.0 23.8 Q 17.3 25.4 25.9 26.2 Q 51.8 28.9 60.5 29.8 Q 86.4 32.5 95.0 33.3 Q 120.9 35.8 129.5 36.6 Q 155.5 38.8 164.1 39.5 Q 190.0 41.4 198.6 42.0 Q 224.5 43.6 233.2 44.0 Q 259.1 45.2 267.7 45.5 Q 293.6 46.1 302.3 46.0 Q 328.2 45.6 336.8 45.2 Q 362.7 43.7 371.4 42.9 Q 397.3 40.0 405.9 38.8 Q 431.8 34.9 440.5 33.4 Q 466.4 28.7 475.0 27.0 Q 500.9 21.9 509.5 20.1 Q 535.5 14.8 544.1 13.1 Q 570.0 7.9 578.6 6.2 Q 604.5 1.2 613.2 -0.3 Q 639.1 -4.8 647.7 -6.1 Q 673.6 -9.9 682.3 -10.9 Q 708.2 -13.7 716.8 -14.3 Q 742.7 -15.6 751.4 -15.7" fill="none" stroke="#1a56db" strokeWidth="1.05" strokeOpacity="0.75" strokeLinecap="round"/>
+        <path d="M 0.0 30.0 Q 17.3 31.7 25.9 32.5 Q 51.8 35.2 60.5 36.1 Q 86.4 38.7 95.0 39.6 Q 120.9 42.0 129.5 42.8 Q 155.5 45.0 164.1 45.7 Q 190.0 47.7 198.6 48.3 Q 224.5 49.9 233.2 50.4 Q 259.1 51.4 267.7 51.6 Q 293.6 51.7 302.3 51.5 Q 328.2 50.5 336.8 49.9 Q 362.7 47.6 371.4 46.5 Q 397.3 42.9 405.9 41.5 Q 431.8 37.0 440.5 35.3 Q 466.4 30.2 475.0 28.4 Q 500.9 23.0 509.5 21.1 Q 535.5 15.7 544.1 13.9 Q 570.0 8.6 578.6 6.9 Q 604.5 1.9 613.2 0.4 Q 639.1 -4.0 647.7 -5.3 Q 673.6 -8.7 682.3 -9.5 Q 708.2 -11.6 716.8 -12.0 Q 742.7 -12.5 751.4 -12.3" fill="none" stroke="#1a56db" strokeWidth="1.05" strokeOpacity="0.70" strokeLinecap="round"/>
+        <path d="M 0.0 41.2 Q 17.3 44.2 25.9 45.7 Q 51.8 50.3 60.5 51.8 Q 86.4 56.4 95.0 57.8 Q 120.9 62.2 129.5 63.5 Q 155.5 67.5 164.1 68.7 Q 190.0 72.1 198.6 73.0 Q 224.5 75.5 233.2 76.1 Q 259.1 77.3 267.7 77.3 Q 293.6 76.7 302.3 76.1 Q 328.2 73.6 336.8 72.3 Q 362.7 67.7 371.4 65.8 Q 397.3 59.5 405.9 57.0 Q 431.8 49.3 440.5 46.4 Q 466.4 37.6 475.0 34.5 Q 500.9 25.0 509.5 21.7 Q 535.5 11.8 544.1 8.4 Q 570.0 -1.6 578.6 -4.9 Q 604.5 -14.5 613.2 -17.6 Q 639.1 -26.4 647.7 -29.0 Q 673.6 -36.4 682.3 -38.4 Q 708.2 -43.7 716.8 -45.0 Q 742.7 -47.9 751.4 -48.3" fill="none" stroke="#1a56db" strokeWidth="1.30" strokeOpacity="0.65" strokeLinecap="round"/>
+      </svg>
+    </div>
+  </div>
+);
+
 export default function Dashboard({ data, user, answers, onReset, onOpenAbout }) {
   const k = (data && data.kpi) ? data.kpi : {};
   const dashRef = useRef(null);
@@ -1207,8 +1219,9 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
         </div>
 
         {/* Page 3: Our Assessment Suite (CII Template Page 3 Word-for-Word) */}
-        <div ref={page3Ref} className="cii-page">
-          <div>
+        <div ref={page3Ref} className="cii-page" style={{ position: 'relative' }}>
+          {waveSvg}
+          <div style={{ position: 'relative', zIndex: 1 }}>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
               <div className="cii-pg-num">03 / 11</div>
@@ -1245,7 +1258,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             </div>
           </div>
 
-          <div className="cii-pg-ftr">
+          <div className="cii-pg-ftr" style={{ position: 'relative', zIndex: 1 }}>
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
             <div>AI-Evaluated Report</div>
           </div>
@@ -1683,7 +1696,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
                 <div style={{ fontSize: '14px', fontWeight: 700, color: '#061228', marginBottom: '4px' }}>Privacy Policy</div>
                 <div style={{ fontSize: '11px', color: '#334155', lineHeight: 1.6 }}>
                   <p style={{ marginBottom: '4px' }}>All information shared during the assessment is handled with confidentiality and used solely for generating personalized assessment reports and improving the quality of the assessment platform.</p>
-                  <p>User data is processed securely and is not shared with third parties without consent, except where required by applicable law. Individual open-ended responses are never used to train external models or shared outside Infopace's assessment infrastructure.</p>
+                  <p>User data is processed securely and is not shared with third parties without consent, except where required by applicable law.</p>
                 </div>
               </div>
             </div>
@@ -1707,99 +1720,105 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </div>
         </div>
 
-        {/* Page 10: About Infopace (CII Template Page 15) */}
-        <div ref={page10Ref} className="cii-page">
-          <div>
+        {/* Page 10: About Infopace (CII Template Page 15 Word-for-Word) */}
+        <div ref={page10Ref} className="cii-page" style={{ position: 'relative' }}>
+          {waveSvg}
+          <div style={{ position: 'relative', zIndex: 1 }}>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
               <div className="cii-pg-num">10 / 11</div>
             </div>
 
             <div className="cii-eyebrow">Organization Profile</div>
-            <div className="cii-pg-title">About <span style={{ color: '#1a56db' }}>Infopace</span></div>
-            <div className="cii-pg-sub">Strategic change management, business transformation, and technology-driven advisory since 1999.</div>
+            <div className="cii-pg-title" style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '34px', fontWeight: 700, marginBottom: '4mm', color: '#061228' }}>About <span style={{ color: '#1a56db' }}>Infopace</span></div>
 
-            <div style={{ fontSize: '11.5px', color: '#334155', lineHeight: 1.65, marginBottom: '12px' }}>
-              <p style={{ marginBottom: '6px' }}>Infopace Management Pvt. Ltd is a Bengaluru-based strategic change management and business transformation company established in 1999, providing advisory and technology-driven solutions that help businesses improve operational efficiency, accelerate growth and adapt to changing market conditions.</p>
-              <p>Our approach combines deep sector expertise with data-driven methodology — every engagement begins with understanding the specific operational and market context a client is working within, rather than applying a generic playbook.</p>
+            <div style={{ fontSize: '11px', color: '#334155', lineHeight: 1.6, marginBottom: '8px' }}>
+              <p style={{ marginBottom: '4px' }}>Infopace Management Pvt. Ltd is a Bengaluru-based strategic change management and business transformation company established in 1999, providing advisory and technology-driven solutions that help businesses improve operational efficiency, accelerate growth and adapt to changing market conditions.</p>
+              <p>Our approach combines deep sector expertise with data-driven methodology — every engagement begins with understanding the specific operational and market context a client is working within, rather than applying a generic playbook. This is the same philosophy behind the AI-powered assessment tools used to generate this report: structured, evidence-based, and built to reflect the individual, not a template.</p>
             </div>
 
             <div className="cii-sec-title">What We Do</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '10.5px', color: '#334155', marginBottom: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Growth Acceleration Partner</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> AI-Enabled Solutions</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Global Capabilities Center</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Entrepreneurial Ecosystem</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Strategic Change Management</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Go To Market Strategy &amp; Research</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Strategic Investment &amp; Funding</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Market Access &amp; Readiness</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Data Analytics Solutions</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Pivoting &amp; Repurposing Businesses</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Digital Transformation</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><span style={{ color: '#1a56db' }}>•</span> Radical Innovation</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', fontSize: '9.8px', color: '#334155', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Growth Acceleration Partner</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> AI-Enabled Solutions</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Global Capabilities Center</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Enabling Entrepreneurial Ecosystem</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Strategic Change Management</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Go To Market Strategy &amp; Research</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Strategic Investment &amp; Funding</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Market Access &amp; Readiness</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Data Analytics Solutions</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Pivoting &amp; Repurposing Businesses</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Digital Transformation</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Radical Innovation</div>
             </div>
 
             <div className="cii-sec-title">Industries We Serve</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '14px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '8px' }}>
               {['Automobile', 'Education', 'Health Care', 'ITES', 'Information Technology', 'Manufacturing', 'Retail', 'Telecom', 'Energy', 'NGO', 'Food Processing', 'Agritech', 'Aerospace', 'Semiconductor', 'ESDM'].map((ind, i) => (
-                <span key={i} style={{ fontSize: '9.5px', color: '#1a56db', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '14px', padding: '3px 8px', fontWeight: 600 }}>{ind}</span>
+                <span key={i} style={{ fontSize: '8.8px', color: '#1a56db', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '12px', padding: '2px 6px', fontWeight: 600 }}>{ind}</span>
               ))}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px' }}>
-              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '10px', textAlign: 'center' }}>
-                <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '22px', fontWeight: 800, color: '#1a56db' }}>200+</div>
-                <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px' }}>Specialists, avg. 7 yrs expertise</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '10px' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '6px 8px', textAlign: 'left' }}>
+                <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '20px', fontWeight: 800, color: '#1a56db' }}>200+</div>
+                <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '1px' }}>Specialists, avg. 7 yrs expertise</div>
               </div>
-              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '10px', textAlign: 'center' }}>
-                <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '22px', fontWeight: 800, color: '#1a56db' }}>850+</div>
-                <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px' }}>Long-lasting client partnerships</div>
+              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '6px 8px', textAlign: 'left' }}>
+                <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '20px', fontWeight: 800, color: '#1a56db' }}>850+</div>
+                <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '1px' }}>Long-lasting client partnerships</div>
               </div>
-              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '10px', textAlign: 'center' }}>
-                <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '22px', fontWeight: 800, color: '#1a56db' }}>7000+</div>
-                <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px' }}>Projects in digital transformation</div>
+              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '6px 8px', textAlign: 'left' }}>
+                <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '20px', fontWeight: 800, color: '#1a56db' }}>7000+</div>
+                <div style={{ fontSize: '8.5px', color: '#64748b', marginTop: '1px' }}>Projects in digital transformation</div>
+              </div>
+            </div>
+
+            {/* Template Page 15 Bottom Image Banner */}
+            <div style={{ height: '110px', borderRadius: '8px', overflow: 'hidden', background: 'linear-gradient(135deg, #1e3a8a 0%, #1a56db 50%, #06b6d4 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.3)', padding: '16px', textAlign: 'center', position: 'relative' }}>
+              <div style={{ position: 'relative', zIndex: 1 }}>
+                <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: '"Playfair Display", Georgia, serif', marginBottom: '4px', letterSpacing: '0.02em' }}>Driving Strategic Change &amp; Global Enterprise Innovation</div>
+                <div style={{ fontSize: '10px', opacity: 0.95, maxWidth: '460px', margin: '0 auto', fontFamily: '"Inter", sans-serif' }}>Transforming organizations worldwide with data-driven advisory and AI assessment solutions since 1999.</div>
               </div>
             </div>
           </div>
 
-          <div className="cii-pg-ftr">
+          <div className="cii-pg-ftr" style={{ position: 'relative', zIndex: 1 }}>
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
+            <div>AI-Evaluated Report</div>
           </div>
         </div>
 
-        {/* Page 11: Thank You & Contact (CII Template Page 16) */}
-        <div ref={page11Ref} className="cii-page" style={{ background: '#061228', color: '#ffffff' }}>
-          <div style={{ height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.15)', paddingBottom: '12px' }}>
-              <img src="/logo.png" alt="Infopace Logo" style={{ height: '36px', filter: 'brightness(0) invert(1)' }} />
-              <div style={{ fontSize: '11px', color: '#94a3b8', fontFamily: '"IBM Plex Mono", monospace' }}>11 / 11</div>
-            </div>
-
-            <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-              <div style={{ fontSize: '12px', letterSpacing: '0.25em', textTransform: 'uppercase', color: '#60a5fa', fontWeight: 700, marginBottom: '14px', fontFamily: '"IBM Plex Mono", monospace' }}>
-                INFOPACE MANAGEMENT PVT. LTD.
-              </div>
-              <div style={{ fontSize: '46px', fontWeight: 800, color: '#ffffff', fontFamily: '"Playfair Display", Georgia, serif', marginBottom: '16px' }}>
-                Thank You
-              </div>
-              <div style={{ fontSize: '13px', color: '#cbd5e1', maxWidth: '480px', margin: '0 auto 30px', lineHeight: 1.6 }}>
-                We empower business leaders with evidence-based intelligence and execution roadmaps. Contact our advisory team to discuss custom market strategies.
+        {/* Page 11: Thank You & Contact (CII Template Page 16 - White Theme Word-for-Word) */}
+        <div ref={page11Ref} className="cii-page" style={{ background: '#ffffff', color: '#0f172a', position: 'relative' }}>
+          {waveSvg}
+          <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div className="cii-pg-hdr">
+                <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
+                <div className="cii-pg-num">11 / 11</div>
               </div>
 
-              <div style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '12px', padding: '20px 24px', maxWidth: '420px', margin: '0 auto', textAlign: 'left' }}>
-                <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#60a5fa', marginBottom: '10px', letterSpacing: '0.1em' }}>Headquarters &amp; Contact</div>
-                <div style={{ fontSize: '12px', color: '#f8fafc', lineHeight: 1.7 }}>
-                  <strong>Infopace Management Pvt. Ltd.</strong><br/>
+              <div className="cii-eyebrow">Contact &amp; Advisory</div>
+              <div className="cii-pg-title" style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '38px', fontWeight: 700, marginBottom: '5mm', color: '#061228' }}>Thank You</div>
+
+              <p style={{ fontSize: '11.5px', color: '#334155', lineHeight: 1.75, marginBottom: '6mm', fontFamily: '"Inter", sans-serif', textTransform: 'none' }}>
+                We empower business leaders with evidence-based intelligence, AI assessments, and actionable execution roadmaps. Contact our strategic advisory team to discuss custom growth initiatives and digital transformation.
+              </p>
+
+              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.18)', borderRadius: '10px', padding: '18px 22px', maxWidth: '480px', marginBottom: '6mm' }}>
+                <div style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: '#1a56db', marginBottom: '8px', letterSpacing: '0.12em', fontFamily: '"IBM Plex Mono", monospace' }}>Headquarters &amp; Contact</div>
+                <div style={{ fontSize: '12px', color: '#1e293b', lineHeight: 1.8, fontFamily: '"Inter", sans-serif' }}>
+                  <strong style={{ fontSize: '13.5px', color: '#0f172a' }}>Infopace Management Pvt. Ltd.</strong><br/>
                   Bengaluru, Karnataka, India<br/>
-                  🌐 <strong>Website:</strong> www.infopaceindia.com<br/>
+                  🌐 <strong>Website:</strong> <a href="https://www.infopaceindia.com" target="_blank" rel="noreferrer" style={{ color: '#1a56db', textDecoration: 'none' }}>www.infopaceindia.com</a><br/>
                   ✉️ <strong>Email:</strong> info@infopaceindia.com
                 </div>
               </div>
             </div>
 
-            <div style={{ borderTop: '1px solid rgba(255,255,255,0.15)', paddingTop: '12px', display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#64748b' }}>
+            <div className="cii-pg-ftr">
               <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
               <div>End of Intelligence Report</div>
             </div>

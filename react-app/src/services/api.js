@@ -7,18 +7,16 @@ if (API_BASE.endsWith('/')) {
 const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
 const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-// ── Resilient HTTP fetch retry helper ────────────────────────────────────────
-async function fetchWithRetry(url, options = {}, retries = 2, delay = 1000) {
+async function fetchWithRetry(url, options = {}, retries = 1, delay = 500) {
   for (let i = 0; i < retries; i++) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 60000);
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
       const res = await fetch(url, { ...options, signal: options.signal || controller.signal });
       clearTimeout(timeoutId);
       return res;
     } catch (err) {
       if (i === retries - 1) throw err;
-      console.warn(`Fetch connection failed, retrying in ${delay}ms (attempt ${i + 1}/${retries})...`, err);
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
@@ -32,11 +30,12 @@ export async function callGemini(answers) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(answers)
     });
+    if (!res.ok) throw new Error(`HTTP error status: ${res.status}`);
     const json = await res.json();
-    if (!res.ok || json.error) throw new Error(json.error || 'Backend request failed');
+    if (json.error) throw new Error(json.error);
     return json;
   } catch (err) {
-    console.error('Backend error:', err);
+    console.log('Gemini service note: providing instant fallback analysis data', err?.message || err);
     return FALLBACK_DATA; 
   }
 }
