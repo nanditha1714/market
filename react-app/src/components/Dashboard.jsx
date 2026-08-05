@@ -1328,7 +1328,18 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             </div>
 
             <div className="cii-callout">
-             {/* Page 6: Strengths, Growth Areas & Watch-Outs (CII Template Page 7) */}
+              <span className="cii-lbl">Regional Expansion Strategy</span>
+              North America and APAC represent the strongest growth vectors. Ensure localized compliance and data residency infrastructure prior to aggressive regional sales pushes.
+            </div>
+          </div>
+
+          <div className="cii-pg-ftr">
+            <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
+            <div>AI-Evaluated Market Intelligence Report</div>
+          </div>
+        </div>
+
+        {/* Page 6: Strengths, Growth Areas & Watch-Outs (CII Template Page 7) */}
         <div ref={page6Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
