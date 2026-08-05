@@ -34,9 +34,19 @@ const loadScript = (src) => {
 const ENABLE_PAYMENT = false; // Set to true to re-enable Razorpay payment gateway
 
 export default function Dashboard({ data, user, answers, onReset, onOpenAbout }) {
+  const k = (data && data.kpi) ? data.kpi : {};
   const dashRef = useRef(null);
   const page1Ref = useRef(null);
   const page2Ref = useRef(null);
+  const page3Ref = useRef(null);
+  const page4Ref = useRef(null);
+  const page5Ref = useRef(null);
+  const page6Ref = useRef(null);
+  const page7Ref = useRef(null);
+  const page8Ref = useRef(null);
+  const page9Ref = useRef(null);
+  const page10Ref = useRef(null);
+  const page11Ref = useRef(null);
   const [activeView, setActiveView] = useState('dashboard');
   const [isPaid, setIsPaid] = useState(() => {
     if (!ENABLE_PAYMENT) return true;
@@ -259,16 +269,6 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
     const rzp = new window.Razorpay(options);
     rzp.open();
   };
-  const page3Ref = useRef(null);
-  const page4Ref = useRef(null);
-  const page5Ref = useRef(null);
-  const page6Ref = useRef(null);
-  const page7Ref = useRef(null);
-  const page8Ref = useRef(null);
-  const page9Ref = useRef(null);
-  const page10Ref = useRef(null);
-  const page11Ref = useRef(null);
-  const k = data.kpi || {};
   const stars = Math.round(k.stars || 4);
   const sv = data.sentiment || { positive: 70, neutral: 20, negative: 10 };
   const detailedReport = data.detailedReport || {};
