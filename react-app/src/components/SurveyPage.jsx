@@ -11,8 +11,9 @@ const s = {
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    padding: '40px 24px',
+    padding: '30px 24px 80px',
     overflowY: 'auto',
+    WebkitOverflowScrolling: 'touch',
     backgroundImage: 'linear-gradient(to right, rgba(99, 102, 241, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(99, 102, 241, 0.03) 1px, transparent 1px)',
     backgroundSize: '36px 36px',
     fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif'
@@ -116,10 +117,11 @@ const s = {
     borderTop: '4px solid #2563eb',
     boxShadow: '0 10px 25px rgba(0, 0, 0, 0.02)',
     zIndex: 5,
-    overflow: 'hidden',
+    overflow: 'visible',
     display: 'flex',
     flexDirection: 'column',
-    margin: 'auto'
+    margin: '0 0 40px 0',
+    flexShrink: 0
   },
   cardHeader: {
     padding: '20px 28px',
