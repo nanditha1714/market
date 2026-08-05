@@ -12,8 +12,8 @@ async function fetchWithRetry(url, options = {}, retries = 2, delay = 1000) {
   for (let i = 0; i < retries; i++) {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 25000);
-      const res = await fetch(url, { ...options, signal: controller.signal });
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
+      const res = await fetch(url, { ...options, signal: options.signal || controller.signal });
       clearTimeout(timeoutId);
       return res;
     } catch (err) {
