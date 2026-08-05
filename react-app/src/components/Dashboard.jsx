@@ -37,6 +37,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
   const dashRef = useRef(null);
   const page1Ref = useRef(null);
   const page2Ref = useRef(null);
+  const [activeView, setActiveView] = useState('dashboard');
   const [isPaid, setIsPaid] = useState(() => {
     if (!ENABLE_PAYMENT) return true;
     if (data?.payment_status === 'success' || data?.pdf_url) return true;
@@ -577,7 +578,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
   return (
     <div ref={dashRef} style={{ position:'fixed', inset:0, width:'100%', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflow:'hidden' }}>
       {/* Header */}
-      <div style={{ flexShrink:0, background:'var(--navy)', padding:'12px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--navy-light)' }}>
+      <div style={{ flexShrink:0, background:'var(--navy)', padding:'10px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--navy-light)' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '18px' }}>📊</span>
@@ -587,6 +588,45 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             {user.name} - {user.company} - {answers.customer || user.service}
           </p>
         </div>
+
+        {/* View Switcher Tabs */}
+        <div style={{ display: 'flex', background: 'rgba(255,255,255,0.08)', padding: '3px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.15)' }}>
+          <button
+            onClick={() => setActiveView('dashboard')}
+            style={{
+              padding: '6px 14px',
+              border: 'none',
+              borderRadius: '6px',
+              background: activeView === 'dashboard' ? '#1d4ed8' : 'transparent',
+              color: '#ffffff',
+              fontWeight: 700,
+              fontSize: '13px',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              boxShadow: activeView === 'dashboard' ? '0 2px 4px rgba(0,0,0,0.2)' : 'none'
+            }}
+          >
+            📊 Dashboard View
+          </button>
+          <button
+            onClick={() => setActiveView('report')}
+            style={{
+              padding: '6px 14px',
+              border: 'none',
+              borderRadius: '6px',
+              background: activeView === 'report' ? '#1d4ed8' : 'transparent',
+              color: '#ffffff',
+              fontWeight: 700,
+              fontSize: '13px',
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+              boxShadow: activeView === 'report' ? '0 2px 4px rgba(0,0,0,0.2)' : 'none'
+            }}
+          >
+            📄 View Detailed Report
+          </button>
+        </div>
+
         <div style={{ display:'flex', gap:'8px' }}>
           <button onClick={handleDownloadDashboard} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
             {isPaid ? 'Download PDF' : 'Download PDF (🔒 ₹1)'}
@@ -606,7 +646,8 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
         </div>
       </div>
 
-      {/* Main Grid: Forces layout into absolute single screen */}
+      {/* Main Grid: Dashboard View */}
+      {activeView === 'dashboard' && (
       <div style={{ flex:1, display:'grid', gridTemplateRows:'82px 1.1fr 1.3fr 54px', gap:'8px', padding:'8px 12px', minHeight:0, overflow:'hidden' }}>
 
         {/* KPIs */}
@@ -733,9 +774,10 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
         </div>
 
       </div>
+      )}
       
-      {/* Off-screen detailed report for PDF generation (Formatted using CII_Report_FINAL template) */}
-      <div style={{ position: 'absolute', left: '-9999px', top: 0, display: 'flex', flexDirection: 'column', gap: '30px' }}>
+      {/* Detailed report container (On-screen when activeView === 'report', Off-screen for PDF background generator when activeView === 'dashboard') */}
+      <div style={activeView === 'report' ? { flex: 1, overflowY: 'auto', background: '#cbd5e1', padding: '30px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '30px' } : { position: 'absolute', left: '-9999px', top: 0, display: 'flex', flexDirection: 'column', gap: '30px' }}>
         
         {/* Style injection for CII Report Template */}
         <style>{`
