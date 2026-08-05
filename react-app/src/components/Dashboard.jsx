@@ -31,11 +31,14 @@ const loadScript = (src) => {
   });
 };
 
+const ENABLE_PAYMENT = false; // Set to true to re-enable Razorpay payment gateway
+
 export default function Dashboard({ data, user, answers, onReset, onOpenAbout }) {
   const dashRef = useRef(null);
   const page1Ref = useRef(null);
   const page2Ref = useRef(null);
   const [isPaid, setIsPaid] = useState(() => {
+    if (!ENABLE_PAYMENT) return true;
     if (data?.payment_status === 'success' || data?.pdf_url) return true;
     const key = `isPaid_${user?.email || 'global'}`;
     return localStorage.getItem(key) === 'true';
