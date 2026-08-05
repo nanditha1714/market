@@ -484,11 +484,11 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
     document.body.appendChild(badge);
 
     try {
-      const pages = [page1Ref, page2Ref, page3Ref, page4Ref, page5Ref, page6Ref, page7Ref, page8Ref];
+      const pages = [page1Ref, page2Ref, page3Ref, page4Ref, page5Ref, page6Ref, page7Ref, page8Ref, page9Ref, page10Ref, page11Ref];
       const canvases = [];
       
       for (let i = 0; i < pages.length; i++) {
-        badge.textContent = `Exporting Report Page ${i + 1} of 8...`;
+        badge.textContent = `Exporting Report Page ${i + 1} of 11...`;
         const canvas = await html2canvas(pages[i].current, {
           scale: 1.5, useCORS: true, allowTaint: true,
           backgroundColor: '#ffffff', logging: false
@@ -499,7 +499,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
       const safeCompany = (user.company || 'unknown').replace(/[^a-z0-9]/gi, '_').toLowerCase();
       const fileName = safeCompany + '_detailed_report_' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 
-      badge.textContent = 'Generating 8-Page PDF...';
+      badge.textContent = 'Generating 11-Page PDF...';
       const first = canvases[0];
       const pdf = new jsPDF({
         orientation: 'portrait',
@@ -565,7 +565,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
       console.error(err);
     }
     setTimeout(() => { if (badge.parentNode) badge.remove(); }, 6000);
-  }, [data, user, answers, k, page1Ref, page2Ref, page3Ref, page4Ref, page5Ref, page6Ref, page7Ref, page8Ref]);
+  }, [data, user, answers, k, page1Ref, page2Ref, page3Ref, page4Ref, page5Ref, page6Ref, page7Ref, page8Ref, page9Ref, page10Ref, page11Ref]);
 
   const handleDownloadReport = useCallback(() => {
     if (!isPaid) {
