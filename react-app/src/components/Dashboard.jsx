@@ -1372,39 +1372,37 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             <div className="cii-pg-title">Market Growth Trend</div>
             <div className="cii-pg-sub">Historical growth trajectory, CAGR benchmarks, and forward market projections for the assessed industry.</div>
 
-            {/* Full-width Growth Chart */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '16px', marginBottom: '14px' }}>
-              <ChartCard title="📈 Market Growth Trajectory ($ Billions)" type="line" data={growthData} options={growthOpts} height="200px" style={{ background: '#ffffff', padding: '8px', border: '1px solid #e2e8f0', boxShadow: 'none', borderRadius: '8px' }} />
+            {/* Full-width Growth Chart — compact height to leave room for KPIs and text */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '10px 12px 8px', marginBottom: '10px' }}>
+              <ChartCard title="📈 Market Growth Trajectory ($ Billions)" type="line" data={growthData} options={growthOpts} height="140px" style={{ background: '#ffffff', padding: '6px', border: '1px solid #e2e8f0', boxShadow: 'none', borderRadius: '8px' }} />
             </div>
 
             {/* KPI Row */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', marginBottom: '14px' }}>
-              <div style={{ textAlign: 'center', padding: '10px 6px', background: '#eff6ff', borderRadius: '8px', border: '1px solid #bfdbfe' }}>
-                <div style={{ fontSize: '16px', fontWeight: 800, color: '#1a56db', fontFamily: '"IBM Plex Mono", monospace' }}>{k.tam || '—'}</div>
-                <div style={{ fontSize: '9px', color: '#1e3a8a', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Market Size</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '7px', marginBottom: '10px' }}>
+              <div style={{ textAlign: 'center', padding: '8px 4px', background: '#eff6ff', borderRadius: '8px', border: '1px solid #bfdbfe' }}>
+                <div style={{ fontSize: '14px', fontWeight: 800, color: '#1a56db', fontFamily: '"IBM Plex Mono", monospace' }}>{k.tam || '—'}</div>
+                <div style={{ fontSize: '8.5px', color: '#1e3a8a', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>Market Size</div>
               </div>
-              <div style={{ textAlign: 'center', padding: '10px 6px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #bbf7d0' }}>
-                <div style={{ fontSize: '16px', fontWeight: 800, color: '#16a34a', fontFamily: '"IBM Plex Mono", monospace' }}>{k.growthRate || '—'}</div>
-                <div style={{ fontSize: '9px', color: '#15803d', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>CAGR</div>
+              <div style={{ textAlign: 'center', padding: '8px 4px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #bbf7d0' }}>
+                <div style={{ fontSize: '14px', fontWeight: 800, color: '#16a34a', fontFamily: '"IBM Plex Mono", monospace' }}>{k.growthRate || '—'}</div>
+                <div style={{ fontSize: '8.5px', color: '#15803d', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>CAGR</div>
               </div>
-              <div style={{ textAlign: 'center', padding: '10px 6px', background: '#fefce8', borderRadius: '8px', border: '1px solid #fde68a' }}>
-                <div style={{ fontSize: '16px', fontWeight: 800, color: '#b45309', fontFamily: '"IBM Plex Mono", monospace' }}>{k.customers || '—'}</div>
-                <div style={{ fontSize: '9px', color: '#92400e', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Target Customers</div>
+              <div style={{ textAlign: 'center', padding: '8px 4px', background: '#fefce8', borderRadius: '8px', border: '1px solid #fde68a' }}>
+                <div style={{ fontSize: '14px', fontWeight: 800, color: '#b45309', fontFamily: '"IBM Plex Mono", monospace' }}>{k.customers || '—'}</div>
+                <div style={{ fontSize: '8.5px', color: '#92400e', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>Target Customers</div>
               </div>
-              <div style={{ textAlign: 'center', padding: '10px 6px', background: '#fdf4ff', borderRadius: '8px', border: '1px solid #e9d5ff' }}>
-                <div style={{ fontSize: '16px', fontWeight: 800, color: '#7c3aed', fontFamily: '"IBM Plex Mono", monospace' }}>{k.stage || '—'}</div>
-                <div style={{ fontSize: '9px', color: '#6d28d9', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Company Stage</div>
+              <div style={{ textAlign: 'center', padding: '8px 4px', background: '#fdf4ff', borderRadius: '8px', border: '1px solid #e9d5ff' }}>
+                <div style={{ fontSize: '14px', fontWeight: 800, color: '#7c3aed', fontFamily: '"IBM Plex Mono", monospace' }}>{k.stage || '—'}</div>
+                <div style={{ fontSize: '8.5px', color: '#6d28d9', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.07em', fontWeight: 600 }}>Company Stage</div>
               </div>
             </div>
 
-            <div className="cii-sec-title">Market Growth Analysis</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {renderReportParagraphs(rep.marketGrowth)}
-            </div>
-
-            <div className="cii-callout insight">
-              <span className="cii-lbl">Growth Outlook</span>
-              {data.insights || 'Market analysis indicates strong growth potential. Focus on high-velocity segments to maximize early-mover advantage.'}
+            <div className="cii-sec-title" style={{ marginBottom: '6px' }}>Market Growth Analysis</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {/* Show only first 2 sections of growth analysis to fit page */}
+              {renderReportParagraphs(
+                (rep.marketGrowth || '').split('\n\n').slice(0, 2).join('\n\n')
+              )}
             </div>
           </div>
 
