@@ -1165,12 +1165,98 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </div>
         </div>
 
-        {/* Page 2: Executive Summary & Overview (CII Template Page 2 Word-for-Word) */}
+        {/* Page 2: Contents (CII Template Page 2 Word-for-Word) */}
         <div ref={page2Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
               <div className="cii-pg-num">02 / 11</div>
+            </div>
+
+            <div className="cii-eyebrow">In This Report</div>
+            <div className="cii-pg-title" style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '34px', fontWeight: 700, marginBottom: '6mm', color: '#061228' }}>Contents</div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
+              {[
+                { title: 'Our Assessment Suite', sub: 'An overview of all five Infopace assessment tools', page: '03' },
+                { title: 'Executive Summary & Overview', sub: 'Overall score, key findings, and creative overview', page: '04' },
+                { title: 'Dimension Breakdown', sub: 'Detailed breakdown of core strategic dimensions', page: '05' },
+                { title: 'Customer Segmentation', sub: 'Demographics, purchasing behavior, and target profiles', page: '06' },
+                { title: 'Market Growth Trajectory', sub: 'Historical trends, drivers, and CAGR projections', page: '07' },
+                { title: 'Creative Profile & Positioning', sub: 'Competitor share, sentiment, and radar matrix', page: '08' },
+                { title: 'Disclaimer, Privacy & Terms', sub: 'Legal guidelines, privacy commitment, and terms', page: '09' },
+                { title: 'About Infopace', sub: 'Organization profile, key metrics, and advisory services', page: '10' },
+                { title: 'Thank You & Contact', sub: 'Headquarters, website, and advisory contact info', page: '11' }
+              ].map((item, idx) => (
+                <div key={idx} style={{ display: 'flex', alignItems: 'baseline', gap: '14px', padding: '12px 0', borderBottom: '1px solid rgba(17,68,160,0.14)' }}>
+                  <div style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '15px', color: '#0f172a', flexShrink: 0, fontWeight: 700 }}>
+                    {item.title}
+                    <span style={{ display: 'block', fontSize: '10px', color: '#94a3b8', marginTop: '2px', fontFamily: '"Inter", sans-serif', fontWeight: 400 }}>{item.sub}</span>
+                  </div>
+                  <div style={{ flex: 1, borderBottom: '1px dotted #cbd5e1', marginBottom: '3px' }}></div>
+                  <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '11px', color: '#94a3b8', flexShrink: 0, fontWeight: 700 }}>{item.page}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="cii-pg-ftr">
+            <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
+            <div>AI-Evaluated Report</div>
+          </div>
+        </div>
+
+        {/* Page 3: Our Assessment Suite (CII Template Page 3 Word-for-Word) */}
+        <div ref={page3Ref} className="cii-page">
+          <div>
+            <div className="cii-pg-hdr">
+              <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
+              <div className="cii-pg-num">03 / 11</div>
+            </div>
+
+            <div className="cii-eyebrow">Company Overview</div>
+            <div className="cii-pg-title" style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '34px', fontWeight: 700, marginBottom: '5mm', color: '#061228' }}>Our Assessment Suite</div>
+
+            <p style={{ fontSize: '11.5px', color: '#334155', lineHeight: 1.75, marginBottom: '3mm', textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>
+              Over the reporting period, Infopace continued to strengthen its portfolio of AI-powered business assessment tools, delivering intelligent, data-driven solutions that assist entrepreneurs, startups, and organizations make informed strategic decisions.
+            </p>
+            <p style={{ fontSize: '11.5px', color: '#334155', lineHeight: 1.75, marginBottom: '5mm', textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>
+              Each assessment leverages AI to analyze user responses and generate comprehensive reports containing actionable insights, key findings, strengths, improvement areas, and tailored recommendations. The current suite includes the following five tools:
+            </p>
+
+            <div style={{ fontSize: '10px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#94a3b8', marginBottom: '3mm', fontWeight: 700, fontFamily: '"IBM Plex Mono", monospace' }}>The Assessment Suite</div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {[
+                { color: '#a21caf', name: 'Market Research Assessment', desc: 'Validates business ideas by analyzing market demand, customer needs, industry trends, and competition, enabling informed market-entry decisions.' },
+                { color: '#06b6d4', name: 'Market Potential', desc: 'Evaluates the growth potential and commercial viability of a product or business by assessing market size, demand, scalability and risk opportunities.' },
+                { color: '#1a56db', name: 'Creative Innovation Index', desc: 'Measures innovation capability by assessing creativity, problem-solving and adaptability, assisting individuals and organizations strengthen their innovation potential.' },
+                { color: '#f97316', name: 'Business Risk Assessment', desc: 'Identifies strategic, operational, financial and market risks, enabling businesses to proactively mitigate challenges and improve resilience.' },
+                { color: '#f43f5e', name: 'Founder and Co-Founder Compatibility', desc: 'Assesses alignment between founders in leadership, communication, values, and decision-making to build stronger partnerships and reduce future conflicts.' }
+              ].map((tool, idx) => (
+                <div key={idx} style={{ display: 'flex', gap: '10px', padding: '9px 12px', borderBottom: '1px solid rgba(17,68,160,0.14)', background: '#f8fafc', borderRadius: '6px' }}>
+                  <div style={{ width: '4px', background: tool.color, borderRadius: '2px', flexShrink: 0 }}></div>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: '12.5px', color: '#0f172a', marginBottom: '2px' }}>{tool.name}</div>
+                    <div style={{ fontSize: '10.5px', color: '#475569', lineHeight: 1.55, textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>{tool.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="cii-pg-ftr">
+            <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
+            <div>AI-Evaluated Report</div>
+          </div>
+        </div>
+
+        {/* Page 4: Executive Summary & Overview (CII Template Page 4 Word-for-Word) */}
+        <div ref={page4Ref} className="cii-page">
+          <div>
+            <div className="cii-pg-hdr">
+              <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
+              <div className="cii-pg-num">04 / 11</div>
             </div>
 
             <div className="cii-eyebrow">Section One</div>
@@ -1292,12 +1378,12 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </div>
         </div>
 
-        {/* Page 4: Customer Segmentation (In-between detail page with Chart as Heading) */}
+        {/* Page 6: Customer Segmentation (In-between detail page with Chart as Heading) */}
         <div ref={page4Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-              <div className="cii-pg-num">04 / 08</div>
+              <div className="cii-pg-num">06 / 11</div>
             </div>
 
             <div className="cii-eyebrow">Section Two — Deep Detail</div>
@@ -1347,12 +1433,12 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </div>
         </div>
 
-        {/* Page 5: Geographic Distribution (In-between detail page with Chart as Heading) */}
+        {/* Page 7: Geographic Distribution (In-between detail page with Chart as Heading) */}
         <div ref={page5Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-              <div className="cii-pg-num">05 / 08</div>
+              <div className="cii-pg-num">07 / 11</div>
             </div>
 
             <div className="cii-eyebrow">Section Two — Deep Detail</div>
@@ -1364,7 +1450,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', alignItems: 'center' }}>
                 <ChartCard title="🌏 Geographic Breakdown" type="doughnut" data={geoData} options={{ ...pieOpts('55%'), layout: { padding: 4 } }} height="145px" style={{ background: '#ffffff', padding: '8px', border: '1px solid #e2e8f0', boxShadow: 'none' }} />
                 <div>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Territory Breakdown</div>
+                  <div style={{ fontSize: '11px', fontWeight 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Territory Breakdown</div>
                   <table className="cii-table">
                     <thead>
                       <tr>
@@ -1402,12 +1488,12 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </div>
         </div>
 
-        {/* Page 6: Strengths, Growth Areas & Watch-Outs (CII Template Page 7) */}
+        {/* Page 8: Strengths, Growth Areas & Watch-Outs (CII Template Page 7) */}
         <div ref={page6Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-              <div className="cii-pg-num">06 / 08</div>
+              <div className="cii-pg-num">08 / 11</div>
             </div>
 
             <div className="cii-eyebrow">Section Three</div>
