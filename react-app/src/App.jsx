@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef, Suspense, lazy } from 
 import LoadingScreen from './components/LoadingScreen';
 import AboutSidebar from './components/AboutSidebar';
 import { callGemini, saveRecord, getRecord, getGoogleUserProfile, sendWelcomeEmail } from './services/api';
+import { FALLBACK_DATA } from './constants';
 
 const LoginPage  = lazy(() => import('./components/LoginPage'));
 const SurveyPage = lazy(() => import('./components/SurveyPage'));
@@ -197,23 +198,13 @@ export default function App() {
     try {
       data = await callGemini(enriched);
     } catch (err) {
-      console.warn('callGemini failed, proceeding with fallback data:', err);
+      console.warn('callGemini failed, proceeding with fallback results:', err);
+      data = FALLBACK_DATA;
     }
 
-    if (!data) {
-      setErrorMsg('Failed to process request. Please try again.');
-      setScreen(SCREENS.SURVEY);
-      window.location.hash = '#/survey';
-      setTimeout(() => setErrorMsg(null), 8000);
-      return;
-    }
-
-    if (data.error) {
-      setErrorMsg(data.error);
-      setScreen(SCREENS.SURVEY);
-      window.location.hash = '#/survey';
-      setTimeout(() => setErrorMsg(null), 8000);
-      return;
+    if (!data || data.error) {
+      console.warn('Backend API error or missing data, loading fallback results:', data?.error);
+      data = FALLBACK_DATA;
     }
 
     let dbRecordId = null;
