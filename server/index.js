@@ -14,7 +14,8 @@ app.use(helmet({
   contentSecurityPolicy: false, // Disabled for ease of dynamic chart rendering
 }));
 app.use(cors({
-  origin: ['https://mra.infopaceindia.co.in', 'http://localhost:3000'],
+  origin: true,
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));

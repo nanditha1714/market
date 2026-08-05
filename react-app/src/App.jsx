@@ -193,10 +193,24 @@ export default function App() {
     };
     setScreen(SCREENS.LOADING);
 
-    const data = await callGemini(enriched);
-    
+    let data;
+    try {
+      data = await callGemini(enriched);
+    } catch (err) {
+      console.warn('callGemini failed, proceeding with fallback data:', err);
+    }
+
+    if (!data) {
+      setErrorMsg('Failed to process request. Please try again.');
+      setScreen(SCREENS.SURVEY);
+      window.location.hash = '#/survey';
+      setTimeout(() => setErrorMsg(null), 8000);
+      return;
+    }
+
     if (data.error) {
       setErrorMsg(data.error);
+      setScreen(SCREENS.SURVEY);
       window.location.hash = '#/survey';
       setTimeout(() => setErrorMsg(null), 8000);
       return;

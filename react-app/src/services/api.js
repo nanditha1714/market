@@ -8,10 +8,14 @@ const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
 const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
 // ── Resilient HTTP fetch retry helper ────────────────────────────────────────
-async function fetchWithRetry(url, options, retries = 3, delay = 1000) {
+async function fetchWithRetry(url, options = {}, retries = 2, delay = 1000) {
   for (let i = 0; i < retries; i++) {
     try {
-      return await fetch(url, options);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 25000);
+      const res = await fetch(url, { ...options, signal: controller.signal });
+      clearTimeout(timeoutId);
+      return res;
     } catch (err) {
       if (i === retries - 1) throw err;
       console.warn(`Fetch connection failed, retrying in ${delay}ms (attempt ${i + 1}/${retries})...`, err);
