@@ -284,6 +284,22 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
     ...detailedReport
   };
 
+  const renderFormattedText = useCallback((str) => {
+    if (!str) return '';
+    const parts = str.split(/(\*\*.*?\*\*|^[A-Z0-9\s,&/\-]{4,}:)/gm);
+    return parts.map((part, idx) => {
+      if (!part) return null;
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <b key={idx} style={{ color: '#061228', fontWeight: 700 }}>{part.slice(2, -2)}</b>;
+      }
+      if (/^[A-Z0-9\s,&/\-]{4,}:$/.test(part)) {
+        const formattedPrefix = part.charAt(0) + part.slice(1).toLowerCase();
+        return <b key={idx} style={{ color: '#061228', fontWeight: 700 }}>{formattedPrefix} </b>;
+      }
+      return part;
+    });
+  }, []);
+
   const renderReportParagraphs = useCallback((text) => {
     const normalizedText = (text || '').replace(/\\n/gi, '\n');
     const lines = normalizedText.split(/\r?\n/);
@@ -296,16 +312,17 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
       if (line.startsWith('###')) {
         if (currentParagraph.length > 0) {
+          const paraText = currentParagraph.join(' ');
           elements.push(
-            <div key={`p-${i}`} style={{ ...repStyles.bodyText, marginBottom: '8px' }}>
-              {currentParagraph.join(' ')}
-            </div>
+            <p key={`p-${i}`} className="cii-body" style={{ fontSize: '11.5px', lineHeight: '1.65', color: '#334155', marginBottom: '8px', textTransform: 'none', fontFamily: '"Inter", system-ui, sans-serif' }}>
+              {renderFormattedText(paraText)}
+            </p>
           );
           currentParagraph = [];
         }
-        const headerText = line.replace('###', '').trim();
+        const headerText = line.replace(/^###\s*/, '').trim();
         elements.push(
-          <div key={`h-${i}`} style={{ fontSize: '13.5px', fontWeight: 800, color: '#1e3a8a', marginTop: '18px', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '0.01em', fontFamily: '"Inter", -apple-system, sans-serif' }}>
+          <div key={`h-${i}`} className="cii-sec-title" style={{ fontSize: '13px', fontWeight: 700, color: '#061228', marginTop: i > 0 ? '14px' : '4px', marginBottom: '6px', letterSpacing: '0.05em', textTransform: 'uppercase', fontFamily: '"Inter", system-ui, sans-serif', borderTop: i > 0 ? '1px solid rgba(17,68,160,0.14)' : 'none', paddingTop: i > 0 ? '10px' : 0 }}>
             {headerText}
           </div>
         );
@@ -315,15 +332,16 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
     }
 
     if (currentParagraph.length > 0) {
+      const paraText = currentParagraph.join(' ');
       elements.push(
-        <div key="p-last" style={{ ...repStyles.bodyText, marginBottom: '8px' }}>
-          {currentParagraph.join(' ')}
-        </div>
+        <p key="p-last" className="cii-body" style={{ fontSize: '11.5px', lineHeight: '1.65', color: '#334155', marginBottom: '8px', textTransform: 'none', fontFamily: '"Inter", system-ui, sans-serif' }}>
+          {renderFormattedText(paraText)}
+        </p>
       );
     }
 
     return elements;
-  }, []);
+  }, [renderFormattedText]);
 
   // ── Chart configs ──────────────────────────────────────────────────────────
   const growthData = {
