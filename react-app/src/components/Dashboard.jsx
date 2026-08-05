@@ -1046,161 +1046,186 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             margin-top: 10px;
             background: #fafbfe;
           }
+          .tag-pill { display: inline-block; font-size: 10px; font-weight: 700; color: #16a34a; background: #dcfce7; border: 1px solid #bbf7d0; border-radius: 12px; padding: 2px 8px; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+          .persona-name { font-size: 20px; font-weight: 700; color: #061228; font-family: 'Playfair Display', serif; }
+          .glance-table { width: 100%; border-collapse: collapse; margin: 6px 0; }
+          .glance-table td { padding: 4px 6px; font-size: 10.5px; border-bottom: 1px solid rgba(17,68,160,0.14); }
+          .glance-table .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 6px; }
+          .glance-table .nm { font-weight: 700; color: #061228; }
+          .glance-table .sc { font-family: 'IBM Plex Mono', monospace; font-weight: 700; text-align: right; font-size: 11.5px; }
+          .dim-block { display: flex; gap: 12px; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid rgba(17,68,160,0.14); }
+          .dim-score-col { text-align: center; width: 60px; flex-shrink: 0; }
+          .dim-score-col .n { font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 700; line-height: 1; }
+          .dim-score-col .band { font-size: 8.5px; font-weight: 700; text-transform: uppercase; color: #64748b; margin-top: 2px; }
+          .dim-body { flex: 1; font-size: 10.5px; color: #334155; line-height: 1.5; }
+          .dim-name { font-size: 12px; font-weight: 700; color: #061228; margin-bottom: 2px; }
+          .dim-desc { font-size: 10.5px; color: #475569; margin-bottom: 3px; font-style: italic; }
+          .dim-tell { font-size: 10px; color: #334155; margin-bottom: 2px; position: relative; padding-left: 9px; }
+          .dim-tell::before { content: '•'; position: absolute; left: 0; color: #1a56db; }
+          .dim-extra { font-size: 9.5px; color: #64748b; margin-top: 2px; background: #f8fafc; padding: 3px 6px; border-radius: 4px; border-left: 2px solid #cbd5e1; }
+          .dim-extra .k { font-weight: 700; color: #334155; }
         `}</style>
         
-        {/* Page 1: Cover Page (CII Template Page 1) */}
+        {/* Page 1: Cover Page (CII Template Page 1 Word-for-Word) */}
         <div ref={page1Ref} className="cii-page">
-          <div style={{ padding: '10px 0 0' }}>
-            <img src="/logo.png" alt="Infopace Logo" style={{ height: '46px', objectFit: 'contain' }} />
+          <div style={{ padding: '14mm 16mm 0' }}>
+            <img src="/logo.png" alt="Infopace" style={{ height: '56px' }} />
           </div>
 
-          <div style={{ padding: '10px 0', position: 'relative', zIndex: 2 }}>
-            <div style={{ fontSize: '11px', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#1a56db', fontWeight: 700, marginBottom: '16px', fontFamily: '"IBM Plex Mono", monospace' }}>
-              ASSESSMENT REPORT · EXECUTIVE EDITION
+          <div style={{ padding: '14mm 16mm 0', position: 'relative', zIndex: 2 }}>
+            <div style={{ fontSize: '11.5px', letterSpacing: '.2em', textTransform: 'uppercase', color: '#1a56db', fontWeight: 600, marginBottom: '6mm', fontFamily: '"IBM Plex Mono", monospace' }}>
+              Assessment Report · Personal Edition
             </div>
-            <div style={{ fontWeight: 800, fontSize: '50px', lineHeight: 1.08, color: '#061228', letterSpacing: '-0.01em', fontFamily: '"Playfair Display", Georgia, serif' }}>
-              {user.company ? user.company.slice(0, 24) : 'Market Research'}
+            <div style={{ fontWeight: 800, fontSize: '69px', lineHeight: 1.08, color: '#061228', letterSpacing: '-.01em', fontFamily: '"Playfair Display", Georgia, serif' }}>
+              Creative
             </div>
-            <div style={{ fontWeight: 800, fontSize: '50px', lineHeight: 1.08, color: '#1a56db', letterSpacing: '-0.01em', fontFamily: '"Playfair Display", Georgia, serif' }}>
-              {answers.industry ? answers.industry.split(' — ')[0].slice(0, 24) : 'Intelligence'}
+            <div style={{ fontWeight: 800, fontSize: '69px', lineHeight: 1.08, color: '#1a56db', letterSpacing: '-.01em', fontFamily: '"Playfair Display", Georgia, serif' }}>
+              Innovation
             </div>
-            <div style={{ fontSize: '13px', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#334155', marginTop: '24px' }}>
-              Comprehensive Market Analysis &amp; Strategic Roadmap
-            </div>
-          </div>
-
-          {/* Metadata Card */}
-          <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '10px', padding: '16px 20px', margin: '20px 0' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', fontSize: '12px' }}>
-              <div>
-                <span style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', fontWeight: 700, display: 'block' }}>Prepared For</span>
-                <strong style={{ color: '#061228', fontSize: '14px' }}>{user.name || 'Enterprise Client'}</strong>
-                <div style={{ color: '#475569', fontSize: '11px' }}>{user.email}</div>
-              </div>
-              <div>
-                <span style={{ color: '#64748b', fontSize: '10px', textTransform: 'uppercase', fontWeight: 700, display: 'block' }}>Organization &amp; Solution</span>
-                <strong style={{ color: '#061228', fontSize: '14px' }}>{user.company || 'Infopace Partner'}</strong>
-                <div style={{ color: '#475569', fontSize: '11px' }}>{user.service ? user.service.slice(0, 45) : 'B2B Strategic Venture'}</div>
-              </div>
+            <div style={{ fontSize: '13.8px', fontWeight: 700, letterSpacing: '.05em', textTransform: 'uppercase', color: '#334155', marginTop: '8mm' }}>
+              Creative Capability Summary
             </div>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', paddingBottom: '10px', borderTop: '1px solid rgba(17,68,160,0.14)', paddingTop: '12px' }}>
-            <div style={{ fontSize: '10px', color: '#94a3b8', fontFamily: '"IBM Plex Mono", monospace' }}>
-              Prepared By Infopace Management Pvt. Ltd.
-            </div>
-            <div style={{ fontWeight: 800, fontSize: '42px', color: '#061228', lineHeight: 1 }}>
-              2026
-            </div>
+          <div style={{ position: 'relative', flex: 1, height: '150mm', marginTop: '-4mm' }}>
+            <svg width="760" height="480" viewBox="0 0 760 480" style={{ position: 'absolute', left: '-30px', bottom: 0 }}>
+              <path d="M 0.0 23.8 Q 17.3 25.4 25.9 26.2 Q 51.8 28.9 60.5 29.8 Q 86.4 32.5 95.0 33.3 Q 120.9 35.8 129.5 36.6 Q 155.5 38.8 164.1 39.5 Q 190.0 41.4 198.6 42.0 Q 224.5 43.6 233.2 44.0 Q 259.1 45.2 267.7 45.5 Q 293.6 46.1 302.3 46.0 Q 328.2 45.6 336.8 45.2 Q 362.7 43.7 371.4 42.9 Q 397.3 40.0 405.9 38.8 Q 431.8 34.9 440.5 33.4 Q 466.4 28.7 475.0 27.0 Q 500.9 21.9 509.5 20.1 Q 535.5 14.8 544.1 13.1 Q 570.0 7.9 578.6 6.2 Q 604.5 1.2 613.2 -0.3 Q 639.1 -4.8 647.7 -6.1 Q 673.6 -9.9 682.3 -10.9 Q 708.2 -13.7 716.8 -14.3 Q 742.7 -15.6 751.4 -15.7" fill="none" stroke="#1a56db" strokeWidth="1.05" strokeOpacity="0.75" strokeLinecap="round"/>
+              <path d="M 0.0 30.0 Q 17.3 31.7 25.9 32.5 Q 51.8 35.2 60.5 36.1 Q 86.4 38.7 95.0 39.6 Q 120.9 42.0 129.5 42.8 Q 155.5 45.0 164.1 45.7 Q 190.0 47.7 198.6 48.3 Q 224.5 49.9 233.2 50.4 Q 259.1 51.4 267.7 51.6 Q 293.6 51.7 302.3 51.5 Q 328.2 50.5 336.8 49.9 Q 362.7 47.6 371.4 46.5 Q 397.3 42.9 405.9 41.5 Q 431.8 37.0 440.5 35.3 Q 466.4 30.2 475.0 28.4 Q 500.9 23.0 509.5 21.1 Q 535.5 15.7 544.1 13.9 Q 570.0 8.6 578.6 6.9 Q 604.5 1.9 613.2 0.4 Q 639.1 -4.0 647.7 -5.3 Q 673.6 -8.7 682.3 -9.5 Q 708.2 -11.6 716.8 -12.0 Q 742.7 -12.5 751.4 -12.3" fill="none" stroke="#1a56db" strokeWidth="1.05" strokeOpacity="0.70" strokeLinecap="round"/>
+              <path d="M 0.0 41.2 Q 17.3 44.2 25.9 45.7 Q 51.8 50.3 60.5 51.8 Q 86.4 56.4 95.0 57.8 Q 120.9 62.2 129.5 63.5 Q 155.5 67.5 164.1 68.7 Q 190.0 72.1 198.6 73.0 Q 224.5 75.5 233.2 76.1 Q 259.1 77.3 267.7 77.3 Q 293.6 76.7 302.3 76.1 Q 328.2 73.6 336.8 72.3 Q 362.7 67.7 371.4 65.8 Q 397.3 59.5 405.9 57.0 Q 431.8 49.3 440.5 46.4 Q 466.4 37.6 475.0 34.5 Q 500.9 25.0 509.5 21.7 Q 535.5 11.8 544.1 8.4 Q 570.0 -1.6 578.6 -4.9 Q 604.5 -14.5 613.2 -17.6 Q 639.1 -26.4 647.7 -29.0 Q 673.6 -36.4 682.3 -38.4 Q 708.2 -43.7 716.8 -45.0 Q 742.7 -47.9 751.4 -48.3" fill="none" stroke="#1a56db" strokeWidth="1.30" strokeOpacity="0.65" strokeLinecap="round"/>
+              <path d="M 0.0 47.3 Q 17.3 49.5 25.9 50.6 Q 51.8 53.8 60.5 54.8 Q 86.4 58.0 95.0 59.0 Q 120.9 61.9 129.5 62.8 Q 155.5 65.3 164.1 66.0 Q 190.0 67.9 198.6 68.3 Q 224.5 69.2 233.2 69.2 Q 259.1 68.7 267.7 68.1 Q 293.6 66.0 302.3 64.9 Q 328.2 61.1 336.8 59.5 Q 362.7 54.3 371.4 52.3 Q 397.3 46.0 405.9 43.8 Q 431.8 36.9 440.5 34.5 Q 466.4 27.4 475.0 25.1 Q 500.9 18.1 509.5 15.8 Q 535.5 9.2 544.1 7.2 Q 570.0 1.3 578.6 -0.5 Q 604.5 -5.2 613.2 -6.4 Q 639.1 -9.6 647.7 -10.2 Q 673.6 -11.3 682.3 -11.2 Q 708.2 -10.1 716.8 -9.2 Q 742.7 -5.7 751.4 -4.0" fill="none" stroke="#1a56db" strokeWidth="1.05" strokeOpacity="0.60" strokeLinecap="round"/>
+            </svg>
+          </div>
+
+          <div style={{ position: 'relative', zIndex: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', padding: '0 16mm 14mm' }}>
+            <div style={{ fontSize: '10.3px', color: '#94a3b8', fontFamily: '"IBM Plex Mono", monospace' }}>Prepared By Infopace Management Pvt. Ltd.</div>
+            <div style={{ fontWeight: 800, fontSize: '57.5px', color: '#061228', lineHeight: 1.1 }}>2026</div>
           </div>
         </div>
 
-        {/* Page 2: Executive Overview & Summary (CII Template Page 2) */}
+        {/* Page 2: Executive Summary & Overview (CII Template Page 2 Word-for-Word) */}
         <div ref={page2Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-              <div className="cii-pg-num">02 / 08</div>
+              <div className="cii-pg-num">02 / 11</div>
             </div>
 
             <div className="cii-eyebrow">Section One</div>
-            <div className="cii-pg-title">Executive Summary &amp; Market Overview</div>
-            <div className="cii-pg-sub">High-level market valuation, core growth drivers, and strategic positioning at a glance.</div>
+            <div className="cii-pg-title">Executive Summary &amp; Overview</div>
+            <div className="cii-pg-sub">A high-level view of your creative capability profile, key strengths, and overall positioning.</div>
 
-            {/* Key Stats Row */}
+            {/* Score Gauge & Persona */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', margin: '8px 0 10px' }}>
+              <svg width="220" height="110" viewBox="0 0 260 140">
+                <path d="M 30,130 A 100,100 0 0,1 230,130" fill="none" stroke="#e2e8f0" strokeWidth="18" strokeLinecap="round"/>
+                <path d="M 30,130 A 100,100 0 0,1 206,71" fill="none" stroke="#1a56db" strokeWidth="18" strokeLinecap="round"/>
+                <text x="130" y="108" textAnchor="middle" style={{ fontSize: '48px', fontWeight: 800, fill: '#061228', fontFamily: '"IBM Plex Mono", monospace' }}>68</text>
+                <text x="130" y="130" textAnchor="middle" style={{ fontSize: '10px', fontWeight: 700, fill: '#64748b', letterSpacing: '0.12em', fontFamily: '"IBM Plex Mono", monospace' }}>CII SCORE / 100</text>
+              </svg>
+              <div>
+                <div className="tag-pill">Above Average</div>
+                <div className="persona-name">Creative Catalyst</div>
+              </div>
+            </div>
+
+            {/* Stat Row */}
             <div className="cii-stat-row">
-              <div className="cii-stat-box"><div className="n">{k.tam || '$5.2B'}</div><div className="l">Total Market Size</div></div>
-              <div className="cii-stat-box"><div className="n">{k.growthRate || '8.5%'}</div><div className="l">CAGR Growth</div></div>
-              <div className="cii-stat-box"><div className="n">{k.customers || '1.2M'}</div><div className="l">Target Customers</div></div>
-              <div className="cii-stat-box"><div className="n">{k.competitors || 5}</div><div className="l">Top Competitors</div></div>
+              <div className="cii-stat-box"><div className="n">68</div><div className="l">Overall Score</div></div>
+              <div className="cii-stat-box"><div className="n">Top 22%</div><div className="l">Percentile</div></div>
+              <div className="cii-stat-box"><div className="n">4/6</div><div className="l">Above Average</div></div>
+              <div className="cii-stat-box"><div className="n">Vision</div><div className="l">Top Dimension</div></div>
+            </div>
+            <p style={{ fontSize: '9.5px', color: '#64748b', margin: '4px 0 8px', lineHeight: 1.5 }}>
+              A score of 68 places this result in the <b style={{ color: '#1d4ed8' }}>top 22% of everyone assessed</b> to date — meaning roughly 4 in 5 respondents score at or below this level. The population benchmark for an overall CII score sits at 58, putting this result 10 points clear of the typical respondent.
+            </p>
+
+            <div className="cii-sec-title">Summary</div>
+            <p className="cii-body">Across the six creative dimensions measured in this assessment, your responses point to a <b>well-rounded, above-average creative profile</b> anchored by unusually strong conviction and follow-through. Where many respondents show a single standout dimension surrounded by average scores, your profile is more evenly elevated — four of six dimensions land above the population benchmark, and none fall in the lowest band.</p>
+            <p className="cii-body">The strongest signal in your responses is <b>Vision &amp; Drive</b> — the degree to which your ideas are anchored in genuine purpose rather than novelty for its own sake. This tends to show up as a bias toward finishing what you start: ideas that survive contact with real constraints, rather than ones that stay hypothetical. Paired with an above-average <b>Risk &amp; Openness</b> score, this suggests someone who is not just willing to consider unconventional approaches, but willing to actually commit to one once it's chosen.</p>
+            <p className="cii-body">Your one below-average area, <b>Innovation</b> — specifically, the gap between having an idea and shipping a working version of it — is worth attention, and is addressed directly in the Recommended Development Actions section of this report.</p>
+            <p className="cii-body">This profile shape is itself worth noting: the most common pattern seen across the population is a <b>single standout dimension surrounded by otherwise average scores</b> — someone strong in one area, roughly typical everywhere else. This result doesn't follow that pattern. Four dimensions sitting above benchmark simultaneously is a comparatively unusual, broader-based profile — the strength here isn't concentrated in one place, which tends to make it more resilient across different types of creative work rather than reliable only in the specific conditions that favor a single dimension.</p>
+
+            <div className="cii-callout" style={{ background: '#f8fafc', borderColor: '#cbd5e1' }}>
+              <span className="cii-lbl" style={{ color: '#475569' }}>Score Trajectory</span>
+              This is currently the only assessment on record for this profile, so no trend data is available yet. Once a second assessment is completed, this section will show score movement over time, including which dimensions improved most and how the overall score trended against the 90-day target.
             </div>
 
-            <div className="cii-sec-title">Executive Overview</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {renderReportParagraphs(rep.executiveSummary)}
-            </div>
-
-            <div className="cii-sec-title">All Key Parameters At A Glance</div>
-            <table className="cii-table">
-              <thead>
-                <tr>
-                  <th>Parameter</th>
-                  <th>Market Baseline Value</th>
-                  <th>Strategic Impact</th>
-                </tr>
-              </thead>
+            <div className="cii-sec-title">All Six Dimensions At A Glance</div>
+            <table className="glance-table">
               <tbody>
-                <tr><td><strong>TAM Estimate</strong></td><td>{k.tam || 'N/A'}</td><td style={{ color: '#16a34a', fontWeight: 600 }}>High Expansion Room</td></tr>
-                <tr><td><strong>Projected Growth</strong></td><td>{k.growthRate || 'N/A'} CAGR</td><td style={{ color: '#1d4ed8', fontWeight: 600 }}>Steady Upside Momentum</td></tr>
-                <tr><td><strong>Company Stage</strong></td><td>{k.stage || 'Growth'}</td><td style={{ color: '#64748b' }}>Active Market Penetration</td></tr>
-                <tr><td><strong>Avg Pricing Tier</strong></td><td>{k.price || 'Market Avg'}</td><td style={{ color: '#b45309', fontWeight: 600 }}>Competitive Value Position</td></tr>
+                <tr><td><span className="dot" style={{ background: '#10b981' }}></span><span className="nm">Vision &amp; Drive</span></td><td style={{ color: '#64748b' }}>Purpose &amp; follow-through</td><td className="sc" style={{ color: '#16a34a' }}>82</td></tr>
+                <tr><td><span className="dot" style={{ background: '#1a56db' }}></span><span className="nm">Risk &amp; Openness</span></td><td style={{ color: '#64748b' }}>Comfort with ambiguity</td><td className="sc" style={{ color: '#1a56db' }}>75</td></tr>
+                <tr><td><span className="dot" style={{ background: '#a21caf' }}></span><span className="nm">Divergent Thinking</span></td><td style={{ color: '#64748b' }}>Idea originality &amp; range</td><td className="sc" style={{ color: '#a21caf' }}>70</td></tr>
+                <tr><td><span className="dot" style={{ background: '#06b6d4' }}></span><span className="nm">Remote Association</span></td><td style={{ color: '#64748b' }}>Distant-concept connection</td><td className="sc" style={{ color: '#06b6d4' }}>58</td></tr>
+                <tr><td><span className="dot" style={{ background: '#f97316' }}></span><span className="nm">Creative Behavior</span></td><td style={{ color: '#64748b' }}>Ideas showing up in action</td><td className="sc" style={{ color: '#f97316' }}>52</td></tr>
+                <tr><td><span className="dot" style={{ background: '#f43f5e' }}></span><span className="nm">Innovation</span></td><td style={{ color: '#64748b' }}>Idea-to-outcome execution</td><td className="sc" style={{ color: '#f43f5e' }}>48</td></tr>
               </tbody>
             </table>
 
             <div className="cii-callout insight">
-              <span className="cii-lbl">Key Strategic Insight</span>
-              {data.insights || 'Strong TAM with differentiation opportunity. Fragmented competition creates share capture potential — product innovation is your primary growth lever.'}
+              <span className="cii-lbl">Key Insight</span>
+              You generate fewer ideas than the highest scorers on raw volume, but convert a meaningfully higher share of the ideas you do have into something real. Your growth lever isn't "think of more ideas" — it's building a lighter, faster path from idea to first working version.
             </div>
           </div>
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
+            <div>AI-Evaluated Report</div>
           </div>
         </div>
 
-        {/* Page 3: Market Growth Trajectory (In-between detail page with Chart as Heading) */}
+        {/* Page 3: Dimension Breakdown Part 1 (CII Template Page 3 Word-for-Word) */}
         <div ref={page3Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-              <div className="cii-pg-num">03 / 08</div>
+              <div className="cii-pg-num">03 / 11</div>
             </div>
 
-            <div className="cii-eyebrow">Section Two — Deep Detail</div>
-            <div className="cii-pg-title">Market Growth &amp; Historical Trajectory</div>
-            <div className="cii-pg-sub">Historical market sizing and projected CAGR trajectory (2018–2024).</div>
+            <div className="cii-eyebrow">Section Two</div>
+            <div className="cii-pg-title">Dimension-by-Dimension Breakdown</div>
+            <div className="cii-pg-sub">What each dimension measures, your score, and what it looks like in day-to-day practice. Part 1 of 2.</div>
 
-            {/* CHART HEADING BANNER */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', marginBottom: '16px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '16px', alignItems: 'center' }}>
-                <ChartCard title="📈 Market Growth Trend" type="line" data={growthData} options={{ ...growthOpts, layout: { padding: 4 } }} height="145px" style={{ background: '#ffffff', padding: '8px', border: '1px solid #e2e8f0', boxShadow: 'none' }} />
-                <div>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Growth Metrics Data</div>
-                  <table className="cii-table">
-                    <thead>
-                      <tr>
-                        <th>Year</th>
-                        <th>Market Size ($B)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(data.growth?.labels || []).slice(0, 5).map((lbl, idx) => (
-                        <tr key={idx}>
-                          <td><strong>{lbl}</strong></td>
-                          <td>${(data.growth?.values || [])[idx] || 0}B</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+            <div className="dim-block">
+              <div className="dim-score-col"><div className="n" style={{ color: '#a21caf' }}>70</div><div className="band">Above Avg</div></div>
+              <div className="dim-body">
+                <div className="dim-name">Divergent Thinking <span style={{ fontWeight: 400, color: '#64748b', fontSize: '9px' }}>· Benchmark 58 (+12) · Weightage 18% of overall score</span></div>
+                <div className="dim-desc">The originality and sheer range of ideas you generate when a problem has no single correct answer.</div>
+                <div className="dim-tell">In practice: you're comfortable generating several genuinely different angles on a problem before converging on one, rather than reaching for the first workable answer.</div>
+                <div className="dim-tell">In group settings: you're likely the one who reframes a problem or pushes past the first two obvious answers before a group settles on a direction.</div>
+                <div className="dim-extra"><span className="k">Likely driver:</span> a genuine comfort exploring multiple framings of a problem before committing to one, rather than anchoring early.</div>
+                <div className="dim-extra"><span class="k">Impact on outcomes:</span> teams working with you typically start from a richer set of initial options, which tends to raise the ceiling on the final decision even when your specific idea isn't the one chosen.</div>
               </div>
             </div>
 
-            <div className="cii-sec-title">Deep Growth Analysis</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {renderReportParagraphs(rep.marketGrowth)}
+            <div className="dim-block">
+              <div className="dim-score-col"><div className="n" style={{ color: '#06b6d4' }}>58</div><div className="band">Average</div></div>
+              <div className="dim-body">
+                <div className="dim-name">Remote Association <span style={{ fontWeight: 400, color: '#64748b', fontSize: '9px' }}>· Benchmark 55 (+3) · Weightage 15% of overall score</span></div>
+                <div className="dim-desc">Your ability to connect distant, seemingly unrelated concepts into a coherent new idea.</div>
+                <div className="dim-tell">In practice: you draw novel connections situationally rather than as a default habit — a workable middle ground, with clear room to strengthen through deliberate cross-domain exposure (see Recommended Actions).</div>
+                <div className="dim-tell">Working alone: you're more likely to make an unexpected connection when a problem is already on your mind for a while, rather than on demand in the moment.</div>
+                <div className="dim-extra"><span className="k">Likely driver:</span> the connective insight is genuinely present, but currently depends on a problem incubating over time rather than being retrievable on demand.</div>
+                <div className="dim-extra"><span class="k">Impact on outcomes:</span> cross-domain insight does arrive, but not reliably on a tight deadline — a risk specifically in fast-turnaround ideation sessions rather than longer-running projects.</div>
+              </div>
             </div>
 
-            <div className="cii-callout">
-              <span className="cii-lbl">Growth Trajectory Callout</span>
-              Macro expansion remains steady. Cloud adoption and digital transformation serve as primary tailwinds sustaining long-term market size scaling.
+            <div className="dim-block">
+              <div className="dim-score-col"><div className="n" style={{ color: '#1a56db' }}>75</div><div className="band">Above Avg</div></div>
+              <div className="dim-body">
+                <div className="dim-name">Risk &amp; Openness <span style={{ fontWeight: 400, color: '#64748b', fontSize: '9px' }}>· Benchmark 50 (+25) · Weightage 17% of overall score</span></div>
+                <div className="dim-desc">Your tolerance for ambiguity, and your willingness to act on an idea before it's fully validated.</div>
+                <div className="dim-tell">In practice: you're notably comfortable moving forward on a promising-but-unproven direction — one of your clearest relative strengths, 25 points above the population average.</div>
+                <div className="dim-tell">In group settings: you're often the one who moves a hesitant group toward a decision, since your comfort with uncertainty tends to be visible to others.</div>
+                <div className="dim-extra"><span className="k">Likely driver:</span> this reads as genuine underlying comfort with unresolved uncertainty, not tolerance built reluctantly through necessity — the gap over benchmark is large enough to suggest a real trait rather than situational adaptation.</div>
+                <div className="dim-extra"><span class="k">Impact on outcomes:</span> your willingness to act unblocks stalled decisions in ambiguous situations; the corresponding risk is committing before validation catches real problems, which the Watch-Outs section addresses directly.</div>
+              </div>
             </div>
           </div>
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
+            <div>AI-Evaluated Report</div>
           </div>
         </div>
 
