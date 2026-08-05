@@ -86,15 +86,16 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
       if (!dashUrl) {
         try {
           const canvas = await html2canvas(dashRef.current, {
-            scale: 1.5, useCORS: true, allowTaint: true,
+            scale: 1.2, useCORS: true, allowTaint: true,
             backgroundColor: '#f8fafc', logging: false
           });
           const pdf = new jsPDF({
             orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
             unit: 'px',
-            format: [canvas.width, canvas.height]
+            format: [canvas.width, canvas.height],
+            compress: true
           });
-          pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, canvas.width, canvas.height);
+          pdf.addImage(canvas.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, canvas.width, canvas.height, undefined, 'FAST');
           const pdfBlob = pdf.output('blob');
           dashUrl = await uploadScreenshot(pdfBlob, fileName + '_dashboard.pdf');
           if (dashUrl) {
@@ -115,7 +116,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           const canvases = [];
           for (let i = 0; i < pages.length; i++) {
             const canvas = await html2canvas(pages[i].current, {
-              scale: 1.5, useCORS: true, allowTaint: true,
+              scale: 1.2, useCORS: true, allowTaint: true,
               backgroundColor: '#ffffff', logging: false
             });
             canvases.push(canvas);
@@ -124,13 +125,14 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           const pdf = new jsPDF({
             orientation: 'portrait',
             unit: 'px',
-            format: [first.width, first.height]
+            format: [first.width, first.height],
+            compress: true
           });
-          pdf.addImage(first.toDataURL('image/png'), 'PNG', 0, 0, first.width, first.height);
+          pdf.addImage(first.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, first.width, first.height, undefined, 'FAST');
           for (let i = 1; i < canvases.length; i++) {
             const c = canvases[i];
             pdf.addPage([c.width, c.height], 'portrait');
-            pdf.addImage(c.toDataURL('image/png'), 'PNG', 0, 0, c.width, c.height);
+            pdf.addImage(c.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, c.width, c.height, undefined, 'FAST');
           }
           const pdfBlob = pdf.output('blob');
           repUrl = await uploadScreenshot(pdfBlob, fileName + '_detailed_report.pdf');
@@ -424,7 +426,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
     try {
       const canvas = await html2canvas(dashRef.current, {
-        scale: 1.5, useCORS: true, allowTaint: true,
+        scale: 1.2, useCORS: true, allowTaint: true,
         backgroundColor: '#f8fafc', logging: false
       });
       
@@ -432,13 +434,14 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
       const fileName = safeCompany + '_dashboard_' + new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
 
       badge.textContent = 'Generating PDF...';
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/jpeg', 0.85);
       const pdf = new jsPDF({
         orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
         unit: 'px',
-        format: [canvas.width, canvas.height]
+        format: [canvas.width, canvas.height],
+        compress: true
       });
-      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.addImage(imgData, 'JPEG', 0, 0, canvas.width, canvas.height, undefined, 'FAST');
       
       pdf.save(fileName + '.pdf');
 
@@ -520,7 +523,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
       for (let i = 0; i < pages.length; i++) {
         badge.textContent = `Exporting Report Page ${i + 1} of 11...`;
         const canvas = await html2canvas(pages[i].current, {
-          scale: 1.5, useCORS: true, allowTaint: true,
+          scale: 1.2, useCORS: true, allowTaint: true,
           backgroundColor: '#ffffff', logging: false
         });
         canvases.push(canvas);
@@ -534,14 +537,15 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'px',
-        format: [first.width, first.height]
+        format: [first.width, first.height],
+        compress: true
       });
-      pdf.addImage(first.toDataURL('image/png'), 'PNG', 0, 0, first.width, first.height);
+      pdf.addImage(first.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, first.width, first.height, undefined, 'FAST');
 
       for (let i = 1; i < canvases.length; i++) {
         const c = canvases[i];
         pdf.addPage([c.width, c.height], 'portrait');
-        pdf.addImage(c.toDataURL('image/png'), 'PNG', 0, 0, c.width, c.height);
+        pdf.addImage(c.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, c.width, c.height, undefined, 'FAST');
       }
       
       pdf.save(fileName + '.pdf');

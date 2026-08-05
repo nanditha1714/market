@@ -58,11 +58,11 @@ export async function uploadScreenshot(blob, fileName) {
     if (res.ok) {
       return SUPABASE_URL + '/storage/v1/object/public/dashboards/' + fileName;
     }
-    const err = await res.text();
-    console.warn('Storage upload failed:', err);
+    const errText = await res.text();
+    console.log('[Storage Service] Upload status:', res.status, errText);
     return '';
   } catch (err) {
-    console.warn('Upload error:', err);
+    console.log('[Storage Service] Upload error:', err?.message || err);
     return '';
   }
 }
