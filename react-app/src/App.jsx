@@ -97,8 +97,11 @@ export default function App() {
     } else if (path === '#/survey') {
       setScreen(SCREENS.SURVEY);
     } else if (path === '#/dashboard') {
+      if (dashData) {
+        setScreen(SCREENS.DASHBOARD);
+        return;
+      }
       if (id) {
-        // Skip query request if state is already loaded for this record or just completed (string cast prevents type mismatch)
         const isCurrentSaved = lastSavedIdRef.current && String(lastSavedIdRef.current) === String(id);
         const isCurrentLoaded = loadedDashIdRef.current && String(loadedDashIdRef.current) === String(id);
         const isStateMatching = dashData && (String(dashData.dbRecordId) === String(id) || String(dashData.id) === String(id));
@@ -142,6 +145,8 @@ export default function App() {
             console.error('Error reconstructing dashboard from DB:', err);
             window.location.hash = '#/survey';
           }
+        } else if (dashData) {
+          setScreen(SCREENS.DASHBOARD);
         } else {
           alert('Requested market research report could not be found.');
           window.location.hash = '#/survey';

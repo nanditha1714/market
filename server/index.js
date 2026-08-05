@@ -477,15 +477,18 @@ app.post('/api/email/report', async (req, res) => {
   }
 });
 
-// Production: serve React build
+// Production: serve React build (if running locally as a combined express server)
 if (process.env.NODE_ENV === 'production') {
+  const fs = require('fs');
   const path = require('path');
   const buildPath = path.join(__dirname, '../react-app/build');
-  app.use(express.static(buildPath));
-  
-  app.use((req, res) => {
-    res.sendFile(path.join(buildPath, 'index.html'));
-  });
+  if (fs.existsSync(buildPath)) {
+    app.use(express.static(buildPath));
+    app.get('*', (req, res, next) => {
+      if (req.path.startsWith('/api')) return next();
+      res.sendFile(path.join(buildPath, 'index.html'));
+    });
+  }
 }
 
 if (!process.env.VERCEL) {
