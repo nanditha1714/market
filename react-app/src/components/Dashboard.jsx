@@ -602,7 +602,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             <span style={{ fontSize: '18px' }}>📊</span>
             <h2 style={{ fontSize:'18px', fontWeight:700, color:'#fff', margin:0, letterSpacing:'-0.01em' }}>Market Research Dashboard</h2>
           </div>
-          <p style={{ fontSize:'12px', color:'#94a3b8', marginTop:'4px', fontWeight:500 }}>
+          <p style={{ fontSize:'11.5px', color:'#94a3b8', marginTop:'3px', fontWeight:500, maxWidth:'460px', lineHeight:1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }} title={`${user.name} - ${user.company} - ${answers.customer || user.service}`}>
             {user.name} - {user.company} - {answers.customer || user.service}
           </p>
         </div>
