@@ -287,16 +287,20 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
   const sv = data.sentiment || { positive: 70, neutral: 20, negative: 10 };
   const detailedReport = data.detailedReport || {};
   const rep = {
-    executiveSummary: detailedReport.executiveSummary || 'This comprehensive market research report provides an in-depth strategic analysis of the target industry, key demand drivers, and the competitive environment. The primary objective is to evaluate market opportunities, benchmark competitor strategies, and recommend actionable growth pathways.',
+    summary: detailedReport.executiveSummary || 'This comprehensive market research report provides an in-depth strategic analysis of the target industry, key demand drivers, and the competitive environment. The primary objective is to evaluate market opportunities, benchmark competitor strategies, and recommend actionable growth pathways.',
+    executiveSummary: detailedReport.executiveSummary || 'This comprehensive market research report provides an in-depth strategic analysis of the target industry, key demand drivers, and the competitive environment.',
     marketGrowth: detailedReport.marketGrowth || 'Based on the historical and projected data, the market has demonstrated consistent upward momentum. This growth is driven by accelerated digital transformation and increasing adoption rates.',
-    segmentation: detailedReport.segmentation || 'The market is divided into distinct customer segments. The high concentration in Enterprise suggests significant contract value opportunities, while the SMB and Startup segments represent high-velocity growth areas.',
-    geography: detailedReport.geography || 'Geographical breakdown indicates that North America leads market share, with Europe representing a strong secondary market. Expansion efforts should prioritize strengthening presence in established markets.',
-    competition: detailedReport.competition || 'The competitive landscape features established players. According to the positioning matrix, your core differentiators lie in product innovation and customer support, whereas competitors leverage brand legacy.',
-    radarAnalysis: detailedReport.radarAnalysis || 'A detailed evaluation of the competitive positioning matrix highlights key strategic vectors. Innovation and support scores remain differentiators, while brand strength requires strategic GTM support.',
+    marketOverview: detailedReport.marketGrowth || 'The market demonstrates strong upward momentum driven by digital transformation and rising compliance requirements across regulated industries.',
+    segmentation: detailedReport.segmentation || 'The market is divided into distinct customer segments. The high concentration in Enterprise suggests significant contract value opportunities, while SMB and Startup segments represent high-velocity growth areas.',
+    geography: detailedReport.geography || 'Geographical breakdown indicates that North America leads market share, with Europe representing a strong secondary market.',
+    competitive: detailedReport.competition || detailedReport.competitive || 'The competitive landscape features established players. Your core differentiators lie in product innovation and customer support, whereas competitors leverage brand legacy and aggressive pricing.',
+    competition: detailedReport.competition || 'The competitive landscape features established players. Core differentiators lie in product innovation and customer support.',
+    radarAnalysis: detailedReport.radarAnalysis || 'A detailed evaluation of the competitive positioning matrix highlights key strategic vectors. Innovation and support scores remain differentiators.',
     pricing: detailedReport.pricing || 'A comparative analysis of pricing structures shows a diverse range of models. Your product is positioned as a competitive value option, balancing advanced features with an accessible price point.',
-    risks: detailedReport.risks || 'The primary risks facing the company include intense competition from legacy vendors, high customer acquisition costs (CAC), and potential talent shortages. Mitigating these challenges requires investing in product feature differentiation.',
+    risks: detailedReport.risks || 'The primary risks facing the company include intense competition from legacy vendors, high customer acquisition costs, and potential talent shortages.',
     ...detailedReport
   };
+
 
   const renderFormattedText = useCallback((str) => {
     if (!str) return '';
@@ -642,23 +646,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           >
             📊 Dashboard View
           </button>
-          <button
-            onClick={() => setActiveView('report')}
-            style={{
-              padding: '6px 14px',
-              border: 'none',
-              borderRadius: '6px',
-              background: activeView === 'report' ? '#1d4ed8' : 'transparent',
-              color: '#ffffff',
-              fontWeight: 700,
-              fontSize: '13px',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              boxShadow: activeView === 'report' ? '0 2px 4px rgba(0,0,0,0.2)' : 'none'
-            }}
-          >
-            📄 View Detailed Report
-          </button>
+
         </div>
 
         <div style={{ display:'flex', gap:'8px' }}>
@@ -810,8 +798,8 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
       </div>
       )}
       
-      {/* Detailed report container (On-screen when activeView === 'report', Off-screen for PDF background generator when activeView === 'dashboard') */}
-      <div style={activeView === 'report' ? { flex: 1, overflowY: 'auto', background: '#cbd5e1', padding: '30px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '30px' } : { position: 'absolute', left: '-9999px', top: 0, display: 'flex', flexDirection: 'column', gap: '30px' }}>
+      {/* Detailed report container — always off-screen; used only for PDF background generation */}
+      <div style={{ position: 'absolute', left: '-9999px', top: 0, display: 'flex', flexDirection: 'column', gap: '30px' }}>
         
         {/* Style injection for CII Report Template */}
         <style>{`
@@ -1145,7 +1133,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           .dim-extra .k { font-weight: 700; color: #334155; }
         `}</style>
         
-        {/* Page 1: Cover Page (CII Template Page 1 Word-for-Word) */}
+        {/* Page 1: Cover Page (Market Research Assessment) */}
         <div ref={page1Ref} className="cii-page">
           <div style={{ padding: '14mm 16mm 0' }}>
             <img src="/logo.png" alt="Infopace" style={{ height: '56px' }} />
@@ -1153,16 +1141,19 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
           <div style={{ padding: '14mm 16mm 0', position: 'relative', zIndex: 2 }}>
             <div style={{ fontSize: '11.5px', letterSpacing: '.2em', textTransform: 'uppercase', color: '#1a56db', fontWeight: 600, marginBottom: '6mm', fontFamily: '"IBM Plex Mono", monospace' }}>
-              Assessment Report · Personal Edition
+              Market Intelligence Report · Business Edition
             </div>
-            <div style={{ fontWeight: 800, fontSize: '69px', lineHeight: 1.08, color: '#061228', letterSpacing: '-.01em', fontFamily: '"Playfair Display", Georgia, serif' }}>
-              Creative
+            <div style={{ fontWeight: 800, fontSize: '64px', lineHeight: 1.08, color: '#061228', letterSpacing: '-.01em', fontFamily: '"Playfair Display", Georgia, serif' }}>
+              Market
             </div>
-            <div style={{ fontWeight: 800, fontSize: '69px', lineHeight: 1.08, color: '#1a56db', letterSpacing: '-.01em', fontFamily: '"Playfair Display", Georgia, serif' }}>
-              Innovation
+            <div style={{ fontWeight: 800, fontSize: '64px', lineHeight: 1.08, color: '#1a56db', letterSpacing: '-.01em', fontFamily: '"Playfair Display", Georgia, serif' }}>
+              Research
+            </div>
+            <div style={{ fontWeight: 800, fontSize: '40px', lineHeight: 1.08, color: '#334155', letterSpacing: '-.01em', fontFamily: '"Playfair Display", Georgia, serif' }}>
+              Assessment
             </div>
             <div style={{ fontSize: '13.8px', fontWeight: 700, letterSpacing: '.05em', textTransform: 'uppercase', color: '#334155', marginTop: '8mm' }}>
-              Creative Capability Summary
+              AI-Powered Business Intelligence Analysis
             </div>
           </div>
 
@@ -1171,7 +1162,6 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
               <path d="M 0.0 23.8 Q 17.3 25.4 25.9 26.2 Q 51.8 28.9 60.5 29.8 Q 86.4 32.5 95.0 33.3 Q 120.9 35.8 129.5 36.6 Q 155.5 38.8 164.1 39.5 Q 190.0 41.4 198.6 42.0 Q 224.5 43.6 233.2 44.0 Q 259.1 45.2 267.7 45.5 Q 293.6 46.1 302.3 46.0 Q 328.2 45.6 336.8 45.2 Q 362.7 43.7 371.4 42.9 Q 397.3 40.0 405.9 38.8 Q 431.8 34.9 440.5 33.4 Q 466.4 28.7 475.0 27.0 Q 500.9 21.9 509.5 20.1 Q 535.5 14.8 544.1 13.1 Q 570.0 7.9 578.6 6.2 Q 604.5 1.2 613.2 -0.3 Q 639.1 -4.8 647.7 -6.1 Q 673.6 -9.9 682.3 -10.9 Q 708.2 -13.7 716.8 -14.3 Q 742.7 -15.6 751.4 -15.7" fill="none" stroke="#1a56db" strokeWidth="1.05" strokeOpacity="0.75" strokeLinecap="round"/>
               <path d="M 0.0 30.0 Q 17.3 31.7 25.9 32.5 Q 51.8 35.2 60.5 36.1 Q 86.4 38.7 95.0 39.6 Q 120.9 42.0 129.5 42.8 Q 155.5 45.0 164.1 45.7 Q 190.0 47.7 198.6 48.3 Q 224.5 49.9 233.2 50.4 Q 259.1 51.4 267.7 51.6 Q 293.6 51.7 302.3 51.5 Q 328.2 50.5 336.8 49.9 Q 362.7 47.6 371.4 46.5 Q 397.3 42.9 405.9 41.5 Q 431.8 37.0 440.5 35.3 Q 466.4 30.2 475.0 28.4 Q 500.9 23.0 509.5 21.1 Q 535.5 15.7 544.1 13.9 Q 570.0 8.6 578.6 6.9 Q 604.5 1.9 613.2 0.4 Q 639.1 -4.0 647.7 -5.3 Q 673.6 -8.7 682.3 -9.5 Q 708.2 -11.6 716.8 -12.0 Q 742.7 -12.5 751.4 -12.3" fill="none" stroke="#1a56db" strokeWidth="1.05" strokeOpacity="0.70" strokeLinecap="round"/>
               <path d="M 0.0 41.2 Q 17.3 44.2 25.9 45.7 Q 51.8 50.3 60.5 51.8 Q 86.4 56.4 95.0 57.8 Q 120.9 62.2 129.5 63.5 Q 155.5 67.5 164.1 68.7 Q 190.0 72.1 198.6 73.0 Q 224.5 75.5 233.2 76.1 Q 259.1 77.3 267.7 77.3 Q 293.6 76.7 302.3 76.1 Q 328.2 73.6 336.8 72.3 Q 362.7 67.7 371.4 65.8 Q 397.3 59.5 405.9 57.0 Q 431.8 49.3 440.5 46.4 Q 466.4 37.6 475.0 34.5 Q 500.9 25.0 509.5 21.7 Q 535.5 11.8 544.1 8.4 Q 570.0 -1.6 578.6 -4.9 Q 604.5 -14.5 613.2 -17.6 Q 639.1 -26.4 647.7 -29.0 Q 673.6 -36.4 682.3 -38.4 Q 708.2 -43.7 716.8 -45.0 Q 742.7 -47.9 751.4 -48.3" fill="none" stroke="#1a56db" strokeWidth="1.30" strokeOpacity="0.65" strokeLinecap="round"/>
-              <path d="M 0.0 47.3 Q 17.3 49.5 25.9 50.6 Q 51.8 53.8 60.5 54.8 Q 86.4 58.0 95.0 59.0 Q 120.9 61.9 129.5 62.8 Q 155.5 65.3 164.1 66.0 Q 190.0 67.9 198.6 68.3 Q 224.5 69.2 233.2 69.2 Q 259.1 68.7 267.7 68.1 Q 293.6 66.0 302.3 64.9 Q 328.2 61.1 336.8 59.5 Q 362.7 54.3 371.4 52.3 Q 397.3 46.0 405.9 43.8 Q 431.8 36.9 440.5 34.5 Q 466.4 27.4 475.0 25.1 Q 500.9 18.1 509.5 15.8 Q 535.5 9.2 544.1 7.2 Q 570.0 1.3 578.6 -0.5 Q 604.5 -5.2 613.2 -6.4 Q 639.1 -9.6 647.7 -10.2 Q 673.6 -11.3 682.3 -11.2 Q 708.2 -10.1 716.8 -9.2 Q 742.7 -5.7 751.4 -4.0" fill="none" stroke="#1a56db" strokeWidth="1.05" strokeOpacity="0.60" strokeLinecap="round"/>
             </svg>
           </div>
 
@@ -1195,11 +1185,11 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
               {[
                 { title: 'Our Assessment Suite', sub: 'An overview of all five Infopace assessment tools', page: '03' },
-                { title: 'Executive Summary & Overview', sub: 'Overall score, key findings, and creative overview', page: '04' },
-                { title: 'Dimension Breakdown', sub: 'Detailed breakdown of core strategic dimensions', page: '05' },
-                { title: 'Customer Segmentation', sub: 'Demographics, purchasing behavior, and target profiles', page: '06' },
-                { title: 'Market Growth Trajectory', sub: 'Historical trends, drivers, and CAGR projections', page: '07' },
-                { title: 'Creative Profile & Positioning', sub: 'Competitor share, sentiment, and radar matrix', page: '08' },
+                { title: 'Executive Summary & Overview', sub: 'Total market size, growth rate, and key market findings', page: '04' },
+                { title: 'Market Growth Trend', sub: 'Historical market growth trajectory and CAGR projections', page: '05' },
+                { title: 'Competitor Share & Positioning', sub: 'Competitor landscape, market share, and positioning matrix', page: '06' },
+                { title: 'Market Challenges', sub: 'Key barriers, risk factors, and market entry challenges', page: '07' },
+                { title: 'Rating, Sentiment & Pricing', sub: 'Customer sentiment analysis and competitive pricing landscape', page: '08' },
                 { title: 'Disclaimer, Privacy & Terms', sub: 'Legal guidelines, privacy commitment, and terms', page: '09' },
                 { title: 'About Infopace', sub: 'Organization profile, key metrics, and advisory services', page: '10' },
                 { title: 'Thank You & Contact', sub: 'Headquarters, website, and advisory contact info', page: '11' }
@@ -1268,7 +1258,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </div>
         </div>
 
-        {/* Page 4: Executive Summary & Overview (CII Template Page 4 Word-for-Word) */}
+        {/* Page 4: Executive Summary & Market Overview */}
         <div ref={page4Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
@@ -1277,170 +1267,199 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             </div>
 
             <div className="cii-eyebrow">Section One</div>
-            <div className="cii-pg-title">Executive Summary &amp; Overview</div>
-            <div className="cii-pg-sub">A high-level view of your creative capability profile, key strengths, and overall positioning.</div>
+            <div className="cii-pg-title">Executive Summary &amp; Market Overview</div>
+            <div className="cii-pg-sub">A high-level view of the total addressable market, key findings, and strategic market positioning.</div>
 
-            {/* Score Gauge & Persona */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', margin: '8px 0 10px' }}>
-              <svg width="220" height="110" viewBox="0 0 260 140">
-                <path d="M 30,130 A 100,100 0 0,1 230,130" fill="none" stroke="#e2e8f0" strokeWidth="18" strokeLinecap="round"/>
-                <path d="M 30,130 A 100,100 0 0,1 206,71" fill="none" stroke="#1a56db" strokeWidth="18" strokeLinecap="round"/>
-                <text x="130" y="108" textAnchor="middle" style={{ fontSize: '48px', fontWeight: 800, fill: '#061228', fontFamily: '"IBM Plex Mono", monospace' }}>68</text>
-                <text x="130" y="130" textAnchor="middle" style={{ fontSize: '10px', fontWeight: 700, fill: '#64748b', letterSpacing: '0.12em', fontFamily: '"IBM Plex Mono", monospace' }}>CII SCORE / 100</text>
-              </svg>
-              <div>
-                <div className="tag-pill">Above Average</div>
-                <div className="persona-name">Creative Catalyst</div>
-              </div>
+            {/* KPI Stat Row */}
+            <div className="cii-stat-row" style={{ marginTop: '10px', marginBottom: '10px' }}>
+              <div className="cii-stat-box"><div className="n" style={{ fontSize: '14px' }}>{k.tam || '—'}</div><div className="l">Total Market Size</div></div>
+              <div className="cii-stat-box"><div className="n" style={{ fontSize: '14px', color: '#16a34a' }}>{k.growthRate || '—'}</div><div className="l">Growth Rate</div></div>
+              <div className="cii-stat-box"><div className="n" style={{ fontSize: '14px' }}>{k.customers || '—'}</div><div className="l">Target Customers</div></div>
+              <div className="cii-stat-box"><div className="n" style={{ fontSize: '14px' }}>{k.competitors || '—'}</div><div className="l">Competitors</div></div>
             </div>
 
-            {/* Stat Row */}
-            <div className="cii-stat-row">
-              <div className="cii-stat-box"><div className="n">68</div><div className="l">Overall Score</div></div>
-              <div className="cii-stat-box"><div className="n">Top 22%</div><div className="l">Percentile</div></div>
-              <div className="cii-stat-box"><div className="n">4/6</div><div className="l">Above Average</div></div>
-              <div className="cii-stat-box"><div className="n">Vision</div><div className="l">Top Dimension</div></div>
-            </div>
-            <p style={{ fontSize: '9.5px', color: '#64748b', margin: '4px 0 8px', lineHeight: 1.5 }}>
-              A score of 68 places this result in the <b style={{ color: '#1d4ed8' }}>top 22% of everyone assessed</b> to date — meaning roughly 4 in 5 respondents score at or below this level. The population benchmark for an overall CII score sits at 58, putting this result 10 points clear of the typical respondent.
-            </p>
-
-            <div className="cii-sec-title">Summary</div>
-            <p className="cii-body">Across the six creative dimensions measured in this assessment, your responses point to a <b>well-rounded, above-average creative profile</b> anchored by unusually strong conviction and follow-through. Where many respondents show a single standout dimension surrounded by average scores, your profile is more evenly elevated — four of six dimensions land above the population benchmark, and none fall in the lowest band.</p>
-            <p className="cii-body">The strongest signal in your responses is <b>Vision &amp; Drive</b> — the degree to which your ideas are anchored in genuine purpose rather than novelty for its own sake. This tends to show up as a bias toward finishing what you start: ideas that survive contact with real constraints, rather than ones that stay hypothetical. Paired with an above-average <b>Risk &amp; Openness</b> score, this suggests someone who is not just willing to consider unconventional approaches, but willing to actually commit to one once it's chosen.</p>
-            <p className="cii-body">Your one below-average area, <b>Innovation</b> — specifically, the gap between having an idea and shipping a working version of it — is worth attention, and is addressed directly in the Recommended Development Actions section of this report.</p>
-            <p className="cii-body">This profile shape is itself worth noting: the most common pattern seen across the population is a <b>single standout dimension surrounded by otherwise average scores</b> — someone strong in one area, roughly typical everywhere else. This result doesn't follow that pattern. Four dimensions sitting above benchmark simultaneously is a comparatively unusual, broader-based profile — the strength here isn't concentrated in one place, which tends to make it more resilient across different types of creative work rather than reliable only in the specific conditions that favor a single dimension.</p>
-
-            <div className="cii-callout" style={{ background: '#f8fafc', borderColor: '#cbd5e1' }}>
-              <span className="cii-lbl" style={{ color: '#475569' }}>Score Trajectory</span>
-              This is currently the only assessment on record for this profile, so no trend data is available yet. Once a second assessment is completed, this section will show score movement over time, including which dimensions improved most and how the overall score trended against the 90-day target.
+            <div className="cii-sec-title">Executive Summary</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '10px' }}>
+              {renderReportParagraphs(rep.summary)}
             </div>
 
-            <div className="cii-sec-title">All Six Dimensions At A Glance</div>
-            <table className="glance-table">
-              <tbody>
-                <tr><td><span className="dot" style={{ background: '#10b981' }}></span><span className="nm">Vision &amp; Drive</span></td><td style={{ color: '#64748b' }}>Purpose &amp; follow-through</td><td className="sc" style={{ color: '#16a34a' }}>82</td></tr>
-                <tr><td><span className="dot" style={{ background: '#1a56db' }}></span><span className="nm">Risk &amp; Openness</span></td><td style={{ color: '#64748b' }}>Comfort with ambiguity</td><td className="sc" style={{ color: '#1a56db' }}>75</td></tr>
-                <tr><td><span className="dot" style={{ background: '#a21caf' }}></span><span className="nm">Divergent Thinking</span></td><td style={{ color: '#64748b' }}>Idea originality &amp; range</td><td className="sc" style={{ color: '#a21caf' }}>70</td></tr>
-                <tr><td><span className="dot" style={{ background: '#06b6d4' }}></span><span className="nm">Remote Association</span></td><td style={{ color: '#64748b' }}>Distant-concept connection</td><td className="sc" style={{ color: '#06b6d4' }}>58</td></tr>
-                <tr><td><span className="dot" style={{ background: '#f97316' }}></span><span className="nm">Creative Behavior</span></td><td style={{ color: '#64748b' }}>Ideas showing up in action</td><td className="sc" style={{ color: '#f97316' }}>52</td></tr>
-                <tr><td><span className="dot" style={{ background: '#f43f5e' }}></span><span className="nm">Innovation</span></td><td style={{ color: '#64748b' }}>Idea-to-outcome execution</td><td className="sc" style={{ color: '#f43f5e' }}>48</td></tr>
-              </tbody>
-            </table>
+            <div className="cii-sec-title">Key Market Findings</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '10px' }}>
+              {(data.challenges || []).map((c, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '6px 10px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                  <span style={{ color: '#1a56db', fontWeight: 700, fontSize: '13px', flexShrink: 0 }}>{'0' + (i+1)}</span>
+                  <span style={{ fontSize: '11px', color: '#334155', lineHeight: 1.55 }}>{c}</span>
+                </div>
+              ))}
+            </div>
 
             <div className="cii-callout insight">
-              <span className="cii-lbl">Key Insight</span>
-              You generate fewer ideas than the highest scorers on raw volume, but convert a meaningfully higher share of the ideas you do have into something real. Your growth lever isn't "think of more ideas" — it's building a lighter, faster path from idea to first working version.
+              <span className="cii-lbl">AI Key Insight</span>
+              {data.insights || 'AI-powered analysis has identified the key market trends, segments, and opportunities outlined in this report.'}
             </div>
           </div>
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Report</div>
+            <div>AI-Evaluated Market Intelligence Report</div>
           </div>
         </div>
 
-        {/* Page 3: Dimension Breakdown Part 1 (CII Template Page 3 Word-for-Word) */}
-        <div ref={page3Ref} className="cii-page">
+        {/* Page 5: Market Opportunity Analysis */}
+        <div ref={page5Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-              <div className="cii-pg-num">03 / 11</div>
+              <div className="cii-pg-num">05 / 11</div>
             </div>
 
             <div className="cii-eyebrow">Section Two</div>
-            <div className="cii-pg-title">Dimension-by-Dimension Breakdown</div>
-            <div className="cii-pg-sub">What each dimension measures, your score, and what it looks like in day-to-day practice. Part 1 of 2.</div>
+            <div className="cii-pg-title">Market Opportunity Analysis</div>
+            <div className="cii-pg-sub">In-depth breakdown of market dimensions, growth drivers, pricing landscape, and strategic opportunity windows.</div>
 
-            <div className="dim-block">
-              <div className="dim-score-col"><div className="n" style={{ color: '#a21caf' }}>70</div><div className="band">Above Avg</div></div>
-              <div className="dim-body">
-                <div className="dim-name">Divergent Thinking <span style={{ fontWeight: 400, color: '#64748b', fontSize: '9px' }}>· Benchmark 58 (+12) · Weightage 18% of overall score</span></div>
-                <div className="dim-desc">The originality and sheer range of ideas you generate when a problem has no single correct answer.</div>
-                <div className="dim-tell">In practice: you're comfortable generating several genuinely different angles on a problem before converging on one, rather than reaching for the first workable answer.</div>
-                <div className="dim-tell">In group settings: you're likely the one who reframes a problem or pushes past the first two obvious answers before a group settles on a direction.</div>
-                <div className="dim-extra"><span className="k">Likely driver:</span> a genuine comfort exploring multiple framings of a problem before committing to one, rather than anchoring early.</div>
-                <div className="dim-extra"><span class="k">Impact on outcomes:</span> teams working with you typically start from a richer set of initial options, which tends to raise the ceiling on the final decision even when your specific idea isn't the one chosen.</div>
+            {/* Growth Trend Mini Chart */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', marginBottom: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                <div style={{ textAlign: 'center', padding: '8px', background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#1a56db', fontFamily: '"IBM Plex Mono", monospace' }}>{k.tam || '—'}</div>
+                  <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Total Addressable Market</div>
+                </div>
+                <div style={{ textAlign: 'center', padding: '8px', background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#16a34a', fontFamily: '"IBM Plex Mono", monospace' }}>{k.growthRate || '—'}</div>
+                  <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Annual Growth Rate</div>
+                </div>
+                <div style={{ textAlign: 'center', padding: '8px', background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#a21caf', fontFamily: '"IBM Plex Mono", monospace' }}>{k.price || '—'}</div>
+                  <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Avg Market Price</div>
+                </div>
               </div>
             </div>
 
-            <div className="dim-block">
-              <div className="dim-score-col"><div className="n" style={{ color: '#06b6d4' }}>58</div><div className="band">Average</div></div>
-              <div className="dim-body">
-                <div className="dim-name">Remote Association <span style={{ fontWeight: 400, color: '#64748b', fontSize: '9px' }}>· Benchmark 55 (+3) · Weightage 15% of overall score</span></div>
-                <div className="dim-desc">Your ability to connect distant, seemingly unrelated concepts into a coherent new idea.</div>
-                <div className="dim-tell">In practice: you draw novel connections situationally rather than as a default habit — a workable middle ground, with clear room to strengthen through deliberate cross-domain exposure (see Recommended Actions).</div>
-                <div className="dim-tell">Working alone: you're more likely to make an unexpected connection when a problem is already on your mind for a while, rather than on demand in the moment.</div>
-                <div className="dim-extra"><span className="k">Likely driver:</span> the connective insight is genuinely present, but currently depends on a problem incubating over time rather than being retrievable on demand.</div>
-                <div className="dim-extra"><span class="k">Impact on outcomes:</span> cross-domain insight does arrive, but not reliably on a tight deadline — a risk specifically in fast-turnaround ideation sessions rather than longer-running projects.</div>
-              </div>
+            <div className="cii-sec-title">Pricing Landscape</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '10px' }}>
+              {(data.pricing || []).map((p, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 10px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: p.color || '#1a56db', flexShrink: 0 }} />
+                  <div>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#0f172a' }}>{p.name}</div>
+                    <div style={{ fontSize: '9.5px', color: '#64748b' }}>{p.note}</div>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <div className="dim-block">
-              <div className="dim-score-col"><div className="n" style={{ color: '#1a56db' }}>75</div><div className="band">Above Avg</div></div>
-              <div className="dim-body">
-                <div className="dim-name">Risk &amp; Openness <span style={{ fontWeight: 400, color: '#64748b', fontSize: '9px' }}>· Benchmark 50 (+25) · Weightage 17% of overall score</span></div>
-                <div className="dim-desc">Your tolerance for ambiguity, and your willingness to act on an idea before it's fully validated.</div>
-                <div className="dim-tell">In practice: you're notably comfortable moving forward on a promising-but-unproven direction — one of your clearest relative strengths, 25 points above the population average.</div>
-                <div className="dim-tell">In group settings: you're often the one who moves a hesitant group toward a decision, since your comfort with uncertainty tends to be visible to others.</div>
-                <div className="dim-extra"><span className="k">Likely driver:</span> this reads as genuine underlying comfort with unresolved uncertainty, not tolerance built reluctantly through necessity — the gap over benchmark is large enough to suggest a real trait rather than situational adaptation.</div>
-                <div className="dim-extra"><span class="k">Impact on outcomes:</span> your willingness to act unblocks stalled decisions in ambiguous situations; the corresponding risk is committing before validation catches real problems, which the Watch-Outs section addresses directly.</div>
-              </div>
+            <div className="cii-sec-title">Market Opportunity Deep Dive</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {renderReportParagraphs(rep.marketOverview)}
             </div>
           </div>
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Report</div>
+            <div>AI-Evaluated Market Intelligence Report</div>
           </div>
         </div>
 
-        {/* Page 6: Customer Segmentation (In-between detail page with Chart as Heading) */}
-        <div ref={page4Ref} className="cii-page">
+        {/* Page 5: Market Growth Trend */}
+        <div ref={page5Ref} className="cii-page">
+          <div>
+            <div className="cii-pg-hdr">
+              <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
+              <div className="cii-pg-num">05 / 11</div>
+            </div>
+
+            <div className="cii-eyebrow">Section Two</div>
+            <div className="cii-pg-title">Market Growth Trend</div>
+            <div className="cii-pg-sub">Historical growth trajectory, CAGR benchmarks, and forward market projections for the assessed industry.</div>
+
+            {/* Full-width Growth Chart */}
+            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '16px', marginBottom: '14px' }}>
+              <ChartCard title="📈 Market Growth Trajectory ($ Billions)" type="line" data={growthData} options={growthOpts} height="200px" style={{ background: '#ffffff', padding: '8px', border: '1px solid #e2e8f0', boxShadow: 'none', borderRadius: '8px' }} />
+            </div>
+
+            {/* KPI Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '8px', marginBottom: '14px' }}>
+              <div style={{ textAlign: 'center', padding: '10px 6px', background: '#eff6ff', borderRadius: '8px', border: '1px solid #bfdbfe' }}>
+                <div style={{ fontSize: '16px', fontWeight: 800, color: '#1a56db', fontFamily: '"IBM Plex Mono", monospace' }}>{k.tam || '—'}</div>
+                <div style={{ fontSize: '9px', color: '#1e3a8a', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Market Size</div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '10px 6px', background: '#f0fdf4', borderRadius: '8px', border: '1px solid #bbf7d0' }}>
+                <div style={{ fontSize: '16px', fontWeight: 800, color: '#16a34a', fontFamily: '"IBM Plex Mono", monospace' }}>{k.growthRate || '—'}</div>
+                <div style={{ fontSize: '9px', color: '#15803d', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>CAGR</div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '10px 6px', background: '#fefce8', borderRadius: '8px', border: '1px solid #fde68a' }}>
+                <div style={{ fontSize: '16px', fontWeight: 800, color: '#b45309', fontFamily: '"IBM Plex Mono", monospace' }}>{k.customers || '—'}</div>
+                <div style={{ fontSize: '9px', color: '#92400e', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Target Customers</div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '10px 6px', background: '#fdf4ff', borderRadius: '8px', border: '1px solid #e9d5ff' }}>
+                <div style={{ fontSize: '16px', fontWeight: 800, color: '#7c3aed', fontFamily: '"IBM Plex Mono", monospace' }}>{k.stage || '—'}</div>
+                <div style={{ fontSize: '9px', color: '#6d28d9', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Company Stage</div>
+              </div>
+            </div>
+
+            <div className="cii-sec-title">Market Growth Analysis</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {renderReportParagraphs(rep.marketGrowth)}
+            </div>
+
+            <div className="cii-callout insight">
+              <span className="cii-lbl">Growth Outlook</span>
+              {data.insights || 'Market analysis indicates strong growth potential. Focus on high-velocity segments to maximize early-mover advantage.'}
+            </div>
+          </div>
+
+          <div className="cii-pg-ftr">
+            <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
+            <div>AI-Evaluated Market Intelligence Report</div>
+          </div>
+        </div>
+
+        {/* Page 6: Competitor Share & Competitive Positioning */}
+        <div ref={page6Ref} className="cii-page">
+
           <div>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
               <div className="cii-pg-num">06 / 11</div>
             </div>
 
-            <div className="cii-eyebrow">Section Two — Deep Detail</div>
-            <div className="cii-pg-title">Customer Segmentation &amp; Demographics</div>
-            <div className="cii-pg-sub">Target customer profiles, purchasing power, and segment share breakdown.</div>
+            <div className="cii-eyebrow">Section Three</div>
+            <div className="cii-pg-title">Competitor Share &amp; Strategic Positioning</div>
+            <div className="cii-pg-sub">Market share distribution across key competitors and a radar-based competitive positioning matrix.</div>
 
-            {/* CHART HEADING BANNER */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', marginBottom: '16px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', alignItems: 'center' }}>
-                <ChartCard title="🍊 Market Segmentation Share" type="pie" data={segData} options={{ ...pieOpts(undefined), layout: { padding: 4 } }} height="145px" style={{ background: '#ffffff', padding: '8px', border: '1px solid #e2e8f0', boxShadow: 'none' }} />
-                <div>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Segment Shares Table</div>
-                  <table className="cii-table">
-                    <thead>
-                      <tr>
-                        <th>Customer Segment</th>
-                        <th>Distribution (%)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(data.segments || []).map((s, idx) => (
-                        <tr key={idx}>
-                          <td><strong>{s.label}</strong></td>
-                          <td>{s.value}%</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+            {/* Two charts side by side */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '10px' }}>
+                <ChartCard title="🏆 Market Share Distribution" type="doughnut" data={compPieData} options={{ ...pieOpts('50%'), layout: { padding: 4 } }} height="170px" style={{ background: '#ffffff', padding: '6px', border: '1px solid #e2e8f0', boxShadow: 'none', borderRadius: '8px' }} />
+              </div>
+              <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '10px' }}>
+                <ChartCard title="🕸 Competitive Positioning Radar" type="radar" data={radarData} options={radarOpts} height="170px" style={{ background: '#ffffff', padding: '6px', border: '1px solid #e2e8f0', boxShadow: 'none', borderRadius: '8px' }} />
               </div>
             </div>
 
-            <div className="cii-sec-title">Segmentation &amp; Purchasing Behavior Analysis</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {renderReportParagraphs(rep.segmentation)}
-            </div>
+            {/* Competitor share table */}
+            <div className="cii-sec-title">Competitor Market Share Breakdown</div>
+            <table className="cii-table" style={{ marginBottom: '12px' }}>
+              <thead><tr><th>Competitor</th><th>Market Share (%)</th><th>Positioning</th></tr></thead>
+              <tbody>
+                {(data.competitors || []).map((c, i) => (
+                  <tr key={i}>
+                    <td><strong>{c.name}</strong></td>
+                    <td>{c.share}%</td>
+                    <td style={{ fontSize: '10px', color: '#64748b' }}>
+                      {i === 0 ? 'Market Leader — Premium Segment' :
+                       i === 1 ? 'Established — Legacy Enterprise' :
+                       i === 2 ? 'Challenger — Mid-Market Focus' :
+                       i === 3 ? 'Disruptor — AI-Native (You)' : 'Fragmented Players'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
 
-            <div className="cii-callout">
-              <span className="cii-lbl">GTM Persona Recommendation</span>
-              Enterprise buyers offer high contract values but require security SLA compliance, whereas SMBs and Startups prioritize rapid onboarding and transparent pricing.
+            <div className="cii-sec-title">Competitive Analysis</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {renderReportParagraphs(rep.competitive)}
             </div>
           </div>
 
@@ -1450,52 +1469,50 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </div>
         </div>
 
-        {/* Page 7: Geographic Distribution (In-between detail page with Chart as Heading) */}
-        <div ref={page5Ref} className="cii-page">
+        {/* Page 7: Market Challenges */}
+        <div ref={page7Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
               <div className="cii-pg-num">07 / 11</div>
             </div>
 
-            <div className="cii-eyebrow">Section Two — Deep Detail</div>
-            <div className="cii-pg-title">Geographic Distribution &amp; Regional GTM</div>
-            <div className="cii-pg-sub">Geographical penetration weights, regulatory barriers, and territorial vectors.</div>
+            <div className="cii-eyebrow">Section Four</div>
+            <div className="cii-pg-title">Market Challenges &amp; Risk Factors</div>
+            <div className="cii-pg-sub">Key barriers to market entry, competitive risks, and mitigation strategies for the assessed industry.</div>
 
-            {/* CHART HEADING BANNER */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', marginBottom: '16px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', alignItems: 'center' }}>
-                <ChartCard title="🌏 Geographic Breakdown" type="doughnut" data={geoData} options={{ ...pieOpts('55%'), layout: { padding: 4 } }} height="145px" style={{ background: '#ffffff', padding: '8px', border: '1px solid #e2e8f0', boxShadow: 'none' }} />
-                <div>
-                  <div style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', marginBottom: '6px', textTransform: 'uppercase' }}>Territory Breakdown</div>
-                  <table className="cii-table">
-                    <thead>
-                      <tr>
-                        <th>Region / Territory</th>
-                        <th>Market Share (%)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(data.geo || []).map((g, idx) => (
-                        <tr key={idx}>
-                          <td><strong>{g.label}</strong></td>
-                          <td>{g.value}%</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+            {/* Challenges Cards */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '14px' }}>
+              {(data.challenges || []).map((c, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '12px 14px', background: i % 2 === 0 ? '#fdf4f4' : '#fff7ed', borderRadius: '8px', border: `1px solid ${i % 2 === 0 ? '#fecaca' : '#fde68a'}` }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: i % 2 === 0 ? '#fee2e2' : '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', flexShrink: 0 }}>
+                    {i === 0 ? '⚡' : i === 1 ? '🛡' : i === 2 ? '🌐' : '👥'}
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#0f172a', marginBottom: '3px' }}>Challenge {String(i + 1).padStart(2, '0')}</div>
+                    <div style={{ fontSize: '11px', color: '#334155', lineHeight: 1.55 }}>{c}</div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
 
-            <div className="cii-sec-title">Territorial &amp; Compliance Analysis</div>
+            {/* Market Share visual comparison */}
+            <div className="cii-sec-title">Market Share Competitive Bars</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '14px' }}>
+              {(data.competitors || []).map((c, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <div style={{ fontSize: '11px', color: '#334155', fontWeight: 600, width: '90px', flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.name}</div>
+                  <div style={{ flex: 1, height: '10px', background: '#f1f5f9', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: Math.max(2, c.share) + '%', background: ['#1a56db','#f59e0b','#ea580c','#16a34a','#94a3b8'][i] || '#94a3b8', borderRadius: '3px' }} />
+                  </div>
+                  <span style={{ fontSize: '11px', color: '#0f172a', fontWeight: 700, width: '30px', textAlign: 'right' }}>{c.share}%</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="cii-sec-title">Risk Analysis &amp; Mitigation</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {renderReportParagraphs(rep.geography)}
-            </div>
-
-            <div className="cii-callout">
-              <span className="cii-lbl">Regional Expansion Strategy</span>
-              North America and APAC represent the strongest growth vectors. Ensure localized compliance and data residency infrastructure prior to aggressive regional sales pushes.
+              {renderReportParagraphs(rep.risks)}
             </div>
           </div>
 
@@ -1505,163 +1522,69 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </div>
         </div>
 
-        {/* Page 8: Strengths, Growth Areas & Watch-Outs (CII Template Page 7) */}
-        <div ref={page6Ref} className="cii-page">
+        {/* Page 8: Rating, Sentiment & Pricing */}
+        <div ref={page8Ref} className="cii-page">
           <div>
             <div className="cii-pg-hdr">
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
               <div className="cii-pg-num">08 / 11</div>
             </div>
 
-            <div className="cii-eyebrow">Section Three</div>
-            <div className="cii-pg-title">Strengths, Growth Areas &amp; Watch-Outs</div>
-            <div className="cii-pg-sub">Your single strongest dimension, your single greatest opportunity, and specific patterns worth being aware of.</div>
-
-            <div className="analysis-cards">
-              <div className="a-card up">
-                <div className="a-card-label">↑ Strongest Dimension</div>
-                <div className="a-card-score">82</div>
-                <div className="a-card-dim">Vision &amp; Drive</div>
-                <div className="a-card-desc">This is your most reliable creative asset — lean on it deliberately when a project needs someone to hold the line on why it matters. In practice, this means volunteering to own the "why" in ambiguous, early-stage work where conviction is scarce.</div>
-              </div>
-              <div className="a-card down">
-                <div className="a-card-label">↓ Primary Growth Area</div>
-                <div className="a-card-score">48</div>
-                <div className="a-card-dim">Innovation</div>
-                <div className="a-card-desc">The clearest lever for raising your overall score — see the targeted actions later in this report. With consistent effort, a meaningful, visible shift (roughly 10–15 points) is realistic within 60–90 days — this is a habit gap, not a capability gap, so it responds relatively quickly to deliberate practice.</div>
-              </div>
-            </div>
-
-            <div className="cii-sec-title">Dimension Spread vs. Population Average</div>
-            <div className="spread-row"><div className="spread-label">Divergent</div><div className="spread-track"><div className="spread-fill" style={{ width: '70%', background: '#a21caf' }}></div><div className="spread-avg" style={{ left: '58%' }}></div></div><div className="spread-val mono">+12</div></div>
-            <div className="spread-row"><div className="spread-label">Remote Assoc.</div><div className="spread-track"><div className="spread-fill" style={{ width: '58%', background: '#06b6d4' }}></div><div className="spread-avg" style={{ left: '55%' }}></div></div><div className="spread-val mono">+3</div></div>
-            <div className="spread-row"><div className="spread-label">Risk</div><div className="spread-track"><div className="spread-fill" style={{ width: '75%', background: '#1a56db' }}></div><div className="spread-avg" style={{ left: '50%' }}></div></div><div className="spread-val mono">+25</div></div>
-            <div className="spread-row"><div className="spread-label">Vision</div><div className="spread-track"><div className="spread-fill" style={{ width: '82%', background: '#10b981' }}></div><div className="spread-avg" style={{ left: '60%' }}></div></div><div className="spread-val mono">+22</div></div>
-            <div className="spread-row"><div className="spread-label">Behavior</div><div className="spread-track"><div className="spread-fill" style={{ width: '52%', background: '#f97316' }}></div><div className="spread-avg" style={{ left: '54%' }}></div></div><div className="spread-val mono">-2</div></div>
-            <div className="spread-row"><div className="spread-label">Innovation</div><div className="spread-track"><div className="spread-fill" style={{ width: '48%', background: '#f43f5e' }}></div><div className="spread-avg" style={{ left: '56%' }}></div></div><div className="spread-val mono">-8</div></div>
-
-            <div className="cii-sec-title">Watch-Outs</div>
-            <div className="flag-row warn"><b>⚠</b><div><b>Vision–Behavior gap (30pt spread):</b> the distance between your Vision score (82) and Creative Behavior score (52) suggests you envision more than you currently execute day-to-day. This is common and fixable — it usually means the blocker is habit, not capability.</div></div>
-            <div className="flag-row warn"><b>⚠</b><div><b>Creative Behavior sits close to a band boundary:</b> at 52, this score is only a few points above slipping into the below-average band. It isn't a current problem, but it's the one dimension in this profile worth monitoring on the next assessment to confirm it's holding steady rather than drifting down.</div></div>
-            <div className="flag-row warn"><b>⚠</b><div><b>Conviction may outpace validation:</b> your Risk &amp; Openness score (75) is strong enough that, paired with a below-average Innovation score, there's a real pattern worth watching — committing to a direction faster than you can execute or test it. Pairing quick action with equally quick validation checkpoints (see Recommended Actions) directly addresses this.</div></div>
-            <div className="flag-row good"><b>✓</b><div><b>Strong creative base:</b> four of six dimensions sit above the population average, giving you a genuinely solid foundation to build the remaining two on, rather than starting from scratch.</div></div>
-          </div>
-
-          <div className="cii-pg-ftr">
-            <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
-          </div>
-        </div>
-
-        {/* Page 7: Your Creative Profile & Archetype (CII Template Page 9 - Last 2nd Page with Radar SVG Image) */}
-        <div ref={page7Ref} className="cii-page">
-          <div>
-            <div className="cii-pg-hdr">
-              <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-              <div className="cii-pg-num">07 / 08</div>
-            </div>
-
             <div className="cii-eyebrow">Section Five</div>
-            <div className="cii-pg-title">Your Creative Profile &amp; Archetype</div>
-            <div className="cii-pg-sub">All six dimensions plotted together form a distinct shape — here's what yours looks like, and the archetype it maps to.</div>
+            <div className="cii-pg-title">Rating, Sentiment &amp; Pricing Landscape</div>
+            <div className="cii-pg-sub">Customer satisfaction scores, brand sentiment distribution, and a detailed competitive pricing comparison.</div>
 
-            <div className="radar-flex">
-              <svg width="230" height="230" viewBox="0 0 280 280" style={{ flexShrink: 0 }}>
-                <polygon points="140,30 220,75 220,165 140,210 60,165 60,75" fill="none" stroke="#e2e8f0" strokeWidth="1"/>
-                <polygon points="140,66 184,90 184,150 140,174 96,150 96,90" fill="none" stroke="#e2e8f0" strokeWidth="1"/>
-                <line x1="140" y1="120" x2="140" y2="30" stroke="#e2e8f0"/>
-                <line x1="140" y1="120" x2="220" y2="75" stroke="#e2e8f0"/>
-                <line x1="140" y1="120" x2="220" y2="165" stroke="#e2e8f0"/>
-                <line x1="140" y1="120" x2="140" y2="210" stroke="#e2e8f0"/>
-                <line x1="140" y1="120" x2="60" y2="165" stroke="#e2e8f0"/>
-                <line x1="140" y1="120" x2="60" y2="75" stroke="#e2e8f0"/>
-                <polygon points="140,78 172,98 168,143 140,162 108,140 112,96" fill="rgba(17,68,160,0.14)" fillOpacity="0.5" stroke="#9bb0c9" strokeWidth="1.5" strokeDasharray="3 3"/>
-                <polygon points="140,54 196,84 184,152 140,192 92,150 100,90" fill="#1a56db" fillOpacity="0.18" stroke="#1a56db" strokeWidth="2.5"/>
-                <text x="140" y="20" textAnchor="middle" fontSize="11" fontWeight="700" fill="#0f172a">Div</text>
-                <text x="232" y="72" textAnchor="start" fontSize="11" fontWeight="700" fill="#0f172a">RemA</text>
-                <text x="232" y="170" textAnchor="start" fontSize="11" fontWeight="700" fill="#0f172a">Risk</text>
-                <text x="140" y="228" textAnchor="middle" fontSize="11" fontWeight="700" fill="#0f172a">Vis</text>
-                <text x="48" y="170" textAnchor="end" fontSize="11" fontWeight="700" fill="#0f172a">Beh</text>
-                <text x="48" y="72" textAnchor="end" fontSize="11" fontWeight="700" fill="#0f172a">Inn</text>
-              </svg>
-
-              <div style={{ flex: 1 }}>
-                <div className="archetype-box">
-                  <div className="cii-lbl">Creative Archetype</div>
-                  <div className="archetype-name">The Visionary Builder</div>
-                </div>
-                <div className="dim-list-row"><div className="dot" style={{ background: '#a21caf' }}></div>Divergent<div className="bar"><div className="fill" style={{ width: '70%', background: '#a21caf' }}></div></div><div className="val">70</div></div>
-                <div className="dim-list-row"><div className="dot" style={{ background: '#06b6d4' }}></div>Remote Assoc.<div className="bar"><div className="fill" style={{ width: '58%', background: '#06b6d4' }}></div></div><div className="val">58</div></div>
-                <div className="dim-list-row"><div className="dot" style={{ background: '#1a56db' }}></div>Risk<div className="bar"><div className="fill" style={{ width: '75%', background: '#1a56db' }}></div></div><div className="val">75</div></div>
-                <div className="dim-list-row"><div className="dot" style={{ background: '#10b981' }}></div>Vision<div className="bar"><div className="fill" style={{ width: '82%', background: '#10b981' }}></div></div><div className="val">82</div></div>
-                <div className="dim-list-row"><div className="dot" style={{ background: '#f97316' }}></div>Behavior<div className="bar"><div className="fill" style={{ width: '52%', background: '#f97316' }}></div></div><div className="val">52</div></div>
-                <div className="dim-list-row"><div className="dot" style={{ background: '#f43f5e' }}></div>Innovation<div className="bar"><div className="fill" style={{ width: '48%', background: '#f43f5e' }}></div></div><div className="val">48</div></div>
+            {/* Rating & Sentiment Row */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '10px', marginBottom: '14px' }}>
+              <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '14px', textAlign: 'center' }}>
+                <div style={{ fontSize: '36px', fontWeight: 800, color: '#1a56db', fontFamily: '"IBM Plex Mono", monospace', lineHeight: 1 }}>{data.avgRating || '—'}</div>
+                <div style={{ fontSize: '9.5px', color: '#64748b', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>Avg Rating / 5.0</div>
+                <div style={{ color: '#fbbf24', fontSize: '18px', marginTop: '6px' }}>{'★'.repeat(Math.round(parseFloat(data.avgRating || '0')))}</div>
+              </div>
+              <div style={{ background: '#eafaf1', border: '1px solid #bbf7d0', borderRadius: '10px', padding: '14px', textAlign: 'center' }}>
+                <div style={{ fontSize: '36px', fontWeight: 800, color: '#16a34a', fontFamily: '"IBM Plex Mono", monospace', lineHeight: 1 }}>{sv.positive}%</div>
+                <div style={{ fontSize: '9.5px', color: '#15803d', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>✅ Positive</div>
+                <div style={{ fontSize: '10px', color: '#334155', marginTop: '4px' }}>Satisfied customers</div>
+              </div>
+              <div style={{ background: '#fdf2f2', border: '1px solid #fecaca', borderRadius: '10px', padding: '14px', textAlign: 'center' }}>
+                <div style={{ fontSize: '36px', fontWeight: 800, color: '#b91c1c', fontFamily: '"IBM Plex Mono", monospace', lineHeight: 1 }}>{sv.negative}%</div>
+                <div style={{ fontSize: '9.5px', color: '#b91c1c', marginTop: '4px', textTransform: 'uppercase', letterSpacing: '0.08em', fontWeight: 600 }}>⚠ Negative</div>
+                <div style={{ fontSize: '10px', color: '#334155', marginTop: '4px' }}>Dissatisfied customers</div>
               </div>
             </div>
 
-            <div className="cii-sec-title">What This Archetype Means</div>
-            <p className="cii-body">Visionary Builders are defined less by raw idea volume than by <b>conviction and completion</b>. Where a purely divergent thinker might generate the most options, and a purely execution-focused profile might ship the most output, your combination of high Vision &amp; Drive with above-average Risk &amp; Openness points to someone who filters ideas early against a clear internal sense of purpose — and, having chosen one, is unusually willing to commit to it before it's fully proven out.</p>
-            <p className="cii-body">The tradeoff that tends to come with this shape: because you're selective early, you may generate fewer total ideas than a pure-divergent profile. That's not a weakness so much as a different strategy — quality-and-conviction over quantity-and-optionality.</p>
-
-            <div className="cii-sec-title">How This Shows Up to Others</div>
-            <p className="cii-body">Colleagues and collaborators typically experience Visionary Builders as someone who <b>doesn't need convincing once they're in</b> — you tend to advocate clearly for directions you believe in, and that conviction is often what moves a room. The corresponding blind spot: because your Creative Behavior score sits closer to average, that conviction doesn't always translate into fast, visible action — the idea can outpace the execution.</p>
-            <p className="cii-body">Under time pressure or high-stakes conditions, this profile tends to hold up well on the decision-making side — the same comfort with ambiguity that shows up in Risk &amp; Openness means you're less likely than most to freeze or over-deliberate when a call needs to be made quickly. The risk under pressure sits on the execution side: with less runway to work with, the existing Innovation gap can become more visible, since there's less time available to close the distance between deciding on a direction and actually delivering it.</p>
-
-            <div className="callout">The dashed shape on the radar is the population average — everywhere your solid shape extends past it is a genuine relative strength, not just an absolute one.</div>
-          </div>
-
-          <div className="cii-pg-ftr">
-            <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
-          </div>
-        </div>
-
-        {/* Page 8: Action Plan & Recommendations (CII Template Page 10 - Last Page) */}
-        <div ref={page8Ref} className="cii-page">
-          <div>
-            <div className="cii-pg-hdr">
-              <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-              <div className="cii-pg-num">08 / 08</div>
+            {/* Neutral Sentiment Bar */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px', padding: '10px 14px', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '8px' }}>
+              <span style={{ fontSize: '11px', fontWeight: 700, color: '#1e3a8a', flexShrink: 0 }}>😐 Neutral Sentiment</span>
+              <div style={{ flex: 1, height: '8px', background: '#bfdbfe', borderRadius: '4px', overflow: 'hidden' }}>
+                <div style={{ height: '100%', width: sv.neutral + '%', background: '#1a56db', borderRadius: '4px' }} />
+              </div>
+              <span style={{ fontSize: '12px', fontWeight: 800, color: '#1a56db', fontFamily: '"IBM Plex Mono", monospace' }}>{sv.neutral}%</span>
             </div>
 
-            <div className="cii-eyebrow">Section Six</div>
-            <div className="cii-pg-title">Action Plan &amp; Recommendations</div>
-            <div className="cii-pg-sub">Six specific actions tied directly to your scores, organized into a realistic sequence rather than a flat list to tackle all at once.</div>
-
-            <div className="cii-sec-title" style={{ marginTop: '6px' }}>All Actions at a Glance</div>
-            <table className="summary-table">
-              <thead>
-                <tr><th>#</th><th>Action</th><th>Targets</th><th>Frequency</th></tr>
-              </thead>
+            {/* Pricing Comparison */}
+            <div className="cii-sec-title">Competitive Pricing Landscape</div>
+            <table className="cii-table" style={{ marginBottom: '12px' }}>
+              <thead><tr><th>Product / Tier</th><th>Pricing</th><th>Segment</th></tr></thead>
               <tbody>
-                <tr><td className="mono">1</td><td>Ship one small creative output</td><td><span className="seq-dim-tag" style={{ background: '#f43f5e' }}>Innovation</span></td><td>Weekly</td></tr>
-                <tr><td className="mono">2</td><td>Redesign one broken process, start to finish</td><td><span className="seq-dim-tag" style={{ background: '#f43f5e' }}>Innovation</span></td><td>Monthly</td></tr>
-                <tr><td className="mono">3</td><td>24-hour test rule for new ideas</td><td><span className="seq-dim-tag" style={{ background: '#f43f5e' }}>Innovation</span></td><td>Daily habit</td></tr>
-                <tr><td className="mono">4</td><td>Weekly cross-domain article + connection</td><td><span className="seq-dim-tag" style={{ background: '#06b6d4' }}>Remote Assoc.</span></td><td>Weekly</td></tr>
-                <tr><td className="mono">5</td><td>Three-noun connection drill</td><td><span className="seq-dim-tag" style={{ background: '#06b6d4' }}>Remote Assoc.</span></td><td>A few times/week</td></tr>
-                <tr><td className="mono">6</td><td>Running visible idea log</td><td><span className="seq-dim-tag" style={{ background: '#f97316' }}>Cr. Behavior</span></td><td>Ongoing, reviewed weekly</td></tr>
+                {(data.pricing || []).map((p, i) => (
+                  <tr key={i}>
+                    <td>
+                      <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '2px', background: p.color, marginRight: '6px', flexShrink: 0, verticalAlign: 'middle' }}></span>
+                      <strong>{p.name}</strong>
+                    </td>
+                    <td style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '10.5px' }}>{p.note}</td>
+                    <td style={{ fontSize: '10px', color: '#64748b' }}>
+                      {i === 0 ? 'Value Leader' : i === 1 ? 'Pro Tier' : i === 2 ? 'Enterprise' : i === 3 ? 'Premium Legacy' : 'Budget'}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
 
-            <div className="cii-sec-title">Suggested Sequence — Don't Start All Six at Once</div>
-            <p className="cii-body">Adopting all six simultaneously is the most common way a development plan quietly fails — too much new behavior at once, with no single habit given the chance to actually stick. The sequence below phases them in over eight weeks instead.</p>
-            <table className="seq-table">
-              <thead>
-                <tr><th>Timing</th><th>Add</th><th>Why This Order</th></tr>
-              </thead>
-              <tbody>
-                <tr><td className="seq-week">Week 1</td><td><b>Action 1</b> — Ship weekly</td><td>Lowest friction, highest-leverage dimension. Establish this alone for two full weeks before adding anything else.</td></tr>
-                <tr><td className="seq-week">Week 3</td><td><b>Action 6</b> — Idea log</td><td>Low-effort, pairs naturally with Action 1 — you're already producing something weekly to log.</td></tr>
-                <tr><td className="seq-week">Week 4</td><td><b>Action 4</b> — Weekly article</td><td>A different kind of habit (input, not output) — safe to layer in once Actions 1 and 6 feel automatic.</td></tr>
-                <tr><td className="seq-week">Week 6</td><td><b>Action 3</b> — 24-hour test rule</td><td>Requires the most behavior change under pressure — introduced once the earlier habits have built some momentum.</td></tr>
-                <tr><td className="seq-week">Week 7</td><td><b>Action 5</b> — Noun drill</td><td>Small, optional add-on once the core habits are stable.</td></tr>
-                <tr><td className="seq-week">Week 8</td><td><b>Action 2</b> — Process redesign</td><td>The largest single action — best attempted once weekly shipping (Action 1) has already proven you can follow through.</td></tr>
-              </tbody>
-            </table>
-
-            <div className="callout insight" style={{ background: '#fffbeb', borderColor: '#fde68a' }}>
-              <span className="lbl" style={{ color: '#b45309' }}>If You Can Only Start One</span>
-              Start with Action 1 — shipping one small creative output every 7 days. It's the lowest-friction of the six, it directly targets your single largest gap (Innovation), and its weekly cadence naturally builds the habit that makes every other action on this list easier to sustain once you're ready to add them.
+            <div className="cii-sec-title">Pricing Strategy Analysis</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {renderReportParagraphs(rep.pricing)}
             </div>
           </div>
 
@@ -1670,6 +1593,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             <div>AI-Evaluated Market Intelligence Report</div>
           </div>
         </div>
+
 
         {/* Page 9: Disclaimer, Privacy & Terms (CII Template Page 14) */}
         <div ref={page9Ref} className="cii-page">
