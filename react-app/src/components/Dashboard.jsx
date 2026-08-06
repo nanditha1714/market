@@ -85,9 +85,12 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
       let dashUrl = dashboardPdfUrl;
       if (!dashUrl) {
         try {
+          const scrollHeight = dashRef.current ? Math.max(dashRef.current.scrollHeight, 880) : 880;
           const canvas = await html2canvas(dashRef.current, {
             scale: 1.2, useCORS: true, allowTaint: true,
-            backgroundColor: '#f8fafc', logging: false
+            backgroundColor: '#f8fafc', logging: false,
+            height: scrollHeight,
+            windowHeight: scrollHeight
           });
           const pdf = new jsPDF({
             orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
@@ -429,9 +432,12 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
     document.body.appendChild(badge);
 
     try {
+      const scrollHeight = dashRef.current ? Math.max(dashRef.current.scrollHeight, 880) : 880;
       const canvas = await html2canvas(dashRef.current, {
         scale: 1.2, useCORS: true, allowTaint: true,
-        backgroundColor: '#f8fafc', logging: false
+        backgroundColor: '#f8fafc', logging: false,
+        height: scrollHeight,
+        windowHeight: scrollHeight
       });
       
       const safeCompany = (user.company || 'unknown').replace(/[^a-z0-9]/gi, '_').toLowerCase();
