@@ -614,7 +614,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
   }, [isPaid, executeDownloadReport]);
 
   return (
-    <div ref={dashRef} style={{ position:'fixed', inset:0, width:'100%', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflow:'hidden' }}>
+    <div ref={dashRef} style={{ position:'fixed', inset:0, width:'100%', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflowY:'auto' }}>
       {/* Header */}
       <div style={{ flexShrink:0, background:'var(--navy)', padding:'10px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--navy-light)' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -650,7 +650,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
       {/* Main Grid: Dashboard View */}
       {activeView === 'dashboard' && (
-      <div style={{ flex:1, display:'grid', gridTemplateRows:'82px 1.1fr 1.3fr 54px', gap:'8px', padding:'8px 12px', minHeight:0, overflow:'hidden' }}>
+      <div style={{ flex:1, display:'grid', gridTemplateRows:'82px 1.1fr 1.3fr 54px', gap:'8px', padding:'8px 12px', minHeight:'820px' }}>
 
         {/* KPIs */}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:'8px' }}>
