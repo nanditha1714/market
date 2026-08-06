@@ -1285,60 +1285,6 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </div>
         </div>
 
-        {/* Page 5: Market Opportunity Analysis */}
-        <div ref={page5Ref} className="cii-page">
-          <div>
-            <div className="cii-pg-hdr">
-              <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-              <div className="cii-pg-num">05 / 11</div>
-            </div>
-
-            <div className="cii-eyebrow">Section Two</div>
-            <div className="cii-pg-title">Market Opportunity Analysis</div>
-            <div className="cii-pg-sub">In-depth breakdown of market dimensions, growth drivers, pricing landscape, and strategic opportunity windows.</div>
-
-            {/* Growth Trend Mini Chart */}
-            <div style={{ background: '#f8fafc', border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px', marginBottom: '12px' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
-                <div style={{ textAlign: 'center', padding: '8px', background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#1a56db', fontFamily: '"IBM Plex Mono", monospace' }}>{k.tam || '—'}</div>
-                  <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Total Addressable Market</div>
-                </div>
-                <div style={{ textAlign: 'center', padding: '8px', background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#16a34a', fontFamily: '"IBM Plex Mono", monospace' }}>{k.growthRate || '—'}</div>
-                  <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Annual Growth Rate</div>
-                </div>
-                <div style={{ textAlign: 'center', padding: '8px', background: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ fontSize: '18px', fontWeight: 800, color: '#a21caf', fontFamily: '"IBM Plex Mono", monospace' }}>{k.price || '—'}</div>
-                  <div style={{ fontSize: '9px', color: '#64748b', marginTop: '2px', textTransform: 'uppercase', letterSpacing: '0.08em' }}>Avg Market Price</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="cii-sec-title">Pricing Landscape</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px', marginBottom: '10px' }}>
-              {(data.pricing || []).map((p, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 10px', background: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '2px', background: p.color || '#1a56db', flexShrink: 0 }} />
-                  <div>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#0f172a' }}>{p.name}</div>
-                    <div style={{ fontSize: '9.5px', color: '#64748b' }}>{p.note}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="cii-sec-title">Market Opportunity Deep Dive</div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {renderReportParagraphs(rep.marketOverview)}
-            </div>
-          </div>
-
-          <div className="cii-pg-ftr">
-            <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
-          </div>
-        </div>
 
         {/* Page 5: Market Growth Trend */}
         <div ref={page5Ref} className="cii-page">
