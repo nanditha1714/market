@@ -31,7 +31,7 @@ const loadScript = (src) => {
   });
 };
 
-const ENABLE_PAYMENT = false; // Set to true to re-enable Razorpay payment gateway
+const ENABLE_PAYMENT = true; // Set to true to re-enable Razorpay payment gateway
 
 const waveSvg = (
   <div style={{ position: 'absolute', right: 0, top: 0, width: '300px', height: '180px', overflow: 'hidden', zIndex: 0, pointerEvents: 'none' }}>
