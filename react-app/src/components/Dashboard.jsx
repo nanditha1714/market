@@ -627,27 +627,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </p>
         </div>
 
-        {/* View Switcher Tabs */}
-        <div style={{ display: 'flex', background: 'rgba(255,255,255,0.08)', padding: '3px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.15)' }}>
-          <button
-            onClick={() => setActiveView('dashboard')}
-            style={{
-              padding: '6px 14px',
-              border: 'none',
-              borderRadius: '6px',
-              background: activeView === 'dashboard' ? '#1d4ed8' : 'transparent',
-              color: '#ffffff',
-              fontWeight: 700,
-              fontSize: '13px',
-              cursor: 'pointer',
-              transition: 'all 0.2s',
-              boxShadow: activeView === 'dashboard' ? '0 2px 4px rgba(0,0,0,0.2)' : 'none'
-            }}
-          >
-            📊 Dashboard View
-          </button>
 
-        </div>
 
         <div style={{ display:'flex', gap:'8px' }}>
           <button onClick={handleDownloadDashboard} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
