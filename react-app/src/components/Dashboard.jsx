@@ -1194,7 +1194,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Report</div>
+            <div></div>
           </div>
         </div>
 
@@ -1237,7 +1237,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
           <div className="cii-pg-ftr" style={{ position: 'relative', zIndex: 1 }}>
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Report</div>
+            <div></div>
           </div>
         </div>
 
@@ -1284,7 +1284,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
+            <div></div>
           </div>
         </div>
 
@@ -1337,7 +1337,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
+            <div></div>
           </div>
         </div>
 
@@ -1392,7 +1392,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
+            <div></div>
           </div>
         </div>
 
@@ -1445,7 +1445,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
+            <div></div>
           </div>
         </div>
 
@@ -1517,7 +1517,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
+            <div></div>
           </div>
         </div>
 
@@ -1571,7 +1571,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
           <div className="cii-pg-ftr">
             <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Market Intelligence Report</div>
+            <div></div>
           </div>
         </div>
 
@@ -1643,7 +1643,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
             <div className="cii-pg-ftr">
               <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-              <div>AI-Evaluated Report</div>
+              <div></div>
             </div>
           </div>
         </div>
