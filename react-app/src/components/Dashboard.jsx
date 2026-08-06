@@ -1579,68 +1579,42 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
         </div>
 
         {/* Page 10: About Infopace (CII Template Page 15 Word-for-Word) */}
-        <div ref={page10Ref} className="cii-page" style={{ position: 'relative' }}>
+        <div ref={page10Ref} className="cii-page" style={{ position: 'relative', padding: '40px 45px 0' }}>
           {waveSvg}
-          <div style={{ position: 'relative', zIndex: 1 }}>
-            <div className="cii-pg-hdr">
+          <div style={{ position: 'relative', zIndex: 2 }}>
+            <div className="cii-pg-hdr" style={{ marginBottom: '10px' }}>
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
               <div className="cii-pg-num">10 / 11</div>
             </div>
 
-            <div className="cii-eyebrow">Organization Profile</div>
-            <div className="cii-pg-title" style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '34px', fontWeight: 700, marginBottom: '4mm', color: '#061228' }}>About <span style={{ color: '#1a56db' }}>Infopace</span></div>
-
-            <div style={{ fontSize: '11px', color: '#000000', lineHeight: 1.6, marginBottom: '8px' }}>
-              <p style={{ marginBottom: '4px' }}>Infopace Management Pvt. Ltd is a Bengaluru-based strategic change management and business transformation company established in 1999, providing advisory and technology-driven solutions that help businesses improve operational efficiency, accelerate growth and adapt to changing market conditions.</p>
-              <p>Our approach combines deep sector expertise with data-driven methodology — every engagement begins with understanding the specific operational and market context a client is working within, rather than applying a generic playbook. This is the same philosophy behind the AI-powered assessment tools used to generate this report: structured, evidence-based, and built to reflect the individual, not a template.</p>
+            <div className="wp-mono" style={{ fontSize: '9px', letterSpacing: '.12em', textTransform: 'uppercase', color: '#94a3b8', marginBottom: '8px', marginTop: '20px', fontWeight: 600 }}>
+              Industries We Serve
             </div>
-
-            <div className="cii-sec-title">What We Do</div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5px', fontSize: '9.8px', color: '#000000', marginBottom: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Growth Acceleration Partner</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> AI-Enabled Solutions</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Global Capabilities Center</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Enabling Entrepreneurial Ecosystem</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Strategic Change Management</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Go To Market Strategy &amp; Research</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Strategic Investment &amp; Funding</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Market Access &amp; Readiness</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Data Analytics Solutions</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Pivoting &amp; Repurposing Businesses</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Digital Transformation</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><span style={{ color: '#1a56db' }}>•</span> Radical Innovation</div>
-            </div>
-
-            <div className="cii-sec-title">Industries We Serve</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '8px' }}>
+            
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '15px' }}>
               {['Automobile', 'Education', 'Health Care', 'ITES', 'Information Technology', 'Manufacturing', 'Retail', 'Telecom', 'Energy', 'NGO', 'Food Processing', 'Agritech', 'Aerospace', 'Semiconductor', 'ESDM'].map((ind, i) => (
-                <span key={i} style={{ fontSize: '8.8px', color: '#1a56db', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '12px', padding: '2px 6px', fontWeight: 600 }}>{ind}</span>
+                <span key={i} style={{ fontSize: '9.2px', color: '#1a56db', background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '20px', padding: '5px 10px', fontWeight: 600, display: 'inline-block' }}>{ind}</span>
               ))}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px', marginBottom: '10px' }}>
-              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '6px 8px', textAlign: 'left' }}>
-                <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '20px', fontWeight: 800, color: '#1a56db' }}>200+</div>
-                <div style={{ fontSize: '8.5px', color: '#000000', marginTop: '1px' }}>Specialists, avg. 7 yrs expertise</div>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '25px', marginBottom: '20px' }}>
+              <div style={{ flex: 1, border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px 10px', textAlign: 'left', background: '#f8faff' }}>
+                <div style={{ fontWeight: '800', fontSize: '25.3px', color: '#1a56db' }}>200+</div>
+                <div style={{ fontSize: '9.2px', color: '#64748b', marginTop: '5px', lineHeight: 1.54 }}>Specialists, avg. 7 years expertise</div>
               </div>
-              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '6px 8px', textAlign: 'left' }}>
-                <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '20px', fontWeight: 800, color: '#1a56db' }}>850+</div>
-                <div style={{ fontSize: '8.5px', color: '#000000', marginTop: '1px' }}>Long-lasting client partnerships</div>
+              <div style={{ flex: 1, border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px 10px', textAlign: 'left', background: '#f8faff' }}>
+                <div style={{ fontWeight: '800', fontSize: '25.3px', color: '#1a56db' }}>850+</div>
+                <div style={{ fontSize: '9.2px', color: '#64748b', marginTop: '5px', lineHeight: 1.54 }}>Long-lasting client partnerships</div>
               </div>
-              <div style={{ background: '#f8fafc', border: '1px solid rgba(17,68,160,0.14)', borderRadius: '8px', padding: '6px 8px', textAlign: 'left' }}>
-                <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '20px', fontWeight: 800, color: '#1a56db' }}>7000+</div>
-                <div style={{ fontSize: '8.5px', color: '#000000', marginTop: '1px' }}>Projects in digital transformation</div>
+              <div style={{ flex: 1, border: '1px solid #cbd5e1', borderRadius: '10px', padding: '12px 10px', textAlign: 'left', background: '#f8faff' }}>
+                <div style={{ fontWeight: '800', fontSize: '25.3px', color: '#1a56db' }}>7000+</div>
+                <div style={{ fontSize: '9.2px', color: '#64748b', marginTop: '5px', lineHeight: 1.54 }}>Projects in digital transformation</div>
               </div>
-            </div>
-
-            {/* Template Page 15 Bottom Image Banner */}
-            <div style={{ height: '240px', borderRadius: '8px', overflow: 'hidden', backgroundImage: 'url("/building.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', marginTop: '12px' }}>
             </div>
           </div>
 
-          <div className="cii-pg-ftr" style={{ position: 'relative', zIndex: 1 }}>
-            <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-            <div>AI-Evaluated Report</div>
+          {/* Template Page 15 Bottom Image Banner — edge-to-edge */}
+          <div style={{ height: '338px', marginLeft: '-45px', marginRight: '-45px', marginBottom: '0px', backgroundImage: 'url("/building.jpg")', backgroundSize: 'cover', backgroundPosition: 'center', position: 'relative', zIndex: 1 }}>
           </div>
         </div>
 
