@@ -1120,7 +1120,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
         `}</style>
         
         {/* Page 1: Cover Page (Market Research Assessment) */}
-        <div ref={page1Ref} className="cii-page">
+        <div ref={page1Ref} className="cii-page" style={{ padding: 0 }}>
           <div style={{ padding: '14mm 16mm 0' }}>
             <img src="/logo.png" alt="Infopace" style={{ height: '56px' }} />
           </div>
@@ -1617,34 +1617,37 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
 
         {/* Page 11: Thank You & Contact (CII Template Page 16 - White Theme Word-for-Word) */}
-        <div ref={page11Ref} className="cii-page" style={{ background: '#ffffff', color: '#000000', position: 'relative' }}>
-          {waveSvg}
-          <div style={{ position: 'relative', zIndex: 1, height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-              <div className="cii-pg-hdr">
-                <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-                <div className="cii-pg-num">11 / 11</div>
-              </div>
+        <div ref={page11Ref} className="cii-page" style={{ background: '#ffffff', color: '#000000', position: 'relative', padding: 0, display: 'flex', flexDirection: 'column' }}>
+          <div style={{ padding: '12mm 16mm 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
+            <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '10.5px', color: '#94a3b8', fontWeight: 700 }}>11 / 11</div>
+          </div>
 
-              <div style={{ position: 'relative', zIndex: 2, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start', padding: '6mm 0 0' }}>
-                <div style={{ fontSize: '11.5px', letterSpacing: '.2em', textTransform: 'uppercase', color: '#1a56db', fontWeight: 600, marginBottom: '5mm', fontFamily: '"IBM Plex Mono", monospace' }}>Thank You</div>
-                <div style={{ fontWeight: 700, fontSize: '44px', lineHeight: 1.21, color: '#061228', marginBottom: '7mm', fontFamily: '"Playfair Display", Georgia, serif' }}>Thank you<br/>for reading.</div>
-                <p style={{ fontSize: '13px', color: '#000000', lineHeight: 1.87, maxWidth: '400px', marginBottom: '9mm', fontFamily: '"Inter", sans-serif', textTransform: 'none' }}>
-                  If you have any questions or would like to discuss these findings further, please don't hesitate to reach out to us.
-                </p>
-                <div style={{ width: '240px', height: '1px', background: '#cbd5e1', marginBottom: '7mm' }}></div>
-                <div style={{ fontSize: '12px', color: '#000000', lineHeight: 2.09, fontFamily: '"Inter", sans-serif' }}>
-                  <div>2nd Floor, Halkatti Icon, 14, Sankey Rd, Sadashiva Nagar, Guttahalli, Bengaluru, Karnataka 560003</div>
-                  <div style={{ color: '#1a56db', fontWeight: 700, marginTop: '2mm', fontSize: '13.5px' }}>+91 9845263775</div>
-                  <div style={{ marginTop: '1mm' }}>info@infopaceindia.com &nbsp;·&nbsp; infospaceindia.com</div>
-                </div>
-              </div>
-            </div>
+          <div style={{ position: 'relative', height: '285px', overflow: 'hidden', marginTop: '10px' }}>
+            <svg width="100%" height="100%" preserveAspectRatio="xMaxYMid slice" viewBox="0 0 760 480" style={{ position: 'absolute', left: '-30px', bottom: 0 }}>
+              <path d="M 0.0 23.8 Q 17.3 25.4 25.9 26.2 Q 51.8 28.9 60.5 29.8 Q 86.4 32.5 95.0 33.3 Q 120.9 35.8 129.5 36.6 Q 155.5 38.8 164.1 39.5 Q 190.0 41.4 198.6 42.0 Q 224.5 43.6 233.2 44.0 Q 259.1 45.2 267.7 45.5 Q 293.6 46.1 302.3 46.0 Q 328.2 45.6 336.8 45.2 Q 362.7 43.7 371.4 42.9 Q 397.3 40.0 405.9 38.8 Q 431.8 34.9 440.5 33.4 Q 466.4 28.7 475.0 27.0 Q 500.9 21.9 509.5 20.1 Q 535.5 14.8 544.1 13.1 Q 570.0 7.9 578.6 6.2 Q 604.5 1.2 613.2 -0.3 Q 639.1 -4.8 647.7 -6.1 Q 673.6 -9.9 682.3 -10.9 Q 708.2 -13.7 716.8 -14.3 Q 742.7 -15.6 751.4 -15.7" fill="none" stroke="#1a56db" strokeWidth="1.05" strokeOpacity="0.75" strokeLinecap="round"/>
+              <path d="M 0.0 30.0 Q 17.3 31.7 25.9 32.5 Q 51.8 35.2 60.5 36.1 Q 86.4 38.7 95.0 39.6 Q 120.9 42.0 129.5 42.8 Q 155.5 45.0 164.1 45.7 Q 190.0 47.7 198.6 48.3 Q 224.5 49.9 233.2 50.4 Q 259.1 51.4 267.7 51.6 Q 293.6 51.7 302.3 51.5 Q 328.2 50.5 336.8 49.9 Q 362.7 47.6 371.4 46.5 Q 397.3 42.9 405.9 41.5 Q 431.8 37.0 440.5 35.3 Q 466.4 30.2 475.0 28.4 Q 500.9 23.0 509.5 21.1 Q 535.5 15.7 544.1 13.9 Q 570.0 8.6 578.6 6.9 Q 604.5 1.9 613.2 0.4 Q 639.1 -4.0 647.7 -5.3 Q 673.6 -8.7 682.3 -9.5 Q 708.2 -11.6 716.8 -12.0 Q 742.7 -12.5 751.4 -12.3" fill="none" stroke="#1a56db" strokeWidth="1.05" strokeOpacity="0.70" strokeLinecap="round"/>
+              <path d="M 0.0 41.2 Q 17.3 44.2 25.9 45.7 Q 51.8 50.3 60.5 51.8 Q 86.4 56.4 95.0 57.8 Q 120.9 62.2 129.5 63.5 Q 155.5 67.5 164.1 68.7 Q 190.0 72.1 198.6 73.0 Q 224.5 75.5 233.2 76.1 Q 259.1 77.3 267.7 77.3 Q 293.6 76.7 302.3 76.1 Q 328.2 73.6 336.8 72.3 Q 362.7 67.7 371.4 65.8 Q 397.3 59.5 405.9 57.0 Q 431.8 49.3 440.5 46.4 Q 466.4 37.6 475.0 34.5 Q 500.9 25.0 509.5 21.7 Q 535.5 11.8 544.1 8.4 Q 570.0 -1.6 578.6 -4.9 Q 604.5 -14.5 613.2 -17.6 Q 639.1 -26.4 647.7 -29.0 Q 673.6 -36.4 682.3 -38.4 Q 708.2 -43.7 716.8 -45.0 Q 742.7 -47.9 751.4 -48.3" fill="none" stroke="#1a56db" strokeWidth="1.30" strokeOpacity="0.65" strokeLinecap="round"/>
+            </svg>
+          </div>
 
-            <div className="cii-pg-ftr">
-              <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
-              <div></div>
+          <div style={{ padding: '6mm 16mm 0', display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+            <div style={{ fontSize: '11.5px', letterSpacing: '.2em', textTransform: 'uppercase', color: '#1a56db', fontWeight: 600, marginBottom: '5mm', fontFamily: '"IBM Plex Mono", monospace' }}>Thank You</div>
+            <div style={{ fontWeight: 700, fontSize: '44px', lineHeight: 1.21, color: '#061228', marginBottom: '7mm', fontFamily: '"Playfair Display", Georgia, serif' }}>Thank you<br/>for reading.</div>
+            <p style={{ fontSize: '13px', color: '#000000', lineHeight: 1.87, maxWidth: '400px', marginBottom: '9mm', fontFamily: '"Inter", sans-serif', textTransform: 'none' }}>
+              If you have any questions or would like to discuss these findings further, please don't hesitate to reach out to us.
+            </p>
+            <div style={{ width: '240px', height: '1px', background: '#cbd5e1', marginBottom: '7mm' }}></div>
+            <div style={{ fontSize: '12px', color: '#000000', lineHeight: 2.09, fontFamily: '"Inter", sans-serif' }}>
+              <div>2nd Floor, Halkatti Icon, 14, Sankey Rd, Sadashiva Nagar, Guttahalli, Bengaluru, Karnataka 560003</div>
+              <div style={{ color: '#1a56db', fontWeight: 700, marginTop: '2mm', fontSize: '13.5px' }}>+91 9845263775</div>
+              <div style={{ marginTop: '1mm' }}>info@infopaceindia.com &nbsp;·&nbsp; infospaceindia.com</div>
             </div>
+          </div>
+
+          <div className="cii-pg-ftr" style={{ padding: '0 16mm 14mm' }}>
+            <div>©2026 Infopace Management Pvt. Ltd. All Rights Reserved.</div>
+            <div></div>
           </div>
         </div>
 
