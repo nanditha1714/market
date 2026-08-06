@@ -8,7 +8,8 @@ export default function LoadingScreen() {
       display:'flex', alignItems:'center', justifyContent:'center', flexDirection:'column', gap:'20px',
       fontFamily: '"Inter", -apple-system, sans-serif',
       backgroundImage: 'linear-gradient(to right, rgba(99, 102, 241, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(99, 102, 241, 0.03) 1px, transparent 1px)',
-      backgroundSize: '36px 36px'
+      backgroundSize: '36px 36px',
+      backgroundAttachment: 'fixed'
     }}>
       <BackgroundCanvas />
       <style>{`
