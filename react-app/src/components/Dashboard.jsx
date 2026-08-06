@@ -1160,13 +1160,13 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
         {/* Page 2: Contents (CII Template Page 2 Word-for-Word) */}
         <div ref={page2Ref} className="cii-page">
           <div>
-            <div className="cii-pg-hdr">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '45px', borderBottom: '1px solid rgba(17,68,160,0.14)', paddingBottom: '10px' }}>
               <div className="cii-brand"><img src="/logo.png" alt="Infopace" style={{ height: '32px' }} /></div>
-              <div className="cii-pg-num">02 / 11</div>
+              <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '10.5px', color: '#94a3b8', fontWeight: 700 }}>02 / 11</div>
             </div>
 
-            <div className="cii-eyebrow">In This Report</div>
-            <div className="cii-pg-title" style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '34px', fontWeight: 700, marginBottom: '6mm', color: '#061228' }}>Contents</div>
+            <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '11.5px', letterSpacing: '.16em', textTransform: 'uppercase', color: '#1a56db', fontWeight: 600, marginBottom: '11px' }}>In This Report</div>
+            <div style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '36.8px', fontWeight: 700, marginBottom: '34px', color: '#061228' }}>Contents</div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
               {[
@@ -1180,13 +1180,13 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
                 { title: 'About Infopace', sub: 'Organization profile, key metrics, and advisory services', page: '10' },
                 { title: 'Thank You & Contact', sub: 'Headquarters, website, and advisory contact info', page: '11' }
               ].map((item, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'baseline', gap: '14px', padding: '12px 0', borderBottom: '1px solid rgba(17,68,160,0.14)' }}>
-                  <div style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '15px', color: '#0f172a', flexShrink: 0, fontWeight: 700 }}>
+                <div key={idx} style={{ display: 'flex', alignItems: 'baseline', gap: '19px', padding: '19px 0', borderBottom: '1px solid rgba(17,68,160,0.14)' }}>
+                  <div style={{ fontFamily: '"Playfair Display", Georgia, serif', fontSize: '17px', color: '#0f172a', flexShrink: 0, fontWeight: 400 }}>
                     {item.title}
-                    <span style={{ display: 'block', fontSize: '10px', color: '#94a3b8', marginTop: '2px', fontFamily: '"Inter", sans-serif', fontWeight: 400 }}>{item.sub}</span>
+                    <span style={{ display: 'block', fontSize: '9.8px', color: '#94a3b8', marginTop: '4px', fontFamily: '"Inter", sans-serif', fontWeight: 400 }}>{item.sub}</span>
                   </div>
-                  <div style={{ flex: 1, borderBottom: '1px dotted #cbd5e1', marginBottom: '3px' }}></div>
-                  <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '11px', color: '#94a3b8', flexShrink: 0, fontWeight: 700 }}>{item.page}</div>
+                  <div style={{ flex: 1, borderBottom: '1px dotted #cbd5e1', marginBottom: '6px' }}></div>
+                  <div style={{ fontFamily: '"IBM Plex Mono", monospace', fontSize: '10.5px', color: '#94a3b8', flexShrink: 0, fontWeight: 700 }}>{item.page}</div>
                 </div>
               ))}
             </div>
@@ -1219,7 +1219,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
             <div style={{ fontSize: '10px', letterSpacing: '.14em', textTransform: 'uppercase', color: '#94a3b8', marginBottom: '3mm', fontWeight: 700, fontFamily: '"IBM Plex Mono", monospace' }}>The Assessment Suite</div>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
               {[
                 { color: '#a21caf', name: 'Market Research Assessment', desc: 'Validates business ideas by analyzing market demand, customer needs, industry trends, and competition, enabling informed market-entry decisions.' },
                 { color: '#06b6d4', name: 'Market Potential', desc: 'Evaluates the growth potential and commercial viability of a product or business by assessing market size, demand, scalability and risk opportunities.' },
@@ -1227,12 +1227,9 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
                 { color: '#f97316', name: 'Business Risk Assessment', desc: 'Identifies strategic, operational, financial and market risks, enabling businesses to proactively mitigate challenges and improve resilience.' },
                 { color: '#f43f5e', name: 'Founder and Co-Founder Compatibility', desc: 'Assesses alignment between founders in leadership, communication, values, and decision-making to build stronger partnerships and reduce future conflicts.' }
               ].map((tool, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: '10px', padding: '9px 12px', borderBottom: '1px solid rgba(17,68,160,0.14)', background: '#f8fafc', borderRadius: '6px' }}>
-                  <div style={{ width: '4px', background: tool.color, borderRadius: '2px', flexShrink: 0 }}></div>
-                  <div>
-                    <div style={{ fontWeight: 700, fontSize: '12.5px', color: '#0f172a', marginBottom: '2px' }}>{tool.name}</div>
-                    <div style={{ fontSize: '10.5px', color: '#000000', lineHeight: 1.55, textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>{tool.desc}</div>
-                  </div>
+                <div key={idx} style={{ padding: '12px 0 12px 14px', borderLeft: `3px solid ${tool.color}`, borderBottom: '1px solid rgba(17,68,160,0.14)', display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ fontWeight: 700, fontSize: '13.5px', color: '#0f172a', marginBottom: '3px' }}>{tool.name}</div>
+                  <div style={{ fontSize: '11px', color: '#334155', lineHeight: 1.6, textTransform: 'none', fontFamily: '"Inter", sans-serif' }}>{tool.desc}</div>
                 </div>
               ))}
             </div>
