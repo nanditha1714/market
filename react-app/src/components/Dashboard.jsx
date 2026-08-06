@@ -650,7 +650,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
       {/* Main Grid: Dashboard View */}
       {activeView === 'dashboard' && (
-      <div style={{ flex:1, display:'grid', gridTemplateRows:'82px 1.1fr 1.3fr 54px', gap:'8px', padding:'8px 12px', minHeight:'820px' }}>
+      <div style={{ flex:1, display:'grid', gridTemplateRows:'82px 190px 210px 54px', gap:'8px', padding:'8px 12px', minHeight:'560px' }}>
 
         {/* KPIs */}
         <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:'8px' }}>
