@@ -1,0 +1,314 @@
+import { FALLBACK_DATA } from '../constants';
+
+let API_BASE = process.env.REACT_APP_API_URL || (process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : '');
+if (API_BASE.endsWith('/')) {
+  API_BASE = API_BASE.slice(0, -1);
+}
+const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
+const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
+
+async function fetchWithRetry(url, options = {}, retries = 1, delay = 500) {
+  for (let i = 0; i < retries; i++) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 55000);
+      const res = await fetch(url, { ...options, signal: options.signal || controller.signal });
+      clearTimeout(timeoutId);
+      return res;
+    } catch (err) {
+      if (i === retries - 1) throw err;
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+}
+
+// ── Call Backend Proxy instead of raw Gemini ─────────────────────────────────
+export async function callGemini(answers) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(answers)
+    });
+    if (!res.ok) throw new Error(`HTTP error status: ${res.status}`);
+    const json = await res.json();
+    if (json.error) throw new Error(json.error);
+    return json;
+  } catch (err) {
+    console.log('Gemini service note: providing instant fallback analysis data', err?.message || err);
+    return FALLBACK_DATA; 
+  }
+}
+
+// ── Upload screenshot to Supabase Storage ────────────────────────────────────
+export async function uploadScreenshot(blob, fileName) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return '';
+  try {
+    const contentType = fileName.endsWith('.pdf') ? 'application/pdf' : 'image/png';
+    const res = await fetchWithRetry(SUPABASE_URL + '/storage/v1/object/dashboards/' + fileName, {
+      method: 'POST',
+      headers: {
+        'Content-Type':  contentType,
+        'apikey':        SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'x-upsert':      'true',
+      },
+      body: blob,
+    });
+    if (res.ok) {
+      return SUPABASE_URL + '/storage/v1/object/public/dashboards/' + fileName;
+    }
+    const errText = await res.text();
+    console.log('[Storage Service] Upload status:', res.status, errText);
+    return '';
+  } catch (err) {
+    console.log('[Storage Service] Upload error:', err?.message || err);
+    return '';
+  }
+}
+
+// ── Save record to Supabase DB ────────────────────────────────────────────────
+export async function saveRecord(payload) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+  try {
+    const res = await fetchWithRetry(SUPABASE_URL + '/rest/v1/research_submissions', {
+      method: 'POST',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer':        'return=representation',
+      },
+      body: JSON.stringify(payload),
+    });
+    if (res.status === 201) {
+      const data = await res.json();
+      console.log('✅ Saved to Supabase:', data);
+      return data[0]; // Return the created record object
+    }
+    const err = await res.text();
+    console.warn('DB save failed:', err);
+    return null;
+  } catch (err) {
+    console.warn('Save error:', err);
+    return null;
+  }
+}
+
+// ── Get single record from Supabase DB ─────────────────────────────────────────
+export async function getRecord(id) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null;
+  try {
+    const res = await fetchWithRetry(`${SUPABASE_URL}/rest/v1/research_submissions?id=eq.${id}`, {
+      method: 'GET',
+      headers: {
+        'apikey':        SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+      }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      return data[0] || null;
+    }
+    const err = await res.text();
+    console.warn('DB get failed:', err);
+    return null;
+  } catch (err) {
+    console.warn('Get error:', err);
+    return null;
+  }
+}
+
+// ── Update existing record in Supabase DB ─────────────────────────────────────
+export async function updateRecord(id, updates) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return false;
+  try {
+    const res = await fetchWithRetry(`${SUPABASE_URL}/rest/v1/research_submissions?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type':  'application/json',
+        'apikey':        SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+      },
+      body: JSON.stringify(updates),
+    });
+    if (res.ok) {
+      console.log('✅ Updated Supabase record:', id);
+      return true;
+    }
+    const err = await res.text();
+    console.warn('DB update failed:', err);
+    return false;
+  } catch (err) {
+    console.warn('Update error:', err);
+    return false;
+  }
+}
+
+// ── Send OTP for authentication ──────────────────────────────────────────────
+export async function sendOtp(email) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/auth/send-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Failed to send OTP');
+    return { success: true, message: json.message };
+  } catch (err) {
+    console.error('Send OTP error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Verify OTP for authentication ────────────────────────────────────────────
+export async function verifyOtp(email, otp) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/auth/verify-otp`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, otp })
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Invalid OTP');
+    return { success: true, message: json.message };
+  } catch (err) {
+    console.error('Verify OTP error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Create Razorpay Order ────────────────────────────────────────────────────
+export async function createRazorpayOrder(amount) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/payments/order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount })
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Failed to create payment order');
+    return { success: true, orderId: json.orderId };
+  } catch (err) {
+    console.error('Create Razorpay order error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Verify Razorpay Payment ──────────────────────────────────────────────────
+export async function verifyRazorpayPayment(payload) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/payments/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Payment verification failed');
+    return { success: true };
+  } catch (err) {
+    console.error('Verify Razorpay payment error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Fetch Razorpay Public Key ────────────────────────────────────────────────
+export async function getRazorpayKey() {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/payments/key`);
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.error || 'Failed to fetch Razorpay key');
+    return json.keyId;
+  } catch (err) {
+    console.error('Get Razorpay key error:', err);
+    return '';
+  }
+}
+
+// ── Fetch Google User Profile via Supabase OAuth token ────────────────────────
+export async function getGoogleUserProfile(accessToken) {
+  console.log('[API Debug] getGoogleUserProfile called with token length:', accessToken ? accessToken.length : 0);
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
+    console.error('[API Debug] Missing Supabase config. URL:', SUPABASE_URL, 'Key Present:', !!SUPABASE_KEY);
+    return null;
+  }
+  try {
+    const url = `${SUPABASE_URL}/auth/v1/user`;
+    console.log('[API Debug] Sending request to Supabase Auth user endpoint:', url);
+    const res = await fetchWithRetry(url, {
+      method: 'GET',
+      headers: {
+        'apikey':        SUPABASE_KEY,
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    });
+    console.log('[API Debug] Supabase Auth response status:', res.status);
+    if (res.ok) {
+      const data = await res.json();
+      console.log('[API Debug] Supabase profile data parsed successfully.');
+      return data;
+    }
+    const err = await res.text();
+    console.error('[API Debug] Supabase Auth profile fetch failed with status:', res.status, 'Body:', err);
+    return null;
+  } catch (err) {
+    console.error('[API Debug] Supabase Auth fetch network error:', err);
+    return null;
+  }
+}
+
+// ── Send welcome email upon login ─────────────────────────────────────────────
+export async function sendWelcomeEmail(email, name) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/auth/welcome`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name })
+    });
+    const json = await res.json();
+    return { success: res.ok, message: json.message || json.warning };
+  } catch (err) {
+    console.error('Send welcome email error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Email the report PDF to the user ──────────────────────────────────────────
+export async function emailReportPdf(email, name, pdfBase64, filename, docUrl) {
+  try {
+    const res = await fetchWithRetry(`${API_BASE}/api/email/report`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, name, pdfBase64, filename, docUrl })
+    });
+    const json = await res.json();
+    return { success: res.ok, message: json.message || json.warning };
+  } catch (err) {
+    console.error('Email report PDF error:', err);
+    return { success: false, error: err.message };
+  }
+}
+
+// ── Fetch all records for a user email from Supabase DB ─────────────────────────
+export async function getUserHistory(email) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return [];
+  try {
+    const res = await fetchWithRetry(`${SUPABASE_URL}/rest/v1/research_submissions?email=eq.${email}&order=created_at.desc`, {
+      method: 'GET',
+      headers: {
+        'apikey':        SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+      }
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    const err = await res.text();
+    console.warn('DB history fetch failed:', err);
+    return [];
+  } catch (err) {
+    console.warn('Get history error:', err);
+    return [];
+  }
+}
