@@ -30,8 +30,8 @@ export default function ChartCard({ title, type, data, options, style, height = 
   }, [type, data, options]);
 
   return (
-    <div className="glass-panel" style={{ borderRadius:'var(--radius-md)', padding:'12px', display:'flex', flexDirection:'column', overflow:'hidden', transition: 'box-shadow 0.2s', ...style }} onMouseOver={e=>e.currentTarget.style.boxShadow='var(--shadow-md)'} onMouseOut={e=>e.currentTarget.style.boxShadow='var(--shadow-sm)'}>
-      <div style={{ fontSize:'15px', fontWeight:800, color:'var(--text-main)', marginBottom:'8px', flexShrink:0, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{title}</div>
+    <div className="glass-panel" style={{ borderRadius:'var(--radius-md)', padding:'10px 12px', display:'flex', flexDirection:'column', overflow:'hidden', transition: 'box-shadow 0.2s', height:'100%', boxSizing:'border-box', ...style }} onMouseOver={e=>e.currentTarget.style.boxShadow='var(--shadow-md)'} onMouseOut={e=>e.currentTarget.style.boxShadow='var(--shadow-sm)'}>
+      <div style={{ fontSize:'14px', fontWeight:800, color:'var(--text-main)', marginBottom:'6px', flexShrink:0, whiteSpace:'nowrap', overflow:'hidden', textOverflow:'ellipsis' }}>{title}</div>
       <div style={{ flex:1, height: height, minHeight: 0, overflow:'hidden', display:'block', position: 'relative' }}>
         <canvas ref={canvasRef} style={{ display:'block', width: '100%', height: '100%' }} />
       </div>

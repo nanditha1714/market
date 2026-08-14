@@ -15,6 +15,8 @@ const loadScript = (src) => {
   });
 };
 
+const ENABLE_PAYMENT = false; // Set to false to disable Razorpay payment requirement
+
 const s = {
   overlay: {
     position: 'fixed',
@@ -374,7 +376,7 @@ export default function HistoryModal({ user, onClose, onSelectReport }) {
           ) : (
             <div style={s.list}>
               {reports.map((report) => {
-                const isPaid = report.payment_status === 'success' || !!report.pdf_url;
+                const isPaid = !ENABLE_PAYMENT || report.payment_status === 'success' || !!report.pdf_url;
                 const isProcessing = processingId === report.id;
                 
                 return (

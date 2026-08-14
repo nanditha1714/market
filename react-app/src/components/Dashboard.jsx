@@ -31,7 +31,7 @@ const loadScript = (src) => {
   });
 };
 
-const ENABLE_PAYMENT = true; // Set to true to re-enable Razorpay payment gateway
+const ENABLE_PAYMENT = false; // Set to false to disable Razorpay payment gateway
 
 const waveSvg = (
   <div style={{ position: 'absolute', right: 0, top: 0, width: '300px', height: '180px', overflow: 'hidden', zIndex: 0, pointerEvents: 'none' }}>
@@ -70,101 +70,116 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
   const [showHistory, setShowHistory] = useState(false);
   const [dashboardPdfUrl, setDashboardPdfUrl] = useState(data?.dashboard_pdf_url || null);
   const [reportPdfUrl, setReportPdfUrl] = useState(data?.report_pdf_url || null);
+  const isGeneratingRef = useRef(false);
+  const generatedRecordIdRef = useRef(null);
 
   // Background PDF generation and upload
   useEffect(() => {
-    // Only run if dbRecordId exists, and URLs are not already populated
-    if (!data?.dbRecordId) return;
-    if (dashboardPdfUrl && reportPdfUrl) return;
+    const recordId = data?.dbRecordId;
+    if (!recordId) return;
+    if (generatedRecordIdRef.current === recordId || isGeneratingRef.current) return;
+    if (dashboardPdfUrl && reportPdfUrl) {
+      generatedRecordIdRef.current = recordId;
+      return;
+    }
 
     const timer = setTimeout(async () => {
-      console.log('[Background PDF] Starting pre-generation...');
-      const fileName = `market_research_${data.dbRecordId}`;
+      if (isGeneratingRef.current || generatedRecordIdRef.current === recordId) return;
+      isGeneratingRef.current = true;
+      console.log('[Background PDF] Starting pre-generation for record:', recordId);
+      const fileName = `market_research_${recordId}`;
 
-      // 1. Generate Dashboard PDF if not present
-      let dashUrl = dashboardPdfUrl;
-      if (!dashUrl) {
-        try {
-          const scrollHeight = dashRef.current ? Math.max(dashRef.current.scrollHeight, 880) : 880;
-          const canvas = await html2canvas(dashRef.current, {
-            scale: 1.2, useCORS: true, allowTaint: true,
-            backgroundColor: '#f8fafc', logging: false,
-            height: scrollHeight,
-            windowHeight: scrollHeight
-          });
-          const pdf = new jsPDF({
-            orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
-            unit: 'px',
-            format: [canvas.width, canvas.height],
-            compress: true
-          });
-          pdf.addImage(canvas.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, canvas.width, canvas.height, undefined, 'FAST');
-          const pdfBlob = pdf.output('blob');
-          dashUrl = await uploadScreenshot(pdfBlob, fileName + '_dashboard.pdf');
-          if (dashUrl) {
-            setDashboardPdfUrl(dashUrl);
-            await updateRecord(data.dbRecordId, { dashboard_pdf_url: dashUrl });
-            console.log('[Background PDF] Dashboard uploaded:', dashUrl);
-          }
-        } catch (e) {
-          console.warn('[Background PDF] Dashboard generation failed:', e);
-        }
-      }
-
-      // 2. Generate Detailed Report PDF if not present
-      let repUrl = reportPdfUrl;
-      if (!repUrl) {
-        try {
-          const pages = [page1Ref, page2Ref, page3Ref, page4Ref, page5Ref, page6Ref, page7Ref, page8Ref, page9Ref, page10Ref, page11Ref];
-          const canvases = [];
-          for (let i = 0; i < pages.length; i++) {
-            const canvas = await html2canvas(pages[i].current, {
+      try {
+        // 1. Generate Dashboard PDF if not present
+        let dashUrl = dashboardPdfUrl;
+        if (!dashUrl) {
+          try {
+            const scrollHeight = dashRef.current ? Math.max(dashRef.current.scrollHeight, 880) : 880;
+            const canvas = await html2canvas(dashRef.current, {
               scale: 1.2, useCORS: true, allowTaint: true,
-              backgroundColor: '#ffffff', logging: false
+              backgroundColor: '#f8fafc', logging: false,
+              height: scrollHeight,
+              windowHeight: scrollHeight
             });
-            canvases.push(canvas);
+            const pdf = new jsPDF({
+              orientation: canvas.width > canvas.height ? 'landscape' : 'portrait',
+              unit: 'px',
+              format: [canvas.width, canvas.height],
+              compress: true
+            });
+            pdf.addImage(canvas.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, canvas.width, canvas.height, undefined, 'FAST');
+            const pdfBlob = pdf.output('blob');
+            dashUrl = await uploadScreenshot(pdfBlob, fileName + '_dashboard.pdf');
+            if (dashUrl) {
+              setDashboardPdfUrl(dashUrl);
+              await updateRecord(recordId, { dashboard_pdf_url: dashUrl });
+              console.log('[Background PDF] Dashboard uploaded:', dashUrl);
+            }
+          } catch (e) {
+            console.warn('[Background PDF] Dashboard generation failed:', e);
           }
-          const first = canvases[0];
-          const pdf = new jsPDF({
-            orientation: 'portrait',
-            unit: 'px',
-            format: [first.width, first.height],
-            compress: true
-          });
-          pdf.addImage(first.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, first.width, first.height, undefined, 'FAST');
-          for (let i = 1; i < canvases.length; i++) {
-            const c = canvases[i];
-            pdf.addPage([c.width, c.height], 'portrait');
-            pdf.addImage(c.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, c.width, c.height, undefined, 'FAST');
-          }
-          const pdfBlob = pdf.output('blob');
-          repUrl = await uploadScreenshot(pdfBlob, fileName + '_detailed_report.pdf');
-          if (repUrl) {
-            setReportPdfUrl(repUrl);
-            await updateRecord(data.dbRecordId, { report_pdf_url: repUrl });
-            console.log('[Background PDF] Detailed report uploaded:', repUrl);
-          }
-        } catch (e) {
-          console.warn('[Background PDF] Detailed report generation failed:', e);
         }
-      }
 
-      // Check if paid, and email if not already sent
-      if (isPaid && repUrl && data?.email_status !== 'sent') {
-        emailReportPdf(user.email, user.name || '', null, fileName + '_detailed_report.pdf', repUrl)
-          .then(async (res) => {
-            const status = res.success ? 'sent' : 'failed';
-            await updateRecord(data.dbRecordId, { email_status: status });
-          })
-          .catch(async (err) => {
-            console.warn('Failed to email report PDF on background completion:', err);
-            await updateRecord(data.dbRecordId, { email_status: 'failed' });
-          });
+        // 2. Generate Detailed Report PDF if not present
+        let repUrl = reportPdfUrl;
+        if (!repUrl) {
+          try {
+            const pages = [page1Ref, page2Ref, page3Ref, page4Ref, page5Ref, page6Ref, page7Ref, page8Ref, page9Ref, page10Ref, page11Ref];
+            const canvases = [];
+            for (let i = 0; i < pages.length; i++) {
+              const canvas = await html2canvas(pages[i].current, {
+                scale: 1.2, useCORS: true, allowTaint: true,
+                backgroundColor: '#ffffff', logging: false
+              });
+              canvases.push(canvas);
+            }
+            const first = canvases[0];
+            const pdf = new jsPDF({
+              orientation: 'portrait',
+              unit: 'px',
+              format: [first.width, first.height],
+              compress: true
+            });
+            pdf.addImage(first.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, first.width, first.height, undefined, 'FAST');
+            for (let i = 1; i < canvases.length; i++) {
+              const c = canvases[i];
+              pdf.addPage([c.width, c.height], 'portrait');
+              pdf.addImage(c.toDataURL('image/jpeg', 0.85), 'JPEG', 0, 0, c.width, c.height, undefined, 'FAST');
+            }
+            const pdfBlob = pdf.output('blob');
+            repUrl = await uploadScreenshot(pdfBlob, fileName + '_detailed_report.pdf');
+            if (repUrl) {
+              setReportPdfUrl(repUrl);
+              await updateRecord(recordId, { report_pdf_url: repUrl });
+              console.log('[Background PDF] Detailed report uploaded:', repUrl);
+            }
+          } catch (e) {
+            console.warn('[Background PDF] Detailed report generation failed:', e);
+          }
+        }
+
+        generatedRecordIdRef.current = recordId;
+
+        // Automatically trigger report email if generated
+        const activePdfUrl = repUrl || dashUrl;
+        if (user?.email && activePdfUrl && data?.email_status !== 'sent') {
+          emailReportPdf(user.email, user.name || '', null, fileName + '_detailed_report.pdf', activePdfUrl)
+            .then(async (res) => {
+              const status = res.success ? 'sent' : 'failed';
+              await updateRecord(recordId, { email_status: status });
+            })
+            .catch(async (err) => {
+              console.warn('Failed to email report PDF on background completion:', err);
+              await updateRecord(recordId, { email_status: 'failed' });
+            });
+        }
+      } finally {
+        isGeneratingRef.current = false;
       }
     }, 3000); // 3-second delay to ensure charts are fully rendered
 
     return () => clearTimeout(timer);
-  }, [data, answers, k, isPaid, dashboardPdfUrl, reportPdfUrl, user]);
+  }, [data?.dbRecordId, user?.email, user?.name, data?.email_status]);
 
   const handlePayment = async (onSuccess) => {
     setPaying(true);
@@ -620,35 +635,33 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
   }, [isPaid, executeDownloadReport]);
 
   return (
-    <div ref={dashRef} style={{ position:'fixed', inset:0, width:'100%', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflowY:'auto' }}>
+    <div ref={dashRef} style={{ position:'fixed', inset:0, width:'100vw', height:'100vh', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflow:'hidden', boxSizing:'border-box' }}>
       {/* Header */}
-      <div style={{ flexShrink:0, background:'var(--navy)', padding:'10px 20px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--navy-light)' }}>
+      <div style={{ flexShrink:0, height:'52px', background:'var(--navy)', padding:'0 20px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--navy-light)', boxSizing:'border-box' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '18px' }}>📊</span>
-            <h2 style={{ fontSize:'18px', fontWeight:700, color:'#fff', margin:0, letterSpacing:'-0.01em' }}>Market Research Dashboard</h2>
+            <h2 style={{ fontSize:'17px', fontWeight:700, color:'#fff', margin:0, letterSpacing:'-0.01em' }}>Market Research Dashboard</h2>
           </div>
-          <p style={{ fontSize:'11.5px', color:'#94a3b8', marginTop:'3px', fontWeight:500, maxWidth:'460px', lineHeight:1.35, display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }} title={`${user.name} - ${user.company} - ${answers.customer || user.service}`}>
+          <p style={{ fontSize:'11px', color:'#94a3b8', marginTop:'2px', fontWeight:500, maxWidth:'460px', lineHeight:1.2, display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }} title={`${user.name} - ${user.company} - ${answers.customer || user.service}`}>
             {user.name} - {user.company} - {answers.customer || user.service}
           </p>
         </div>
 
-
-
         <div style={{ display:'flex', gap:'8px' }}>
-          <button onClick={handleDownloadDashboard} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+          <button onClick={handleDownloadDashboard} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'13.5px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
             {isPaid ? 'Download PDF' : 'Download PDF (🔒 ₹1)'}
           </button>
-          <button onClick={handleDownloadReport} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--primary)', color:'#fff', fontFamily:'inherit', fontSize:'14px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
+          <button onClick={handleDownloadReport} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--primary)', color:'#fff', fontFamily:'inherit', fontSize:'13.5px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
             {isPaid ? 'Download Detailed Report' : 'Download Detailed Report (🔒 ₹1)'}
           </button>
-          <button onClick={() => setShowHistory(true)} style={{ padding:'6px 14px', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'14px', fontWeight:500, cursor:'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <button onClick={() => setShowHistory(true)} style={{ padding:'6px 14px', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'13.5px', fontWeight:500, cursor:'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>📜</span> History
           </button>
-          <button onClick={onReset} style={{ padding:'6px 14px', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'14px', fontWeight:500, cursor:'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <button onClick={onReset} style={{ padding:'6px 14px', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'13.5px', fontWeight:500, cursor:'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>←</span> New Research
           </button>
-          <button onClick={onOpenAbout} style={{ padding:'6px 14px', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'14px', fontWeight:500, cursor:'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <button onClick={onOpenAbout} style={{ padding:'6px 14px', border:'1px solid rgba(255,255,255,0.2)', borderRadius:'var(--radius-sm)', background:'transparent', color:'#f8fafc', fontFamily:'inherit', fontSize:'13.5px', fontWeight:500, cursor:'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}>
             <span>ℹ️</span> About
           </button>
         </div>
@@ -656,10 +669,10 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
       {/* Main Grid: Dashboard View */}
       {activeView === 'dashboard' && (
-      <div style={{ flex:1, display:'grid', gridTemplateRows:'82px 190px 210px 54px', gap:'8px', padding:'8px 12px', minHeight:'560px' }}>
+      <div style={{ flex:1, display:'grid', gridTemplateRows:'minmax(72px, 0.75fr) 1.25fr 1.35fr auto', gap:'10px', padding:'10px 14px 12px 14px', minHeight:0, height:'calc(100vh - 52px)', width:'100%', boxSizing:'border-box', overflow:'hidden' }}>
 
         {/* KPIs */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:'8px' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:'10px', height:'100%', minHeight:0 }}>
           {[
             { label:'TOTAL MARKET SIZE', val: k.tam },
             { label:'GROWTH RATE',       val: k.growthRate, sub: '▲ ' + k.growthRate, subColor:'var(--success)' },
@@ -668,54 +681,54 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
             { label:'COMPANY STAGE',     val: k.stage, small: true },
             { label:'AVG MARKET PRICE',  val: k.price, stars: true },
           ].map((kpi, i) => (
-            <div key={i} style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'8px 12px', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', minWidth:0, justifyContent: 'center', height: '82px', boxSizing: 'border-box', overflow: 'hidden' }}>
+            <div key={i} style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'8px 14px', border:'1px solid #e2e8f0', display: 'flex', flexDirection: 'column', minWidth:0, justifyContent: 'center', height: '100%', boxSizing: 'border-box', overflow: 'hidden' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px' }}>
-                <div style={{ fontSize:'12px', color:'#64748b', fontWeight:600, textTransform:'uppercase', letterSpacing:'.05em' }}>{kpi.label}</div>
+                <div style={{ fontSize:'11px', color:'#64748b', fontWeight:600, textTransform:'uppercase', letterSpacing:'.05em' }}>{kpi.label}</div>
               </div>
               <div style={{ fontSize: kpi.val && kpi.val.length > 25 ? '11px' : (kpi.val && kpi.val.length > 12 ? '14px' : (kpi.small ? '18px' : '23px')), fontWeight:700, color:'var(--text-main)', lineHeight:1.15 }}>{kpi.val || '—'}</div>
-              {kpi.sub   && <div style={{ fontSize:'14px', color: kpi.subColor || 'var(--text-muted)', fontWeight:600, marginTop: '4px' }}>{kpi.sub}</div>}
-              {kpi.stars && <div style={{ color:'#fbbf24', fontSize:'17px', marginTop: '4px' }}>{'★'.repeat(stars)}{'☆'.repeat(5-stars)}</div>}
+              {kpi.sub   && <div style={{ fontSize:'13px', color: kpi.subColor || 'var(--text-muted)', fontWeight:600, marginTop: '3px' }}>{kpi.sub}</div>}
+              {kpi.stars && <div style={{ color:'#fbbf24', fontSize:'16px', marginTop: '3px' }}>{'★'.repeat(stars)}{'☆'.repeat(5-stars)}</div>}
             </div>
           ))}
         </div>
 
         {/* Row 2 */}
-        <div style={{ display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr', gap:'8px', minHeight:0, overflow:'hidden' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr', gap:'10px', minHeight:0, height:'100%', overflow:'hidden' }}>
           <ChartCard title="📈 Market Growth Trend" type="line" data={growthData} options={growthOpts} />
           <ChartCard title="🍊 Market Segmentation" type="pie" data={segData} options={pieOpts(undefined)} />
           <ChartCard title="🌏 Geographic Distribution" type="doughnut" data={geoData} options={pieOpts('55%')} />
         </div>
 
         {/* Row 3 */}
-        <div style={{ display:'grid', gridTemplateColumns:'0.9fr 1fr 1.6fr', gap:'8px', minHeight:0, overflow:'hidden' }}>
+        <div style={{ display:'grid', gridTemplateColumns:'0.95fr 1fr 1.6fr', gap:'10px', minHeight:0, height:'100%', overflow:'hidden' }}>
           <ChartCard title="🏆 Competitor Share" type="doughnut" data={compPieData} options={pieOpts('50%')} />
           <ChartCard title="🕸️ Competitive Positioning" type="radar" data={radarData} options={radarOpts} />
 
           {/* Details 2x2 grid */}
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:'8px', minHeight:0, overflow:'hidden' }}>
+          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:'8px', minHeight:0, height:'100%', overflow:'hidden' }}>
             
             {/* Market Share Bars */}
-            <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden' }}>
-              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>📊</span> Market Share %</div>
-              <div style={{ flex:1, display: 'flex', flexDirection: 'column', gap: '4px', overflow:'hidden' }}>
+            <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'8px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden', height:'100%', boxSizing:'border-box' }}>
+              <div style={{ fontSize:'13.5px', fontWeight:700, color:'var(--text-main)', marginBottom:'4px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>📊</span> Market Share %</div>
+              <div style={{ flex:1, display: 'flex', flexDirection: 'column', gap: '3px', overflowY:'auto' }}>
                 {(data.competitors || []).map((c, i) => (
                   <div key={i} style={{ display:'flex', alignItems:'center', gap:'8px' }}>
-                    <div style={{ fontSize:'13px', color:'var(--text-muted)', fontWeight:500, width:'60px', flexShrink:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.name}</div>
-                    <div style={{ flex:1, height:'8px', background:'#f1f5f9', borderRadius:'2px', overflow:'hidden' }}>
+                    <div style={{ fontSize:'12px', color:'var(--text-muted)', fontWeight:500, width:'60px', flexShrink:0, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{c.name}</div>
+                    <div style={{ flex:1, height:'7px', background:'#f1f5f9', borderRadius:'2px', overflow:'hidden' }}>
                       <div style={{ height:'100%', width: Math.max(2, c.share)+'%', background: co(i), borderRadius:'2px' }} />
                     </div>
-                    <span style={{ fontSize:'12px', color:'var(--text-main)', fontWeight:600, width: '24px', textAlign: 'right' }}>{c.share}%</span>
+                    <span style={{ fontSize:'11.5px', color:'var(--text-main)', fontWeight:600, width: '24px', textAlign: 'right' }}>{c.share}%</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Rating & Sentiment */}
-            <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden' }}>
-              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>⭐</span> Rating & Sentiment</div>
-              <div style={{ display:'flex', alignItems:'center', gap:'2px', marginBottom:'8px' }}>
-                <span style={{ fontSize:'21px', fontWeight:700, color:'var(--text-main)' }}>{data.avgRating || '—'}</span>
-                <span style={{ fontSize:'13px', color:'#94a3b8', marginLeft: '4px' }}>/ 5.0</span>
+            <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'8px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden', height:'100%', boxSizing:'border-box' }}>
+              <div style={{ fontSize:'13.5px', fontWeight:700, color:'var(--text-main)', marginBottom:'4px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>⭐</span> Rating & Sentiment</div>
+              <div style={{ display:'flex', alignItems:'center', gap:'2px', marginBottom:'4px' }}>
+                <span style={{ fontSize:'19px', fontWeight:700, color:'var(--text-main)' }}>{data.avgRating || '—'}</span>
+                <span style={{ fontSize:'12px', color:'#94a3b8', marginLeft: '4px' }}>/ 5.0</span>
               </div>
               <div style={{ display:'flex', gap:'4px', flex: 1 }}>
                 {[
@@ -723,32 +736,32 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
                   { label:'Neutral',  val:sv.neutral,  bg:'#eff6ff', color:'#1d4ed8' },
                   { label:'Negative', val:sv.negative, bg:'#fdf2f2', color:'#b91c1c' },
                 ].map(s => (
-                  <div key={s.label} style={{ flex:1, textAlign:'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', borderRadius:'4px', background: s.bg, border: '1px solid #e2e8f0', padding:'6px' }}>
-                    <div style={{ fontSize:'16px', fontWeight:700, color: s.color, lineHeight:1.1 }}>{s.val}%</div>
-                    <div style={{ fontSize:'12px', fontWeight:600, color: 'var(--text-muted)', marginTop:'4px' }}>{s.label}</div>
+                  <div key={s.label} style={{ flex:1, textAlign:'center', display: 'flex', flexDirection: 'column', justifyContent: 'center', borderRadius:'4px', background: s.bg, border: '1px solid #e2e8f0', padding:'4px 2px' }}>
+                    <div style={{ fontSize:'14px', fontWeight:700, color: s.color, lineHeight:1.1 }}>{s.val}%</div>
+                    <div style={{ fontSize:'10.5px', fontWeight:600, color: 'var(--text-muted)', marginTop:'2px' }}>{s.label}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Pricing */}
-            <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden' }}>
-              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>💰</span> Pricing</div>
-              <div style={{ display:'flex', flexDirection:'column', gap: '3px', overflow:'hidden' }}>
+            <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'8px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden', height:'100%', boxSizing:'border-box' }}>
+              <div style={{ fontSize:'13.5px', fontWeight:700, color:'var(--text-main)', marginBottom:'4px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>💰</span> Pricing</div>
+              <div style={{ display:'flex', flexDirection:'column', gap: '2px', overflowY:'auto', flex:1 }}>
                 {(data.pricing || []).map((p, i) => (
-                  <div key={i} style={{ display:'flex', alignItems:'center', gap:'8px', padding:'2px 0', borderBottom:'1px solid #f1f5f9' }}>
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:'8px', padding:'1px 0', borderBottom:'1px solid #f1f5f9' }}>
                     <div style={{ width:'6px', height:'6px', borderRadius:'1px', background: p.color, flexShrink:0 }} />
-                    <div style={{ fontSize:'12px', fontWeight:600, color: 'var(--text-main)', flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{p.name}</div>
-                    <div style={{ fontSize:'11px', color:'var(--text-muted)', whiteSpace:'nowrap' }}>{p.note}</div>
+                    <div style={{ fontSize:'11.5px', fontWeight:600, color: 'var(--text-main)', flex:1, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>{p.name}</div>
+                    <div style={{ fontSize:'10.5px', color:'var(--text-muted)', whiteSpace:'nowrap' }}>{p.note}</div>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Challenges */}
-            <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'10px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden' }}>
-              <div style={{ fontSize:'14px', fontWeight:700, color:'var(--text-main)', marginBottom:'6px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>⚠️</span> Challenges</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', overflowY:'auto', flex: 1 }}>
+            <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'8px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden', height:'100%', boxSizing:'border-box' }}>
+              <div style={{ fontSize:'13.5px', fontWeight:700, color:'var(--text-main)', marginBottom:'4px', display: 'flex', alignItems: 'center', gap: '6px' }}><span>⚠️</span> Challenges</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', overflowY:'auto', flex: 1 }}>
                 {[
                   { icon: '✖️', color: 'var(--danger)' },
                   { icon: '📍', color: 'var(--primary)' },
@@ -757,8 +770,8 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
                   const challengeText = (data.challenges || [])[i];
                   if (!challengeText) return null;
                   return (
-                    <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:'6px', padding:'1px 0', fontSize:'11.5px', fontWeight: 500, color:'var(--text-muted)', lineHeight: 1.3 }}>
-                      <span style={{ fontSize: '11px', marginTop:'1px' }}>{iconObj.icon}</span>
+                    <div key={i} style={{ display:'flex', alignItems:'flex-start', gap:'6px', padding:'1px 0', fontSize:'11px', fontWeight: 500, color:'var(--text-muted)', lineHeight: 1.25 }}>
+                      <span style={{ fontSize: '10px', marginTop:'1px' }}>{iconObj.icon}</span>
                       <span>{challengeText}</span>
                     </div>
                   );
@@ -769,7 +782,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
         </div>
 
         {/* Insights */}
-        <div style={{ background:'#ffffff', borderRadius:'var(--radius-sm)', padding:'8px 16px', border:'1px solid #cbd5e1', display:'flex', alignItems:'center', gap:'12px', overflow:'hidden', flexShrink:0 }}>
+        <div style={{ background:'#ffffff', borderRadius:'var(--radius-sm)', padding:'10px 18px', border:'1px solid #cbd5e1', display:'flex', alignItems:'center', gap:'12px', overflow:'hidden', flexShrink:0, minHeight:'46px', boxSizing:'border-box' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize:'13px', fontWeight:700, color:'#1e3a8a', flexShrink: 0 }}>
             <span>💡</span> AI Insights
           </div>

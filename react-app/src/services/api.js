@@ -7,37 +7,68 @@ if (API_BASE.endsWith('/')) {
 const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
 const SUPABASE_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
-async function fetchWithRetry(url, options = {}, retries = 1, delay = 500) {
+async function fetchWithRetry(url, options = {}, retries = 2, delay = 1000) {
+  let lastErr;
   for (let i = 0; i < retries; i++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      try { controller.abort(); } catch (e) {}
+    }, 60000);
+
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 55000);
       const res = await fetch(url, { ...options, signal: options.signal || controller.signal });
       clearTimeout(timeoutId);
       return res;
     } catch (err) {
+      clearTimeout(timeoutId);
+      lastErr = err;
       if (i === retries - 1) throw err;
       await new Promise(resolve => setTimeout(resolve, delay));
     }
   }
+  throw lastErr;
 }
 
 // ── Call Backend Proxy instead of raw Gemini ─────────────────────────────────
 export async function callGemini(answers) {
-  try {
-    const res = await fetchWithRetry(`${API_BASE}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(answers)
-    });
-    if (!res.ok) throw new Error(`HTTP error status: ${res.status}`);
-    const json = await res.json();
-    if (json.error) throw new Error(json.error);
-    return json;
-  } catch (err) {
-    console.log('Gemini service note: providing instant fallback analysis data', err?.message || err);
-    return FALLBACK_DATA; 
+  const maxAttempts = 2;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => {
+      try { controller.abort(); } catch (e) {}
+    }, 90000); // Generous 90s timeout for complex AI generation
+
+    try {
+      console.log(`[callGemini] Calling backend ${API_BASE}/api/generate (attempt ${attempt}/${maxAttempts})...`);
+      const res = await fetch(`${API_BASE}/api/generate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(answers),
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (!res.ok) {
+        const errBody = await res.text().catch(() => '');
+        throw new Error(`HTTP error status ${res.status}: ${errBody}`);
+      }
+
+      const json = await res.json();
+      if (json.error) throw new Error(json.error);
+      
+      console.log('✅ [callGemini] Real Gemini analysis received successfully!');
+      return json;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      console.warn(`⚠️ [callGemini] Attempt ${attempt} failed (${err?.message || err})`);
+      if (attempt === maxAttempts) {
+        console.error('❌ [callGemini] All attempts exhausted. Falling back to default data.');
+        return FALLBACK_DATA;
+      }
+      await new Promise(resolve => setTimeout(resolve, 1500));
+    }
   }
+  return FALLBACK_DATA;
 }
 
 // ── Upload screenshot to Supabase Storage ────────────────────────────────────
