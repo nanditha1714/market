@@ -224,7 +224,7 @@ export default function AboutSidebar({ onClose }) {
             <img src="/logo.png" alt="Infopace Logo" style={s.logo} />
           </div>
           
-          <h3 style={s.headerSub}>Creative Innovation Index</h3>
+          <h3 style={s.headerSub}>Market Research</h3>
         </div>
 
         {/* Body Content */}
@@ -257,7 +257,7 @@ export default function AboutSidebar({ onClose }) {
           <div style={s.cardPanel}>
             <h5 style={s.cardTitle}>About This Tool</h5>
             <p style={{ ...s.descText, fontSize: '13px', color: '#475569' }}>
-              The <strong>Creative Innovation Index (CII)</strong> is Infopace's proprietary AI-scored psychometric assessment. It measures creative potential across 5 dimensions — Divergent Thinking, Remote Association, Risk & Openness, Creative Vision, and Real-world Behaviour — generating a personalised innovation profile in ~12 minutes.
+              The <strong>Market Research Assessment</strong> is Infopace's proprietary AI-driven market intelligence platform. It maps your sector, geography, customer segments, TAM, competitor dynamics, pricing models, and risk vectors — generating an investor-grade market brief and live analytics dashboard within minutes.
             </p>
           </div>
 
