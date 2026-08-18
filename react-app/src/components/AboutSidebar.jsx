@@ -224,7 +224,7 @@ export default function AboutSidebar({ onClose }) {
             <img src="/logo.png" alt="Infopace Logo" style={s.logo} />
           </div>
           
-          <h3 style={s.headerSub}>Market Research</h3>
+          <h3 style={s.headerSub}>Market Research Assistant</h3>
         </div>
 
         {/* Body Content */}
@@ -255,9 +255,9 @@ export default function AboutSidebar({ onClose }) {
 
           {/* About Tool Card */}
           <div style={s.cardPanel}>
-            <h5 style={s.cardTitle}>About Market Research Assessment</h5>
+            <h5 style={s.cardTitle}>About Market Research Assistant</h5>
             <p style={{ ...s.descText, fontSize: '13px', color: '#334155', lineHeight: 1.6 }}>
-              The <strong>Market Research Assessment</strong> is Infopace's proprietary AI-driven market intelligence platform. It systematically analyzes your business sector, target geography, customer segments, and revenue model to produce an investor-grade market intelligence brief and live analytics dashboard within seconds.
+              The <strong>Market Research Assistant</strong> is Infopace's proprietary AI-driven market intelligence platform. It systematically analyzes your business sector, target geography, customer segments, and revenue model to produce an investor-grade market intelligence brief and live analytics dashboard within seconds.
             </p>
 
             <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>

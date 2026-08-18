@@ -641,7 +641,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '18px' }}>📊</span>
-            <h2 style={{ fontSize:'17px', fontWeight:700, color:'#fff', margin:0, letterSpacing:'-0.01em' }}>Market Research Dashboard</h2>
+            <h2 style={{ fontSize:'17px', fontWeight:700, color:'#fff', margin:0, letterSpacing:'-0.01em' }}>Market Research Assistant Dashboard</h2>
           </div>
           <p style={{ fontSize:'11px', color:'#94a3b8', marginTop:'2px', fontWeight:500, maxWidth:'460px', lineHeight:1.2, display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden', textOverflow: 'ellipsis' }} title={`${user.name} - ${user.company} - ${answers.customer || user.service}`}>
             {user.name} - {user.company} - {answers.customer || user.service}

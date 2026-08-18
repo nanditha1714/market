@@ -1032,7 +1032,7 @@ export default function SurveyPage({ user, onComplete, onReset, onOpenAbout }) {
       
       {/* Title Header */}
       <div style={s.headerWrap}>
-        <h1 style={s.title}>Market Research</h1>
+        <h1 style={s.title}>Market Research Assistant</h1>
         <p style={s.subtitle}>
           Describe your product. Our AI reads your sector, geography and business type — then generates custom questions and a personalised market intelligence dashboard.
         </p>
