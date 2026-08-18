@@ -69,39 +69,167 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Utilities */
-.glass-panel {
-  background: var(--bg-card);
-  border: 1px solid #e2e8f0;
-  box-shadow: var(--shadow-sm);
-  border-radius: var(--radius-md);
+/* Responsive Utilities & Layout Adjustments */
+@media (max-width: 1024px) {
+  .dash-container-responsive {
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  
+  .dash-header-responsive {
+    height: auto !important;
+    padding: 12px 16px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  .dash-header-actions-responsive {
+    width: 100% !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+
+  .dash-header-actions-responsive button {
+    flex: 1 1 calc(50% - 8px) !important;
+    min-width: 130px !important;
+    justify-content: center !important;
+  }
+
+  .dash-grid-responsive {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    padding: 12px 10px 40px 10px !important;
+    gap: 12px !important;
+  }
+
+  .dash-kpis-responsive {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    height: auto !important;
+  }
+
+  .dash-charts-row-responsive {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    height: auto !important;
+  }
+
+  .dash-charts-row-responsive > div {
+    min-height: 270px !important;
+    height: 270px !important;
+  }
+
+  .dash-details-row-responsive {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    height: auto !important;
+  }
+
+  .dash-details-row-responsive > div {
+    min-height: 270px !important;
+  }
+
+  .dash-2x2-responsive {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: auto auto !important;
+    gap: 8px !important;
+    min-height: 300px !important;
+  }
+
+  .dash-2x2-responsive > div {
+    min-height: 140px !important;
+  }
 }
 
-.text-gradient {
-  color: var(--primary); /* Remove actual gradient for professional look */
+@media (max-width: 640px) {
+  .dash-kpis-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .dash-2x2-responsive {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dash-header-actions-responsive button {
+    flex: 1 1 100% !important;
+    width: 100% !important;
+  }
+  
+  .login-main-responsive {
+    flex-direction: column !important;
+    height: auto !important;
+    min-height: calc(100vh - 60px) !important;
+    overflow-y: auto !important;
+  }
+
+  .login-sidebar-responsive {
+    width: 100% !important;
+    padding: 24px 18px !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+  }
+
+  .login-card-responsive {
+    padding: 24px 16px !important;
+    border-radius: 12px !important;
+    margin: 16px auto !important;
+  }
+
+  .login-grid-responsive {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .survey-container-responsive {
+    padding: 16px 12px 60px !important;
+  }
+
+  .survey-card-responsive {
+    border-radius: 12px !important;
+    margin-bottom: 24px !important;
+  }
+
+  .survey-card-body-responsive {
+    padding: 18px 14px !important;
+  }
+
+  .survey-grid2-responsive {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .survey-footer-responsive {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+
+  .survey-footer-responsive button {
+    flex: 1 1 100% !important;
+  }
 }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+/* Hide scrollbar for clean horizontal scroll on mobile tabs */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.4s ease-out forwards;
-}
-
-/* Scrollbar styling */
-::-webkit-scrollbar {
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-main);
-}
-::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+/* Touch targets */
+button, select, input, textarea {
+  touch-action: manipulation;
 }

@@ -635,9 +635,9 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
   }, [isPaid, executeDownloadReport]);
 
   return (
-    <div ref={dashRef} style={{ position:'fixed', inset:0, width:'100vw', height:'100vh', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflow:'hidden', boxSizing:'border-box' }}>
+    <div ref={dashRef} className="dash-container-responsive" style={{ position:'fixed', inset:0, width:'100vw', height:'100vh', display:'flex', flexDirection:'column', background:'var(--bg-main)', overflow:'hidden', boxSizing:'border-box' }}>
       {/* Header */}
-      <div style={{ flexShrink:0, height:'52px', background:'var(--navy)', padding:'0 20px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--navy-light)', boxSizing:'border-box' }}>
+      <div className="dash-header-responsive" style={{ flexShrink:0, height:'52px', background:'var(--navy)', padding:'0 20px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid var(--navy-light)', boxSizing:'border-box' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '18px' }}>📊</span>
@@ -648,7 +648,7 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
           </p>
         </div>
 
-        <div style={{ display:'flex', gap:'8px' }}>
+        <div className="dash-header-actions-responsive" style={{ display:'flex', gap:'8px', flexWrap:'wrap' }}>
           <button onClick={handleDownloadDashboard} disabled={paying} style={{ padding:'6px 14px', border:'none', borderRadius:'var(--radius-sm)', background:'var(--success)', color:'#fff', fontFamily:'inherit', fontSize:'13.5px', fontWeight:600, cursor:'pointer', display:'inline-flex', alignItems:'center', gap:'6px' }}>
             {isPaid ? 'Download PDF' : 'Download PDF (🔒 ₹1)'}
           </button>
@@ -669,10 +669,10 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
 
       {/* Main Grid: Dashboard View */}
       {activeView === 'dashboard' && (
-      <div style={{ flex:1, display:'grid', gridTemplateRows:'minmax(72px, 0.75fr) 1.25fr 1.35fr auto', gap:'10px', padding:'10px 14px 12px 14px', minHeight:0, height:'calc(100vh - 52px)', width:'100%', boxSizing:'border-box', overflow:'hidden' }}>
+      <div className="dash-grid-responsive" style={{ flex:1, display:'grid', gridTemplateRows:'minmax(72px, 0.75fr) 1.25fr 1.35fr auto', gap:'10px', padding:'10px 14px 12px 14px', minHeight:0, height:'calc(100vh - 52px)', width:'100%', boxSizing:'border-box', overflow:'hidden' }}>
 
         {/* KPIs */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:'10px', height:'100%', minHeight:0 }}>
+        <div className="dash-kpis-responsive" style={{ display:'grid', gridTemplateColumns:'repeat(6,1fr)', gap:'10px', height:'100%', minHeight:0 }}>
           {[
             { label:'TOTAL MARKET SIZE', val: k.tam },
             { label:'GROWTH RATE',       val: k.growthRate, sub: '▲ ' + k.growthRate, subColor:'var(--success)' },
@@ -693,19 +693,19 @@ export default function Dashboard({ data, user, answers, onReset, onOpenAbout })
         </div>
 
         {/* Row 2 */}
-        <div style={{ display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr', gap:'10px', minHeight:0, height:'100%', overflow:'hidden' }}>
+        <div className="dash-charts-row-responsive" style={{ display:'grid', gridTemplateColumns:'1.4fr 1fr 1fr', gap:'10px', minHeight:0, height:'100%', overflow:'hidden' }}>
           <ChartCard title="📈 Market Growth Trend" type="line" data={growthData} options={growthOpts} />
           <ChartCard title="🍊 Market Segmentation" type="pie" data={segData} options={pieOpts(undefined)} />
           <ChartCard title="🌏 Geographic Distribution" type="doughnut" data={geoData} options={pieOpts('55%')} />
         </div>
 
         {/* Row 3 */}
-        <div style={{ display:'grid', gridTemplateColumns:'0.95fr 1fr 1.6fr', gap:'10px', minHeight:0, height:'100%', overflow:'hidden' }}>
+        <div className="dash-details-row-responsive" style={{ display:'grid', gridTemplateColumns:'0.95fr 1fr 1.6fr', gap:'10px', minHeight:0, height:'100%', overflow:'hidden' }}>
           <ChartCard title="🏆 Competitor Share" type="doughnut" data={compPieData} options={pieOpts('50%')} />
           <ChartCard title="🕸️ Competitive Positioning" type="radar" data={radarData} options={radarOpts} />
 
           {/* Details 2x2 grid */}
-          <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:'8px', minHeight:0, height:'100%', overflow:'hidden' }}>
+          <div className="dash-2x2-responsive" style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gridTemplateRows:'1fr 1fr', gap:'8px', minHeight:0, height:'100%', overflow:'hidden' }}>
             
             {/* Market Share Bars */}
             <div style={{ background:'#fff', borderRadius:'var(--radius-sm)', padding:'8px 12px', border:'1px solid #e2e8f0', display:'flex', flexDirection:'column', overflow:'hidden', height:'100%', boxSizing:'border-box' }}>

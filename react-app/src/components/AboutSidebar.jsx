@@ -98,8 +98,8 @@ const s = {
   },
   statsRow: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(3, 1fr)',
-    gap: '12px'
+    gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))',
+    gap: '10px'
   },
   statCard: {
     background: '#eff6ff',

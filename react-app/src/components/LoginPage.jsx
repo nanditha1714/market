@@ -522,9 +522,9 @@ export default function LoginPage({ onLogin, initialGoogleUser, onOpenAbout }) {
       </div>
 
       {/* Main Area Layout */}
-      <div style={s.mainArea}>
+      <div className="login-main-responsive" style={s.mainArea}>
         {/* Left Columns branding panel */}
-        <div style={s.sidebar}>
+        <div className="login-sidebar-responsive" style={s.sidebar}>
           <div>
             <div style={s.sidebarBrandCard}>
               <img src="/logo.png" alt="Infopace Logo" style={{ height: '28px', objectFit: 'contain' }} />
@@ -572,7 +572,7 @@ export default function LoginPage({ onLogin, initialGoogleUser, onOpenAbout }) {
         <div style={s.contentPane}>
           <BackgroundCanvas />
 
-          <div className="animate-fade-in" style={s.card}>
+          <div className="login-card-responsive animate-fade-in" style={s.card}>
             {renderStepIndicator()}
 
             {/* Sub-step 1: Personal Details */}
@@ -624,7 +624,7 @@ export default function LoginPage({ onLogin, initialGoogleUser, onOpenAbout }) {
                   <div style={{ flex: 1, height: '1px', background: '#e2e8f0' }} />
                 </div>
 
-                <div style={s.grid}>
+                <div className="login-grid-responsive" style={s.grid}>
                   <div style={s.field}>
                     <label style={s.label}>Full Name *</label>
                     <div style={{ ...s.inputWrap, borderColor: getBorderColor('name', errors.name), boxShadow: getBoxShadow('name') }}>

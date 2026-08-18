@@ -541,7 +541,7 @@ export default function SurveyPage({ user, onComplete, onReset, onOpenAbout }) {
     switch (currentStep) {
       case 1:
         return (
-          <div style={s.grid2}>
+          <div className="survey-grid2-responsive" style={s.grid2}>
             <div style={s.field}>
               <label style={s.label}>Product / Business Name *</label>
               <div style={{ ...s.inputWrap, borderColor: getBorderColor('businessName'), boxShadow: getBoxShadow('businessName') }}>
@@ -803,7 +803,7 @@ export default function SurveyPage({ user, onComplete, onReset, onOpenAbout }) {
 
       case 5:
         return (
-          <div style={s.grid2}>
+          <div className="survey-grid2-responsive" style={s.grid2}>
             <div style={s.field}>
               <label style={s.label}>Pricing Model *</label>
               <div style={{ ...s.inputWrap, borderColor: getBorderColor('pricing'), boxShadow: getBoxShadow('pricing') }}>
@@ -927,77 +927,96 @@ export default function SurveyPage({ user, onComplete, onReset, onOpenAbout }) {
   };
 
   return (
-    <div style={s.container}>
+    <div className="survey-container-responsive" style={s.container}>
       <BackgroundCanvas />
       
-      {user?.email && (
-        <button
-          onClick={() => setShowHistory(true)}
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: onReset ? '170px' : '20px',
-            zIndex: 100,
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
-            color: '#1d4ed8',
-            padding: '8px 16px',
-            borderRadius: '8px',
-            fontSize: '13px',
-            fontWeight: 600,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-            transition: 'all 0.2s',
-          }}
-          onMouseOver={e => {
-            e.currentTarget.style.background = '#f0fdf4';
-            e.currentTarget.style.borderColor = '#1d4ed8';
-          }}
-          onMouseOut={e => {
-            e.currentTarget.style.background = '#ffffff';
-            e.currentTarget.style.borderColor = '#cbd5e1';
-          }}
-        >
-          <span>📜</span> View History
-        </button>
-      )}
+      {/* Responsive Top Bar */}
+      <div style={{ width: '100%', maxWidth: '840px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '10px', marginBottom: '16px', zIndex: 10 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '18px' }}>🚀</span>
+          <span style={{ fontSize: '12.5px', fontWeight: 700, color: '#1e3a8a', letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+            Infopace Market Intelligence
+          </span>
+        </div>
 
-      <button
-        onClick={onOpenAbout}
-        style={{
-          position: 'absolute',
-          top: '20px',
-          right: onReset ? '320px' : (user?.email ? '170px' : '20px'),
-          zIndex: 100,
-          background: '#ffffff',
-          border: '1px solid #cbd5e1',
-          color: '#0e5caa',
-          padding: '8px 16px',
-          borderRadius: '8px',
-          fontSize: '13px',
-          fontWeight: 600,
-          cursor: 'pointer',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '6px',
-          boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-          transition: 'all 0.2s',
-          fontFamily: 'inherit'
-        }}
-        onMouseOver={e => {
-          e.currentTarget.style.background = '#f0f7fd';
-          e.currentTarget.style.borderColor = '#0e5caa';
-        }}
-        onMouseOut={e => {
-          e.currentTarget.style.background = '#ffffff';
-          e.currentTarget.style.borderColor = '#cbd5e1';
-        }}
-      >
-        <span>ℹ️</span> About Infopace
-      </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+          {user?.email && (
+            <button
+              onClick={() => setShowHistory(true)}
+              style={{
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                color: '#1d4ed8',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                fontSize: '12.5px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                transition: 'all 0.2s',
+                fontFamily: 'inherit'
+              }}
+              onMouseOver={e => { e.currentTarget.style.background = '#f0fdf4'; e.currentTarget.style.borderColor = '#1d4ed8'; }}
+              onMouseOut={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
+            >
+              <span>📜</span> History
+            </button>
+          )}
+
+          <button
+            onClick={onOpenAbout}
+            style={{
+              background: '#ffffff',
+              border: '1px solid #cbd5e1',
+              color: '#0e5caa',
+              padding: '6px 12px',
+              borderRadius: '8px',
+              fontSize: '12.5px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+              transition: 'all 0.2s',
+              fontFamily: 'inherit'
+            }}
+            onMouseOver={e => { e.currentTarget.style.background = '#f0f7fd'; e.currentTarget.style.borderColor = '#0e5caa'; }}
+            onMouseOut={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
+          >
+            <span>ℹ️</span> About
+          </button>
+
+          {onReset && (
+            <button
+              onClick={onReset}
+              style={{
+                background: '#ffffff',
+                border: '1px solid #cbd5e1',
+                color: '#475569',
+                padding: '6px 12px',
+                borderRadius: '8px',
+                fontSize: '12.5px',
+                fontWeight: 600,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
+                transition: 'all 0.2s',
+                fontFamily: 'inherit'
+              }}
+              onMouseOver={e => { e.currentTarget.style.background = '#f8fafc'; e.currentTarget.style.borderColor = '#94a3b8'; }}
+              onMouseOut={e => { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.borderColor = '#cbd5e1'; }}
+            >
+              <span>🔄</span> New
+            </button>
+          )}
+        </div>
+      </div>
 
       {showHistory && (
         <HistoryModal 
@@ -1009,41 +1028,6 @@ export default function SurveyPage({ user, onComplete, onReset, onOpenAbout }) {
         />
       )}
       
-      {onReset && (
-        <button
-          onClick={onReset}
-          style={{
-            position: 'absolute',
-            top: '20px',
-            right: '20px',
-            zIndex: 100,
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
-            color: '#475569',
-            padding: '8px 16px',
-            borderRadius: '8px',
-            fontSize: '13px',
-            fontWeight: 600,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-            transition: 'all 0.2s',
-          }}
-          onMouseOver={e => {
-            e.currentTarget.style.background = '#f8fafc';
-            e.currentTarget.style.borderColor = '#94a3b8';
-          }}
-          onMouseOut={e => {
-            e.currentTarget.style.background = '#ffffff';
-            e.currentTarget.style.borderColor = '#cbd5e1';
-          }}
-        >
-          <span>🔄</span> New Research
-        </button>
-      )}
-      
       {/* Title Header */}
       <div style={s.headerWrap}>
         <h1 style={s.title}>Market Research</h1>
@@ -1053,7 +1037,7 @@ export default function SurveyPage({ user, onComplete, onReset, onOpenAbout }) {
       </div>
 
       {/* Tabs Container */}
-      <div style={s.tabsWrap}>
+      <div className="no-scrollbar" style={s.tabsWrap}>
         {[
           { num: 1, label: 'About' },
           { num: 2, label: 'Market' },
@@ -1079,7 +1063,7 @@ export default function SurveyPage({ user, onComplete, onReset, onOpenAbout }) {
       </div>
 
       {/* Main Form Card */}
-      <div className="animate-fade-in" style={s.card}>
+      <div className="survey-card-responsive animate-fade-in" style={s.card}>
         
         {/* Card Header */}
         <div style={s.cardHeader}>
@@ -1093,7 +1077,7 @@ export default function SurveyPage({ user, onComplete, onReset, onOpenAbout }) {
         </div>
 
         {/* Card Body */}
-        <div style={s.cardBody}>
+        <div className="survey-card-body-responsive" style={s.cardBody}>
           {renderStepFields()}
 
           {gibberishError && (
@@ -1117,7 +1101,7 @@ export default function SurveyPage({ user, onComplete, onReset, onOpenAbout }) {
         </div>
 
         {/* Card Footer */}
-        <div style={s.cardFooter}>
+        <div className="survey-footer-responsive" style={s.cardFooter}>
           {currentStep > 1 ? (
             <button
               onClick={() => setCurrentStep(c => c - 1)}

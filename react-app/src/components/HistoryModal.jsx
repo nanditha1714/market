@@ -27,7 +27,7 @@ const s = {
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 9999,
-    padding: '20px',
+    padding: '12px',
     boxSizing: 'border-box',
     fontFamily: '"Inter", -apple-system, sans-serif'
   },
@@ -39,7 +39,7 @@ const s = {
     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
     display: 'flex',
     flexDirection: 'column',
-    maxHeight: '80vh',
+    maxHeight: '88vh',
     overflow: 'hidden',
     border: '1px solid #e2e8f0',
     animation: 'modalSlideIn 0.3s ease-out'
@@ -48,13 +48,13 @@ const s = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '20px 24px',
+    padding: '16px 20px',
     borderBottom: '1px solid #e2e8f0',
     background: '#f8fafc',
   },
   title: {
     margin: 0,
-    fontSize: '18px',
+    fontSize: '17px',
     fontWeight: 700,
     color: '#0f172a',
     display: 'flex',
@@ -74,7 +74,7 @@ const s = {
     transition: 'color 0.2s',
   },
   body: {
-    padding: '24px',
+    padding: '16px 18px',
     overflowY: 'auto',
     flex: 1,
   },
@@ -87,7 +87,9 @@ const s = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '16px',
+    flexWrap: 'wrap',
+    gap: '12px',
+    padding: '14px',
     border: '1px solid #e2e8f0',
     borderRadius: '12px',
     transition: 'all 0.2s ease',
@@ -98,7 +100,8 @@ const s = {
     flexDirection: 'column',
     gap: '4px',
     flex: 1,
-    paddingRight: '16px'
+    minWidth: '200px',
+    paddingRight: '8px'
   },
   companyName: {
     fontWeight: 600,
