@@ -473,7 +473,7 @@ export default function LoginPage({ onLogin, initialGoogleUser, onOpenAbout }) {
   };
 
   return (
-    <div style={s.container}>
+    <div className="login-container-responsive" style={s.container}>
       {/* Top Header Bar */}
       <div style={s.topBar}>
         <div style={s.topBarLeft}>
@@ -569,7 +569,7 @@ export default function LoginPage({ onLogin, initialGoogleUser, onOpenAbout }) {
         </div>
 
         {/* Right content pane with reactive background */}
-        <div style={s.contentPane}>
+        <div className="login-content-pane-responsive" style={s.contentPane}>
           <BackgroundCanvas />
 
           <div className="login-card-responsive animate-fade-in" style={s.card}>

@@ -4,20 +4,22 @@ import HistoryModal from './HistoryModal';
 
 const s = {
   container: {
-    position: 'fixed',
-    inset: 0,
+    position: 'relative',
+    minHeight: '100vh',
+    width: '100%',
     background: '#f8fafc',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    padding: '30px 24px 80px',
+    padding: '24px 16px 80px',
     overflowY: 'auto',
     WebkitOverflowScrolling: 'touch',
     backgroundImage: 'linear-gradient(to right, rgba(99, 102, 241, 0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(99, 102, 241, 0.03) 1px, transparent 1px)',
     backgroundSize: '36px 36px',
     backgroundAttachment: 'fixed',
-    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif'
+    fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, sans-serif',
+    boxSizing: 'border-box'
   },
   headerWrap: {
     textAlign: 'center',
@@ -43,7 +45,7 @@ const s = {
   tabsWrap: {
     display: 'flex',
     alignItems: 'center',
-    gap: '6px',
+    gap: '8px',
     padding: '6px 8px',
     background: '#ffffff',
     borderRadius: '12px',
@@ -53,7 +55,7 @@ const s = {
     zIndex: 5,
     maxWidth: '840px',
     width: '100%',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     boxSizing: 'border-box',
     minHeight: '52px',
     flexShrink: 0
@@ -1037,7 +1039,7 @@ export default function SurveyPage({ user, onComplete, onReset, onOpenAbout }) {
       </div>
 
       {/* Tabs Container */}
-      <div className="no-scrollbar" style={s.tabsWrap}>
+      <div className="survey-tabs-responsive no-scrollbar" style={s.tabsWrap}>
         {[
           { num: 1, label: 'About' },
           { num: 2, label: 'Market' },

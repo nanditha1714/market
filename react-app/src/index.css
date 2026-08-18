@@ -153,38 +153,40 @@ body {
   }
 }
 
-@media (max-width: 640px) {
-  .dash-kpis-responsive {
-    grid-template-columns: repeat(2, 1fr) !important;
+@media (max-width: 900px) {
+  .login-sidebar-responsive {
+    display: none !important;
   }
 
-  .dash-2x2-responsive {
-    grid-template-columns: 1fr !important;
-  }
-
-  .dash-header-actions-responsive button {
-    flex: 1 1 100% !important;
+  .login-container-responsive {
+    position: relative !important;
+    height: auto !important;
+    min-height: 100vh !important;
+    overflow-y: auto !important;
     width: 100% !important;
   }
-  
+
   .login-main-responsive {
     flex-direction: column !important;
     height: auto !important;
     min-height: calc(100vh - 60px) !important;
     overflow-y: auto !important;
+    width: 100% !important;
   }
 
-  .login-sidebar-responsive {
+  .login-content-pane-responsive {
     width: 100% !important;
-    padding: 24px 18px !important;
-    border-right: none !important;
-    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    padding: 16px 12px 40px !important;
+    height: auto !important;
+    overflow-y: visible !important;
   }
 
   .login-card-responsive {
+    width: 100% !important;
+    max-width: 100% !important;
     padding: 24px 16px !important;
     border-radius: 12px !important;
-    margin: 16px auto !important;
+    margin: 8px auto !important;
   }
 
   .login-grid-responsive {
@@ -193,10 +195,19 @@ body {
   }
 
   .survey-container-responsive {
-    padding: 16px 12px 60px !important;
+    position: relative !important;
+    inset: auto !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    height: auto !important;
+    padding: 16px 12px 80px !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   .survey-card-responsive {
+    width: 100% !important;
+    max-width: 100% !important;
     border-radius: 12px !important;
     margin-bottom: 24px !important;
   }
@@ -210,6 +221,14 @@ body {
     gap: 14px !important;
   }
 
+  .survey-tabs-responsive {
+    justify-content: flex-start !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    width: 100% !important;
+    padding: 6px 8px !important;
+  }
+
   .survey-footer-responsive {
     flex-wrap: wrap !important;
     gap: 10px !important;
@@ -217,6 +236,21 @@ body {
 
   .survey-footer-responsive button {
     flex: 1 1 100% !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .dash-kpis-responsive {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .dash-2x2-responsive {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dash-header-actions-responsive button {
+    flex: 1 1 100% !important;
+    width: 100% !important;
   }
 }
 
