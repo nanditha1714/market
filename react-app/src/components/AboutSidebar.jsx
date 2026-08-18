@@ -255,10 +255,38 @@ export default function AboutSidebar({ onClose }) {
 
           {/* About Tool Card */}
           <div style={s.cardPanel}>
-            <h5 style={s.cardTitle}>About This Tool</h5>
-            <p style={{ ...s.descText, fontSize: '13px', color: '#475569' }}>
-              The <strong>Market Research Assessment</strong> is Infopace's proprietary AI-driven market intelligence platform. It maps your sector, geography, customer segments, TAM, competitor dynamics, pricing models, and risk vectors — generating an investor-grade market brief and live analytics dashboard within minutes.
+            <h5 style={s.cardTitle}>About Market Research Assessment</h5>
+            <p style={{ ...s.descText, fontSize: '13px', color: '#334155', lineHeight: 1.6 }}>
+              The <strong>Market Research Assessment</strong> is Infopace's proprietary AI-driven market intelligence platform. It systematically analyzes your business sector, target geography, customer segments, and revenue model to produce an investor-grade market intelligence brief and live analytics dashboard within seconds.
             </p>
+
+            <div style={{ marginTop: '14px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ fontSize: '11px', fontWeight: 700, color: '#0e5caa', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                7 Core Intelligence Vectors:
+              </div>
+
+              {[
+                { title: '1. Business & Sector Mapping', desc: 'Validates industry sector, business type (B2B/B2C/Marketplace), geography, and core problem statement.' },
+                { title: '2. TAM & Market Growth Rate', desc: 'Forecasts Total Addressable Market (TAM), historical CAGR growth, and industry growth trends.' },
+                { title: '3. Ideal Customer Profile (ICP)', desc: 'Identifies target buyer personas, key pain points, and behavioral purchasing triggers.' },
+                { title: '4. Competitive Share & Matrix', desc: 'Benchmarks market share distribution, radar positioning, and differentiators against key rivals.' },
+                { title: '5. Monetization & Pricing Strategy', desc: 'Evaluates revenue models (SaaS, usage-based, one-time) and average market price tiers.' },
+                { title: '6. Strategic Risks & Roadblocks', desc: 'Surfaces market entry barriers, operational vulnerabilities, and actionable mitigation plans.' },
+                { title: '7. Go-To-Market (GTM) Playbook', desc: 'Outlines multi-channel acquisition tactics, organic/inbound channels, and launch milestones.' }
+              ].map((dim, idx) => (
+                <div key={idx} style={{ padding: '8px 10px', background: '#ffffff', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: '#0f172a' }}>{dim.title}</div>
+                  <div style={{ fontSize: '11.5px', color: '#64748b', marginTop: '2px', lineHeight: 1.45 }}>{dim.desc}</div>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ marginTop: '12px', padding: '10px 12px', background: '#eff6ff', borderRadius: '8px', border: '1px solid #bfdbfe', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ fontSize: '16px' }}>📊</span>
+              <div style={{ fontSize: '11.5px', color: '#1e40af', fontWeight: 600, lineHeight: 1.4 }}>
+                Generates a live interactive analytics dashboard + downloadable investor-grade PDF reports in ~60 seconds.
+              </div>
+            </div>
           </div>
 
           {/* Connect Section */}
